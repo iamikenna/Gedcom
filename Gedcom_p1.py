@@ -4,6 +4,7 @@ User function to read files for my homework and display in a pretty table
 """
 from datetime import datetime #Date calculation
 from prettytable import PrettyTable #Used to build a table
+from collections import defaultdict
 indi_storage, fam_storage, gen_storage = {}, {}, {} #Storage for both Individuals, Families and altogether
 
 def ged_reader():
@@ -199,7 +200,6 @@ def pretty_table_indiv():
             pretty_table3.add_row([no_, id_, na_, ge_, bi_, ag_, al_, de_, ch_, sp_])
         except UnboundLocalError as e:
             print(e)
-        
     print(pretty_table3)
     
 def pretty_table_fam():
@@ -230,29 +230,64 @@ def pretty_table_fam():
             pretty_table4.add_row([no, id_, na_, ge_, bi_, ag_, al_, de_, ch_])
         except UnboundLocalError as e:
             print (e) 
-        
     print(pretty_table4)
+    
+"""This would be used for our user stories"""
+def us27():
+    """Include person's current age when listing individuals --Ikenna"""
+    print("This is user story 27 --Ikenna")
+    return pretty_table_indiv() #This prints out a list of indiviuals and their ages included
+def us22():
+    """All individual IDs should be unique and all family IDs should be unique --Ikenna"""
+    print("This is user story 22 --Ikenna")
+    d_i = defaultdict(int)
+    d_f = defaultdict(int)
+    for i,j in indi_storage.items():
+        for n,m  in j.items():
+            if n == "ID":
+                d_i[m] += 1
+        for d,f in d_i.items():
+            if f > 1 and d in j.values():
+                name = j["Name"]
+                print(f"ERROR: ID: {d} is not unique and has another INDIVIDUAL: {name}")
+            
+    for i,j in fam_storage.items():
+        for n,m  in j.items():
+            if n == "ID":
+                d_f[m] += 1
+        for d,f in d_f.items():
+            if f > 1 and d in j.values():
+                h_name = j["Husband Name"]
+                w_name = j["Wife Name"]
+                print(f"ERROR: ID: {d} is not unique and has another FAMILY: {h_name}, {w_name}")
                 
 def main():
     """
     Testing
     """
-    ged_reader()     
-    pretty_table_indiv()   
-    pretty_table_fam()  
+    ged_reader() #Calling the gedcom file reader
+    us27() #Calling the user story 27 function
+    us22() #Calling the user story 22 function
+       
+    # pretty_table_indiv()   
+    # pretty_table_fam()  
    
     print("This is the Individuals data in a dictionary format\n\n\n")
     print(indi_storage) 
     print("\n\n\n")
+    
     print("This is the Family data in a dictionary format\n\n\n")
     print(fam_storage)       
-    gen_storage["individual"]= indi_storage
-    gen_storage["family"]= fam_storage
-    print("\n\n\n")
-    print("This is the general dictionary for both individuals and family\n\n\n")
-    print(gen_storage) 
-    print("\n\n\n")         
-    print("test anything you want here!!!!!!\n\n\n")
-    print(gen_storage["individual"][1]["Birthday"]) # testing datetime                                                                                                                                                                                                                                                                                                     
+    
+    # gen_storage["individual"]= indi_storage
+    # gen_storage["family"]= fam_storage
+    # print("\n\n\n")
+    
+    # print("This is the general dictionary for both individuals and family\n\n\n")
+    # print(gen_storage) 
+    # print("\n\n\n")     
+        
+    # print("test anything you want here!!!!!!\n\n\n")
+    # print(gen_storage["individual"][1]["Birthday"]) # testing datetime                                                                                                                                                                                                                                                                                                     
 if __name__ == "__main__":
     main()
