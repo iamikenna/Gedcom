@@ -12,19 +12,18 @@ from prettytable import PrettyTable #Used to build a table
 from collections import defaultdict
 
 
-indi_storage, fam_storage, gen_storage = {}, {}, {} #Storage for both Individuals, Families and altogether
 
 
 #Refractoring in progress --ikenna
 class Individual:
 
     """Class individual"""
-    # Class attribute
-    userId = 0
+    
      
-    def __init__(self, arg):
+    def __init__(self, arg, userId):
         # lets think of attributes that we want private __attribute
-        self.__id = arg
+        self.userId = userId
+        self.id = arg
         self.name = 'NA'
         self.gender = 'NA'
         self.birthday = 'NA'
@@ -34,32 +33,36 @@ class Individual:
         self.child = set()
         self.spouse = set()
         
-    #other functions
-    def addName(self, name):
-        self.name = name
-    def addGender(self, gender):
-        self.gender = gender
-    def addBirthday(self, birthday):
-        self.birthday = birthday
-    def addAge(self, age):
-        self.age = age
-    def addAlive(self, alive):
-        self.alive = alive
-    def addDeath(self, death):
-        self.death = death
-    def addChild(self, child):
-        self.child.add(child)
-    def addSpouse(self, spouse):
-        self.spouse.add(spouse)
+    #other functions, potentially scrap add functions?
+    #potentially keep for bounce checking
+    #def addName(self, name):
+    #    self.name = name
+    #def addGender(self, gender):
+    #    self.gender = gender
+    #def addBirthday(self, birthday):
+    #    self.birthday = birthday
+    #def addAge(self, age):
+    ##    self.age = age
+    #def addAlive(self, alive):
+    #    self.alive = alive
+    #def addDeath(self, death):
+    #    self.death = death
+    #def addChild(self, child):
+    #    self.child.add(child)
+    #def addSpouse(self, spouse):
+    #    self.spouse.add(spouse)
+
+    def info(self) -> List[str]:
+
+        return [self.userId, self.id, self.name, self.gender, self.birthday, self.age, self.alive, self.death, self.child, self.spouse]
         
 class Family:
     
     """Class Family"""
-    # Class attribute
-    famId = 0
     
-    def __init__(self, arg):
+    def __init__(self, arg, famId):
         # lets think of attributes that we want private __attribute
+        self.famId = famId
         self.id = arg
         self.married = "NA"
         self.divorced = "NA"
@@ -70,18 +73,21 @@ class Family:
         self.children = set()
         
     #other functions
-    def addMarried(self, date):
-        self.married = date
-    def addDivorced(self, divorced):
-        self.divorced = divorced
-    def addHusband(self, id_, husbandName):
-        self.husbandId = id_
-        self.husbandName = husbandName
-    def addWife(self, id_, wifeName):
-        self.wifeId = id_
-        self.wifeName = wifeName
-    def addChildren(self, children):
-        self.children.add(children)
+    #def addMarried(self, date):
+    #    self.married = date
+    #def addDivorced(self, divorced):
+    #    self.divorced = divorced
+    #def addHusband(self, id_, husbandName):
+    #    self.husbandId = id_
+    #    self.husbandName = husbandName
+    # def addWife(self, id_, wifeName):
+    #     self.wifeId = id_
+    #     self.wifeName = wifeName
+    # def addChildren(self, children):
+    #     self.children.add(children)
+
+    def info(self) -> List[str]:
+        return [self.famId, self.id, self.married, self.divorced, self.husbandId, self.husbandName, self.wifeId, self.wifeName, self.children]
 
 class GedcomRepo:
     """Class Gedcom, keeps track of everything and main storage"""
@@ -90,18 +96,25 @@ class GedcomRepo:
     
     1. Functions to find people, if neccessary
     2. Pretty table function to test output of data  #need to make a new function
-    3. Individual and family dictionary E.g indi_storage, fam_storage, gen_storage = {}, {}  #we have this already
+    3. Individual and family dictionary E.g self.indi_storage, self.fam_storage, gen_storage = {}, {}  #we have this already
     4. date function , to calculate date in datetime   #we have this already
     5. parse function to read the file and input into the dictionaries      #we have this already
     
     Anything else!!!
     
     """
+    
+    def __init__(self) -> None:
         
+        """Initialize printing pretty tables here
+        refer to Individual and family here"""
+
+        self.indi_storage: Dict[int, Individual] = dict() #indiv[indiv_id] = Individual()
+        self.fam_storage: Dict[int, Family] = dict() #fam[fam_id] = Family()
     
 
 
-    def ged_reader():
+    def ged_reader(self):
         """This function reads a gedcom file and displays output"""
         user_input = input("Enter the file name \n") #taking input from the user
         # user_input = "" #proj02test.ged  #export-Forest.ged #sample-2.ged #p_gedcomData.ged #pro_gedcom.ged #general.ged #family.ged #original_fam.ged
@@ -113,6 +126,8 @@ class GedcomRepo:
                 '5':['INDI', 'FAM']
             }, 0, 0, 0, 0, 0, "NA", 0, 0, "", 0
         tag_curr = ""
+
+        
     
         try: #Catching an exception
             open_file: IO = open(user_input,"r")
@@ -139,138 +154,132 @@ class GedcomRepo:
                     #print(f"<--{level}|{tag}|{valid}|{arg}\n\n")
 
                     #Afterwards is the extra functionality outside of Project02
+
+                    #INDIVIUDAL STUFF
         
                     if level == "0" and tag == "INDI": #This is fetching all users and families in the file
-                        indi = Individual(arg.strip("@"))
                         user_id += 1
-                        indi_storage[user_id] = indi
+                        indi = Individual(arg.strip("@"), user_id)
+                        self.indi_storage[user_id] = indi
 
 
-                    elif level == "1" and tag == "NAME" and user_id in indi_storage.keys() and indi_storage[user_id]["Name"] == "NA":
-                        indi_storage[user_id]["Name"] = arg
-                        #print(indi_storage[user_id]["Name"])
-                    elif level == "1" and tag == "SEX" and user_id in indi_storage.keys() and indi_storage[user_id]["Gender"] == "NA":
-                        indi_storage[user_id]["Gender"] = arg
-                        #print(indi_storage[user_id]["Gender"])
-                    elif level == "1" and tag == "BIRT" and user_id in indi_storage.keys():
+                    elif level == "1" and tag == "NAME" and user_id in self.indi_storage.keys() and self.indi_storage[user_id].name == "NA":
+                        self.indi_storage[user_id].name = arg
+                        #print(self.indi_storage[user_id].name)
+                    elif level == "1" and tag == "SEX" and user_id in self.indi_storage.keys() and self.indi_storage[user_id].gender == "NA":
+                        self.indi_storage[user_id].gender = arg
+                        #print(self.indi_storage[user_id].gender)
+                    elif level == "1" and tag == "BIRT" and user_id in self.indi_storage.keys():
                         tag_curr = tag 
                         
-                    elif level == "2" and tag == "DATE" and user_id in indi_storage.keys() and indi_storage[user_id]["Birthday"] == "NA"  \
-                        and indi_storage[user_id]["Age"] == "NA" and indi_storage[user_id]["Alive"] == "NA" and indi_storage[user_id]["Death"] == "NA" and tag_curr == "BIRT":
+                    elif level == "2" and tag == "DATE" and user_id in self.indi_storage.keys() and self.indi_storage[user_id].birthday == "NA"  \
+                        and self.indi_storage[user_id].age == "NA" and self.indi_storage[user_id].alive == True and self.indi_storage[user_id].death == "NA" and tag_curr == "BIRT":
                         
                         try:
-                            indi_storage[user_id]["Birthday"] = date_convert(arg.split(" "))
-                            #print(indi_storage[user_id]["Birthday"])
+                            self.indi_storage[user_id].birthday = self.date_convert(arg.split(" "))
+                            #print(self.indi_storage[user_id].birthday)
                         except AttributeError:
                             print(f"Invalid date: {arg}")
                         else:
-                            indi_storage[user_id]["Alive"] = "True"
-                            indi_storage[user_id]["Death"] = "NA"
+                            self.indi_storage[user_id].alive = True
+                            self.indi_storage[user_id].death = "NA"
                         try:
-                            alive_age = datetime.today().year - date_convert(arg.split(" ")).year #Is this only finding the difference between the years?
+                            alive_age = datetime.today().year - self.date_convert(arg.split(" ")).year #Is this only finding the difference between the years?
                         except AttributeError:
                             print(f"Invalid date: {arg}")
                         else:
-                            indi_storage[user_id]["Age"] = alive_age
-                    elif level == "1" and tag == "DEAT" and user_id in indi_storage.keys():
+                            self.indi_storage[user_id].age = alive_age
+                    elif level == "1" and tag == "DEAT" and user_id in self.indi_storage.keys():
                         tag_curr = tag
-                    elif level == "2" and tag == "DATE" and user_id in indi_storage.keys() and indi_storage[user_id]["Death"] == "NA" and tag_curr == "DEAT":
+                    elif level == "2" and tag == "DATE" and user_id in self.indi_storage.keys() and self.indi_storage[user_id].death == "NA" and tag_curr == "DEAT":
                         try:
-                            indi_storage[user_id]["Death"] = date_convert(arg.split(" "))
-                            #print(indi_storage[user_id]["Death"])
+                            self.indi_storage[user_id].death = self.date_convert(arg.split(" "))
+                            #print(self.indi_storage[user_id].death)
                         except AttributeError:
                             print(f"Invalid date: {arg}")
                         else:
-                            if indi_storage[user_id]['Death'] != "NA":
-                                indi_storage[user_id]['Alive']= "False"
+                            if self.indi_storage[user_id].death != "NA":
+                                self.indi_storage[user_id].alive= False
                                 try:
-                                    death_age = date_convert(arg.split(" ")).year - indi_storage[user_id]["Birthday"].year
+                                    death_age = self.date_convert(arg.split(" ")).year - self.indi_storage[user_id].birthday.year
                                 except AttributeError:
                                     print(f"Invalid date: {arg}")
                                 else:
-                                    indi_storage[user_id]["Age"] = death_age
-                    elif level == "1" and tag == "FAMS" and user_id in indi_storage.keys() and indi_storage[user_id]["Spouse"] == "NA":
+                                    self.indi_storage[user_id].age = death_age
+                    elif level == "1" and tag == "FAMS" and user_id in self.indi_storage.keys() and self.indi_storage[user_id].spouse == set():
                         spouse_c += 1
-                        if indi_storage[user_id]["Spouse"] == "NA" and spouse_c == 1:
-                            indi_storage[user_id]['Spouse'] = set()
-                            indi_storage[user_id]["Spouse"].add(arg.strip("@"))
-                            #print(indi_storage[user_id]["Spouse"])
+                        if self.indi_storage[user_id].spouse == set() and spouse_c == 1:
+                            self.indi_storage[user_id].spouse.add(arg.strip("@"))
+                            #print(self.indi_storage[user_id].spouse)
                             spouse_c -= 1
                         else:
-                            indi_storage[user_id]["Spouse"].add(arg.strip("@"))
+                            self.indi_storage[user_id].spouse.add(arg.strip("@"))
                             spouse_c -= 1
-                    elif level == "1" and tag == "FAMC" and user_id in indi_storage.keys() and indi_storage[user_id]["Child"] == "NA":
+                    elif level == "1" and tag == "FAMC" and user_id in self.indi_storage.keys() and self.indi_storage[user_id].child == set():
                         child_c += 1
-                        if indi_storage[user_id]["Child"] == "NA" and child_c == 1:
-                            indi_storage[user_id]['Child'] = set() 
-                            indi_storage[user_id]["Child"].add(arg.strip("@"))
+                        if self.indi_storage[user_id].child == set() and child_c == 1:
+                            self.indi_storage[user_id].child.add(arg.strip("@"))
                             child_c -= 1
                         else:
-                            indi_storage[user_id]["Child"].add(arg.strip("@"))
+                            self.indi_storage[user_id].child.add(arg.strip("@"))
                             child_c -= 1
 
                     #FAMILY LEVEL STUFF
 
                     elif level == "0" and tag == "FAM":
                         fam_id += 1
-                        fam_storage[fam_id] = {"ID": arg.strip("@")}
-                        fam_ += arg.strip("@")
-                        fam_storage[fam_id]["Children"] = set()
-                        fam_storage[fam_id]["Married"] = "NA"
-                        fam_storage[fam_id]["Divorced"] = "NA"
-                        fam_storage[fam_id]["Husband ID"] = "NA"
-                        fam_storage[fam_id]["Husband Name"] = "NA"
-                        fam_storage[fam_id]["Wife ID"] = "NA"
-                        fam_storage[fam_id]["Wife Name"] = "NA"
-                    elif level == "1" and tag == "CHIL" and fam_id in fam_storage.keys():
+                        fam = Family(arg.strip("@"), fam_id)
+                        self.fam_storage[fam_id] = fam
+
+                    elif level == "1" and tag == "CHIL" and fam_id in self.fam_storage.keys():
                         try:
-                            fam_storage[fam_id]["Children"].add(arg.strip("@"))
-                            #print(fam_storage[fam_id]["Children"])
+                            self.fam_storage[fam_id].children.add(arg.strip("@"))
+                            #print(self.fam_storage[fam_id].children)
                         except KeyError as e:
                             print(f"{e}:")
-                    elif level == "1" and tag == "MARR"  and fam_id in fam_storage.keys():
+                    elif level == "1" and tag == "MARR"  and fam_id in self.fam_storage.keys():
                         tag_curr = "MARR"
-                    elif level == "2" and tag == "DATE" and fam_id in fam_storage.keys() and fam_storage[fam_id]["Married"]=="NA" and tag_curr == "MARR":
+                    elif level == "2" and tag == "DATE" and fam_id in self.fam_storage.keys() and self.fam_storage[fam_id].married=="NA" and tag_curr == "MARR":
                         try:
-                            fam_storage[fam_id]["Married"] = date_convert(arg.split(" "))   
+                            self.fam_storage[fam_id].married = self.date_convert(arg.split(" "))   
                         except AttributeError:
                             print(f"Invalid date: {arg}")
-                    elif level == "1" and tag == "DIV" and fam_id in fam_storage.keys():
+                    elif level == "1" and tag == "DIV" and fam_id in self.fam_storage.keys():
                         tag_curr = "DIV"
-                    elif level == "2" and tag == "DATE" and fam_id in fam_storage.keys()  and fam_storage[fam_id]["Divorced"] == "NA" and tag_curr == "DIV":
+                    elif level == "2" and tag == "DATE" and fam_id in self.fam_storage.keys()  and self.fam_storage[fam_id].divorced == "NA" and tag_curr == "DIV":
                         try:
-                            fam_storage[fam_id]["Divorced"] = date_convert(arg.split(" "))
+                            self.fam_storage[fam_id].divorced = self.date_convert(arg.split(" "))
                         except AttributeError:
                             print(f"Invalid date: {arg}")
-                    elif level == "1" and tag == "HUSB" and fam_id in fam_storage.keys() and fam_storage[fam_id]["Husband ID"] == "NA" and fam_storage[fam_id]["Husband Name"] == "NA":
-                        fam_storage[fam_id]["Husband ID"] = arg.strip("@")
-                        for i,j in indi_storage.items():
+                    elif level == "1" and tag == "HUSB" and fam_id in self.fam_storage.keys() and self.fam_storage[fam_id].husbandId == "NA" and self.fam_storage[fam_id].husbandName == "NA":
+                        self.fam_storage[fam_id].husbandId = arg.strip("@")
+                        for i,j in self.indi_storage.items():
                             #i is the ID Number, j is the whole set/dictionary/thing
                             #print(i)
                             #print(j)
-                            if arg.strip("@") in j.values():
-                                name = j["Name"]
+                            if arg.strip("@") == j.id:
+                                name = j.name
                                 #print(name)
                             else:
                                 continue
                         else:
-                            fam_storage[fam_id]["Husband Name"] = name
-                    elif level == "1" and tag == "WIFE" and fam_id in fam_storage.keys() and fam_storage[fam_id]["Wife ID"] == "NA" and fam_storage[fam_id]["Wife Name"] == "NA":
-                        fam_storage[fam_id]["Wife ID"] = arg.strip("@")
-                        for i,j in indi_storage.items():
-                            if arg.strip("@") in j.values():
-                                name = j["Name"]
+                            self.fam_storage[fam_id].husbandName = name
+                    elif level == "1" and tag == "WIFE" and fam_id in self.fam_storage.keys() and self.fam_storage[fam_id].wifeId == "NA" and self.fam_storage[fam_id].wifeName == "NA":
+                        self.fam_storage[fam_id].wifeId = arg.strip("@")
+                        for i,j in self.indi_storage.items():
+                            if arg.strip("@") == j.id:
+                                name = j.name
                             else:
                                 continue
                         else:
-                            fam_storage[fam_id]["Wife Name"] = name
+                            self.fam_storage[fam_id].wifeName = name
                     else:
                         tag_curr = ""
                         continue
 
                     #No children names?
 
-    def date_convert(g_date): 
+    def date_convert(self, g_date): 
         """Converting '15 MAY 2020' into '2020-5-15' and g_date takes a date in a list:[] form """
         g_date = " ".join(g_date)
         try:
@@ -280,123 +289,75 @@ class GedcomRepo:
         else:
             return(g_object.date())
 
-    def pretty_table_indiv():
+    def pretty_table_indiv(self):
         """This function is used to print out the data of Individuals in a table format"""
         pretty_table3 = PrettyTable(field_names=['NO','ID', 'Name', 'Gender', 'Birthday', 'Age', 'Alive', 'Death', 'Child', 'Spouse'])
-        for i,j in indi_storage.items():
-            for k,m in j.items():
-                no_ = i
-                if k == 'ID':
-                    id_ = m
-                elif k == 'Name':
-                    na_ = m
-                elif k == 'Gender':
-                    ge_ = m
-                elif k == 'Birthday':
-                    bi_ = m
-                elif k == 'Age':
-                    ag_ = m
-                elif k == 'Alive':
-                    al_ = m
-                elif k == 'Death':
-                    de_ = m
-                elif k == 'Child':
-                    ch_ = m
-                elif k == 'Spouse':
-                    sp_ = m
-                else:
-                    continue
+        for i,j in self.indi_storage.items():
             try:
-                pretty_table3.add_row([no_, id_, na_, ge_, bi_, ag_, al_, de_, ch_, sp_])
+                pretty_table3.add_row(j.info())
             except UnboundLocalError as e:
                 print(e)
         print(pretty_table3)
         
-    def pretty_table_fam():
+    def pretty_table_fam(self):
         """This function is used to print out the data of Family in a table format"""
         pretty_table4 = PrettyTable(field_names=['NO','ID', 'Married' , 'Divorced', 'Husband ID', 'Husband Name', 'Wife ID', 'Wife Name', 'Children'])
-        for i in range(1, (len(fam_storage) + 1)):
-            no = i
-            for n, m in fam_storage[i].items():
-                if n == 'ID':
-                    id_ = m
-                elif n == 'Married':
-                    na_ = m
-                elif n == 'Divorced':
-                    ge_ = m
-                elif n == 'Husband ID':
-                    bi_ = m
-                elif n == 'Husband Name':
-                    ag_ = m
-                elif n == 'Wife ID':
-                    al_ = m
-                elif n == 'Wife Name':
-                    de_ = m
-                elif n == 'Children':
-                    ch_ = m
-                else:
-                    continue
+        for i,j in self.fam_storage.items():
             try:
-                pretty_table4.add_row([no, id_, na_, ge_, bi_, ag_, al_, de_, ch_])
+                pretty_table4.add_row(j.info())
             except UnboundLocalError as e:
                 print (e) 
         print(pretty_table4)
         
         
         
-        
-        
-        
-    
-"""This would be used for our user stories"""
-def us27():
-    """Include person's current age when listing individuals --Ikenna"""
-    print("This is user story 27 --Ikenna")
-    return pretty_table_indiv() #This prints out a list of indiviuals and their ages included
-def us22():
-    """All individual IDs should be unique and all family IDs should be unique --Ikenna"""
-    print("This is user story 22 --Ikenna")
-    d_i = defaultdict(int)
-    d_f = defaultdict(int)
-    for i,j in indi_storage.items():
-        for n,m  in j.items():
-            if n == "ID":
-                d_i[m] += 1
-        for d,f in d_i.items():
-            if f > 1 and d in j.values():
-                name = j["Name"]
-                print(f"ERROR: ID: {d} is not unique and has another INDIVIDUAL: {name}")
-            
-    for i,j in fam_storage.items():
-        for n,m  in j.items():
-            if n == "ID":
-                d_f[m] += 1
-        for d,f in d_f.items():
-            if f > 1 and d in j.values():
-                h_name = j["Husband Name"]
-                w_name = j["Wife Name"]
-                print(f"ERROR: ID: {d} is not unique and has another FAMILY: {h_name}, {w_name}")
+    """This would be used for our user stories"""
+
+    def us27(self):
+        """Include person's current age when listing individuals --Ikenna"""
+        print("This is user story 27 --Ikenna")
+        return self.pretty_table_indiv() #This prints out a list of indiviuals and their ages included
+    def us22(self):
+        """All individual IDs should be unique and all family IDs should be unique --Ikenna"""
+        print("This is user story 22 --Ikenna")
+        d_i = defaultdict(int)
+        d_f = defaultdict(int)
+        for i,j in self.indi_storage.items():
+            d_i[j.id] += 1
+            for d,f in d_i.items():
+                if f > 1 and d == j.id:
+                    name = j.name
+                    print(f"ERROR: ID: {d} is not unique and has another INDIVIDUAL: {name}")
+                
+        for i,j in self.fam_storage.items():
+            d_f[j.id] += 1
+            for d,f in d_f.items():
+                if f > 1 and d == j.id:
+                    h_name = j.husbandName
+                    w_name = j.wifeName
+                    print(f"ERROR: ID: {d} is not unique and has another FAMILY: {h_name}, {w_name}")
                 
 def main():
     """
     Testing
     """
-    ged_reader() #Calling the gedcom file reader
-    us27() #Calling the user story 27 function
-    us22() #Calling the user story 22 function
-       
-    # pretty_table_indiv()   
-    # pretty_table_fam()  
-    print('\n\n\n')
-    print("This is the Individuals data in a dictionary format\n\n\n")
-    print(indi_storage) 
-    print("\n\n\n")
+    test = GedcomRepo()
+    test.ged_reader() #Calling the gedcom file reader
+    test.us27() #Calling the user story 27 function
+    test.us22() #Calling the user story 22 function
+    test.pretty_table_fam()  
+
     
-    print("This is the Family data in a dictionary format\n\n\n")
-    print(fam_storage)       
+    #print('\n\n\n')
+    #print("This is the Individuals data in a dictionary format\n\n\n")
+    #print(self.indi_storage) 
+    #print("\n\n\n")
     
-    # gen_storage["individual"]= indi_storage
-    # gen_storage["family"]= fam_storage
+    #print("This is the Family data in a dictionary format\n\n\n")
+    #print(self.fam_storage)       
+    
+    # gen_storage["individual"]= self.indi_storage
+    # gen_storage["family"]= self.fam_storage
     # print("\n\n\n")
     
     # print("This is the general dictionary for both individuals and family\n\n\n")
@@ -404,6 +365,6 @@ def main():
     # print("\n\n\n")     
         
     # print("test anything you want here!!!!!!\n\n\n")
-    # print(gen_storage["individual"][1]["Birthday"]) # testing datetime                                                                                                                                                                                                                                                                                                     
+    # print(gen_storage["individual"][1].birthday) # testing datetime                                                                                                                                                                                                                                                                                                     
 if __name__ == "__main__":
     main()
