@@ -58,6 +58,7 @@ class Family:
     # Class attribute
     __famId = 0
      
+     
     def __init__(self, arg):
         # lets think of attributes that we want private __attribute
         self.__id = arg
