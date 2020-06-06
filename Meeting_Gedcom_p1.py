@@ -6,7 +6,6 @@ User function to read files for my homework and display in a pretty table
 from typing import IO, Dict, Tuple, List
 import string
 
-
 from datetime import datetime #Date calculation
 from prettytable import PrettyTable #Used to build a table
 from collections import defaultdict
