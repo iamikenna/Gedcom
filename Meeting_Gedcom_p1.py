@@ -14,6 +14,8 @@ from collections import defaultdict
 
 indi_storage, fam_storage, gen_storage = {}, {}, {} #Storage for both Individuals, Families and altogether
 
+
+#Refractoring in progress --ikenna
 class Individual:
 
     """Class individual"""
