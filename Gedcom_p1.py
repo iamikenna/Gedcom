@@ -5,7 +5,7 @@ User function to read files for my homework and display in a pretty table
 from datetime import datetime #Date calculation
 from prettytable import PrettyTable #Used to build a table
 from collections import defaultdict
-indi_storage, fam_storage, gen_storage = {}, {}, {} uu #Storage for both Individuals, Families and altogether
+indi_storage, fam_storage, gen_storage = {}, {}, {} #Storage for both Individuals, Families and altogether
 
 def ged_reader():
     """This function reads a gedcom file and displays output"""
