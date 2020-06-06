@@ -19,18 +19,57 @@ indi_storage, fam_storage, gen_storage = {}, {}, {} #Storage for both Individual
 class Individual:
 
     """Class individual"""
-
+    # Class attribute
+    __userId = 0
+     
     def __init__(self, arg):
-        
-        self.id = arg
-        self.name = ''
-        self.gender = ''
-        self.birthday = ''
-        self.age = ''
-        self.death = ''
-        #self.child = set()
-        self.spouse = ''
+        # lets think of attributes that we want private __attribute
+        self.__id = arg
+        self.name = 'NA'
+        self.gender = 'NA'
+        self.birthday = 'NA'
+        self.age = 'NA'
         self.alive = True
+        self.death = 'NA'
+        self.child = set()
+        self.spouse = set()
+        
+    #other functions
+    def addName(self, name):
+        self.name = name
+    def addGender(self, gender):
+        self.gender = gender
+    def addBirthday(self, birthday):
+        self.birthday = birthday
+    def addAge(self, age):
+        self.age = age
+    def addAlive(self, alive):
+        self.alive = alive
+    def addDeath(self, death):
+        self.death = death
+    def addChild(self, child):
+        self.child.add(child)
+    def addSpouse(self, spouse):
+        self.spouse.add(spouse)
+        
+class Family:
+    
+    """Class Family"""
+    # Class attribute
+    __famId = 0
+     
+    def __init__(self, arg):
+        # lets think of attributes that we want private __attribute
+        self.__id = arg
+        self.name = 'NA'
+        self.gender = 'NA'
+        self.birthday = 'NA'
+        self.age = 'NA'
+        self.alive = True
+        self.death = 'NA'
+        self.child = set()
+        self.spouse = set()
+        
     
 
 
