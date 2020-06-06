@@ -20,7 +20,7 @@ class Individual:
 
     """Class individual"""
     # Class attribute
-    __userId = 0
+    userId = 0
      
     def __init__(self, arg):
         # lets think of attributes that we want private __attribute
@@ -56,20 +56,47 @@ class Family:
     
     """Class Family"""
     # Class attribute
-    __famId = 0
-     
-     
+    famId = 0
+    
     def __init__(self, arg):
         # lets think of attributes that we want private __attribute
-        self.__id = arg
-        self.name = 'NA'
-        self.gender = 'NA'
-        self.birthday = 'NA'
-        self.age = 'NA'
-        self.alive = True
-        self.death = 'NA'
-        self.child = set()
-        self.spouse = set()
+        self.id = arg
+        self.married = "NA"
+        self.divorced = "NA"
+        self.husbandId = "NA"
+        self.husbandName = "NA"
+        self.wifeId = "NA"
+        self.wifeName = "NA"
+        self.children = set()
+        
+    #other functions
+    def addMarried(self, date):
+        self.married = date
+    def addDivorced(self, divorced):
+        self.divorced = divorced
+    def addHusband(self, id_, husbandName):
+        self.husbandId = id_
+        self.husbandName = husbandName
+    def addWife(self, id_, wifeName):
+        self.wifeId = id_
+        self.wifeName = wifeName
+    def addChildren(self, children):
+        self.children.add(children)
+
+class GedcomRepo:
+    """Class Gedcom, keeps track of everything and main storage"""
+    """
+    Things we might need in this class
+    
+    1. Functions to find people, if neccessary
+    2. Pretty table function to test output of data  #need to make a new function
+    3. Individual and family dictionary E.g indi_storage, fam_storage, gen_storage = {}, {}  #we have this already
+    4. date function , to calculate date in datetime   #we have this already
+    5. parse function to read the file and input into the dictionaries      #we have this already
+    
+    Anything else!!!
+    
+    """
         
     
 
