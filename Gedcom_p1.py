@@ -277,7 +277,7 @@ class GedcomRepo:
                         tag_curr = ""
                         continue
 
-                    #No children names?
+                    #No children names?  #We only need the ID of the child and family id where they belong -- ikenna
 
     def date_convert(self, g_date): 
         """Converting '15 MAY 2020' into '2020-5-15' and g_date takes a date in a list:[] form """
