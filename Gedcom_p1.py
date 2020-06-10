@@ -319,6 +319,8 @@ class GedcomRepo:
                     else:
                         tag_curr = ""
                         continue
+                else:
+                    return(self.indi_storage, self.fam_storage) #testing with a testcase
 
                   
 
