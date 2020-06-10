@@ -90,18 +90,20 @@ class GedcomRepo:
     """
     
 
-    def __init__(self) -> None:
+    def __init__(self, path) -> None:
+        
         
         """Initialize printing pretty tables here
         refer to Individual and family here"""
-
+        self.path = path
         self.indi_storage: Dict[int, Individual] = dict() #indi_storage[indiv_id] = Individual()
         self.fam_storage: Dict[int, Family] = dict() #fam_storage[fam_counter] = Family()
     
 
     def ged_reader(self):
         """This function reads a gedcom file and displays output"""
-        user_input = input("Enter the file name \n") #taking input from the user
+        user_input = self.path #for test cases
+        # user_input = input("Enter the file name \n") #taking input from the user
         # user_input = "" #proj02test.ged  #export-Forest.ged #sample-2.ged #p_gedcomData.ged #pro_gedcom.ged #general.ged #family.ged #original_fam.ged
         #Storing the level element as key and tag elements as values
         
@@ -374,12 +376,12 @@ class GedcomRepo:
         
     """This would be used for our user stories"""
 
-    def us27(self):
+    # def us27(self):
 
-        """Include person's current age when listing individuals --Ikenna"""
+    #     """Include person's current age when listing individuals --Ikenna"""
 
-        print("This is user story 27 --Ikenna")
-        return self.pretty_table_indiv() #This prints out a list of indiviuals and their ages included
+    #     print("This is user story 27 --Ikenna")
+    #     return self.pretty_table_indiv() #This prints out a list of indiviuals and their ages included
 
     def us22(self):
 
@@ -388,31 +390,36 @@ class GedcomRepo:
         print("This is user story 22 --Ikenna")
         d_i = defaultdict(int)
         d_f = defaultdict(int)
+        l_i, l_f = [],[]
         #Give variable names to d, f?
         for offset_1, vals_1 in self.indi_storage.items():
             d_i[vals_1.id] += 1
             for offset_2, vals_2 in d_i.items():
                 if vals_2 > 1 and offset_2 == vals_1.id:
                     name = vals_1.name
+                    l_i.append(offset_2)
                     print(f"ERROR: ID: {offset_2} is not unique and has another INDIVIDUAL: {name}")
-                
+           
         for offset_1, vals_1 in self.fam_storage.items():
             d_f[vals_1.id] += 1
             for offset_2, vals_2 in d_f.items():
                 if vals_2 > 1 and offset_2 == vals_1.id:
                     h_name = vals_1.husbandName
                     w_name = vals_1.wifeName
+                    l_f.append(offset_2)
                     print(f"ERROR: ID: {offset_2} is not unique and has another FAMILY: {h_name}, {w_name}")
+        return l_i,l_f
+        
                 
 def main():
     """
     Testing
     """
-    test = GedcomRepo()
+    test = GedcomRepo("/Applications/XAMPP/xamppfiles/htdocs/Gedcom/Gedcom/family.ged")
     test.ged_reader() #Calling the gedcom file reader
-    test.us27() #Calling the user story 27 function
+    # test.us27() #Calling the user story 27 function
     test.us22() #Calling the user story 22 function
-    test.pretty_table_fam()  
+    # test.pretty_table_fam()  
 
     #print('\n\n\n')
     #print("This is the Individuals data in a dictionary format\n\n\n")
