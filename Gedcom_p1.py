@@ -3,7 +3,6 @@ Author: Ibezim Ikenna
 User function to read files for my homework and display in a pretty table
 """
 
-
 from typing import IO, Dict, Tuple, List
 import string
 
@@ -11,10 +10,6 @@ from datetime import datetime #Date calculation
 from prettytable import PrettyTable #Used to build a table
 from collections import defaultdict
 
-
-
-
-#Refractoring in progress --ikenna
 class Individual:
 
     """Class individual"""
@@ -373,26 +368,31 @@ class GedcomRepo:
         print(pretty_table4)
         
         
-        
     """This would be used for our user stories"""
 
-    # def us27(self):
+    def us27(self):
 
-    #     """Include person's current age when listing individuals --Ikenna"""
-
-    #     print("This is user story 27 --Ikenna")
-    #     return self.pretty_table_indiv() #This prints out a list of indiviuals and their ages included
+        """Include person's current age when listing individuals --Ikenna"""
+       
+        print("This is user story 27 --Ikenna")
+        id_age = []
+       
+        for i in self.indi_storage.values():
+            id_age.append((i.id, i.age))
+        print(self.pretty_table_indiv())#This prints out a list of indiviuals and their ages included
+        return id_age
 
     def us22(self):
 
         """All individual IDs should be unique and all family IDs should be unique --Ikenna"""
-
+        
         print("This is user story 22 --Ikenna")
         d_i = defaultdict(int)
         d_f = defaultdict(int)
         l_i, l_f = [],[]
         #Give variable names to d, f?
         for offset_1, vals_1 in self.indi_storage.items():
+            
             d_i[vals_1.id] += 1
             for offset_2, vals_2 in d_i.items():
                 if vals_2 > 1 and offset_2 == vals_1.id:
@@ -417,9 +417,10 @@ def main():
     """
     test = GedcomRepo("/Applications/XAMPP/xamppfiles/htdocs/Gedcom/Gedcom/family.ged")
     test.ged_reader() #Calling the gedcom file reader
-    # test.us27() #Calling the user story 27 function
+    test.us27() #Calling the user story 27 function
     test.us22() #Calling the user story 22 function
-    # test.pretty_table_fam()  
+    test.pretty_table_fam()  
+    # test.indi_storage
 
     #print('\n\n\n')
     #print("This is the Individuals data in a dictionary format\n\n\n")
