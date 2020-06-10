@@ -21,7 +21,7 @@ class Individual:
     
      
     def __init__(self, arg, i_counter):
-
+    
         """Individual characteristics"""
 
         # lets think of attributes that we want private __attribute
@@ -45,7 +45,6 @@ class Individual:
                 ]
         
 class Family:
-    
 
     """Class Family"""
     
@@ -413,7 +412,6 @@ def main():
     test.us22() #Calling the user story 22 function
     test.pretty_table_fam()  
 
-    
     #print('\n\n\n')
     #print("This is the Individuals data in a dictionary format\n\n\n")
     #print(self.indi_storage) 
