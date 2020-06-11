@@ -32,16 +32,16 @@ class UserStoryTest(unittest.TestCase):
         self.assertEqual(test.us27(),  id_age) #Testing duplicates ID for individual table
         self.assertNotEqual(test.us27(),  error)
     
-    def test_us07(self):
+    # def test_us07(self):
         
-        """Checking for less than 150 years """ 
+    #     """Checking for less than 150 years """ 
        
-        test = GedcomRepo("/Applications/XAMPP/xamppfiles/htdocs/Gedcom/Gedcom/family.ged")
-        test.ged_reader()
-        death, alive, error = [('I12', 153)], [('I6', 170)], ['0r','I1', 'I17', 'I15', 'I15']
-        self.assertEqual(test.us07()[0],  death) 
-        self.assertNotEqual(test.us07()[0],  error)
-        self.assertEqual(test.us07()[1],  alive) 
+    #     test = GedcomRepo("/Applications/XAMPP/xamppfiles/htdocs/Gedcom/Gedcom/family.ged")
+    #     test.ged_reader()
+    #     death, alive, error = [('I12', 153)], [('I6', 170)], ['0r','I1', 'I17', 'I15', 'I15']
+    #     self.assertEqual(test.us07()[0],  death) 
+    #     self.assertNotEqual(test.us07()[0],  error)
+    #     self.assertEqual(test.us07()[1],  alive) 
         
     #Author: Ibezim Ikenna
     def test_us08(self):

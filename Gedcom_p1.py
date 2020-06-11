@@ -413,33 +413,42 @@ class GedcomRepo:
     
     """This would be used for our user stories"""
 
-    def us07(self):
+    # def us07(self):
 
-        """ Less then 150 years old --Ikenna"""
+    #     """ Less then 150 years old --Ikenna"""
 
-        print("This is user story 07 --Ikenna")
-        alive, death = [], []
-        for val in self.indi_storage.values():
-            if val.death != "NA" and val.birthday != "NA": # Making sure dead people are less than 150 years old 
-                d_age = val.death.year - val.birthday.year
-                if d_age >= 150:
-                    death.append((val.id, d_age))
-                    print(f"Error US07: Death after birth of {val.name} ({val.id}) was {d_age} years which occurs after 150 years")
-            elif val.death == "NA" and val.birthday != "NA":
-                try:
-                    b_age = datetime.today().year - val.birthday.year
-                except AttributeError:
-                    print(f"{val.birthday}")
-                else:
-                    if b_age >= 150:
-                        alive.append((val.id,b_age))
-                        print(f"Error US07: Current date after birth of {val.name} ({val.id}) was {b_age} years which occurs after 150 years")
-        return death, alive
+    #     print("This is user story 07 --Ikenna")
+        # alive, death = [], []
+        # for val in self.indi_storage.values():
+        #     if val.death != "NA" and val.birthday != "NA": # Making sure dead people are less than 150 years old 
+        #         try:
+        #             d_age = val.death.year - val.birthday.year
+        #         except AttributeError:
+        #             print(f"{val.birthday}")
+        #         else:
+        #             if d_age >= 150:
+        #                 death.append((val.id, d_age))
+        #                 print(f"Error US07: Death after birth of {val.name} ({val.id}) was {d_age} years which occurs after 150 years")
+        #     elif val.death == "NA" and val.birthday != "NA":
+        #         try:
+        #             b_age = datetime.today().year - val.birthday.year
+        #         except AttributeError:
+        #             print(f"{val.birthday}")
+        #         else:
+        #             if b_age >= 150:
+        #                 alive.append((val.id,b_age))
+        #                 print(f"Error US07: Current date after birth of {val.name} ({val.id}) was {b_age} years which occurs after 150 years")
+        # return death, alive
 
             
     def us08(self):
 
         """Birth before marriage of parents --Ikenna"""
+        
+        # for i in self.indi_storage.values():
+        #     if i.id == "I7":
+        #         print(i.name,i.gender,i.birthday,i.age,i.alive, i.death, i.child, i.spouse)
+            
         
         print("This is user story 08 --Ikenna")
         
@@ -454,7 +463,7 @@ def main():
     test.ged_reader() #Calling the gedcom file reader
     # test.us27() #Calling the user story 27 function
     # test.us22() #Calling the user story 22 function
-    # test.us07()
+    test.us08()
     # test.pretty_table_fam()  
     test.pretty_table_indiv() 
     # test.indi_storage
