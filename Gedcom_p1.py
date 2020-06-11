@@ -409,17 +409,35 @@ class GedcomRepo:
                     l_f.append(offset_2)
                     print(f"ERROR: ID: {offset_2} is not unique and has another FAMILY: {h_name}, {w_name}")
         return l_i,l_f
+    
+    
+    """This would be used for our user stories"""
+
+    def us07(self):
+
+        """ --Ikenna"""
+       
+        print("This is user story 07 --Ikenna")
+        pass
+
+    def us08(self):
+
+        """  --Ikenna"""
+        
+        print("This is user story 08 --Ikenna")
+        pass
         
                 
 def main():
     """
     Testing
     """
-    test = GedcomRepo("/Applications/XAMPP/xamppfiles/htdocs/Gedcom/Gedcom/family.ged")
+    # test = GedcomRepo("/Applications/XAMPP/xamppfiles/htdocs/Gedcom/Gedcom/family.ged") #--Ikenna
+    test = GedcomRepo("/Applications/XAMPP/xamppfiles/htdocs/Gedcom/Gedcom/family.ged") #Please change to your current path
     test.ged_reader() #Calling the gedcom file reader
-    test.us27() #Calling the user story 27 function
-    test.us22() #Calling the user story 22 function
-    test.pretty_table_fam()  
+    # test.us27() #Calling the user story 27 function
+    # test.us22() #Calling the user story 22 function
+    # test.pretty_table_fam()  
     # test.indi_storage
 
     #print('\n\n\n')
