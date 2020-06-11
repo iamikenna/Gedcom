@@ -415,17 +415,34 @@ class GedcomRepo:
 
     def us07(self):
 
-        """ --Ikenna"""
-       
-        print("This is user story 07 --Ikenna")
-        pass
+        """ Less then 150 years old --Ikenna"""
 
+        print("This is user story 07 --Ikenna")
+        alive, death = [], []
+        for val in self.indi_storage.values():
+            if val.death != "NA" and val.birthday != "NA": # Making sure dead people are less than 150 years old 
+                d_age = val.death.year - val.birthday.year
+                if d_age >= 150:
+                    death.append((val.id, d_age))
+                    print(f"Error US07: Death after birth of {val.name} ({val.id}) was {d_age} years which occurs after 150 years")
+            elif val.death == "NA" and val.birthday != "NA":
+                try:
+                    b_age = datetime.today().year - val.birthday.year
+                except AttributeError:
+                    print(f"{val.birthday}")
+                else:
+                    if b_age >= 150:
+                        alive.append((val.id,b_age))
+                        print(f"Error US07: Current date after birth of {val.name} ({val.id}) was {b_age} years which occurs after 150 years")
+        return death, alive
+
+            
     def us08(self):
 
-        """  --Ikenna"""
+        """Birth before marriage of parents --Ikenna"""
         
         print("This is user story 08 --Ikenna")
-        pass
+        
         
                 
 def main():
@@ -437,7 +454,9 @@ def main():
     test.ged_reader() #Calling the gedcom file reader
     # test.us27() #Calling the user story 27 function
     # test.us22() #Calling the user story 22 function
+    # test.us07()
     # test.pretty_table_fam()  
+    test.pretty_table_indiv() 
     # test.indi_storage
 
     #print('\n\n\n')

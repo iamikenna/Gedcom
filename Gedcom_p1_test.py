@@ -21,10 +21,10 @@ class UserStoryTest(unittest.TestCase):
         """function to test for individual complete data""" 
         test = GedcomRepo("/Applications/XAMPP/xamppfiles/htdocs/Gedcom/Gedcom/family.ged")
         test.ged_reader()
-        id_age, error = [('I1', 45), ('I2', 69),
+        id_age, error = [('I1', "NA"), ('I2', 69),
                           ('I3', 68), ('I4', 40),
-                            ('I5', 32), ('I6', 41), ('I7', 32), ('I8', 3),
-                            ('I9', 43), ('I10', 18), ('I11', 17), ('I12', 103), 
+                            ('I5', 32), ('I6', 170), ('I7', 32), ('I8', 3),
+                            ('I9', 43), ('I10', 18), ('I11', 17), ('I12', 153), 
                             ('I13', 95), ('I14', 103), ('I15', 65), ('I16', 23), 
                             ('I17', 71), ('I1', 65), ('I17', 71), ('I15', 65), 
                             ('I15', 65)
@@ -34,14 +34,14 @@ class UserStoryTest(unittest.TestCase):
     
     def test_us07(self):
         
-        """ """ 
-        pass
-        # test = GedcomRepo("/Applications/XAMPP/xamppfiles/htdocs/Gedcom/Gedcom/family.ged")
-        # test.ged_reader()
-        # ind_id_duplicates, fam_id_duplicates, error = ['I1', 'I17', 'I15', 'I15'], ['F8', 'F9'], ['0r','I1', 'I17', 'I15', 'I15']
-        # self.assertEqual(test.us22()[0],  ind_id_duplicates) #Testing duplicates ID for individual table
-        # self.assertNotEqual(test.us22()[0],  error)
-        # self.assertEqual(test.us22()[1],  fam_id_duplicates) #Testing duplicates ID for family table
+        """Checking for less than 150 years """ 
+       
+        test = GedcomRepo("/Applications/XAMPP/xamppfiles/htdocs/Gedcom/Gedcom/family.ged")
+        test.ged_reader()
+        death, alive, error = [('I12', 153)], [('I6', 170)], ['0r','I1', 'I17', 'I15', 'I15']
+        self.assertEqual(test.us07()[0],  death) 
+        self.assertNotEqual(test.us07()[0],  error)
+        self.assertEqual(test.us07()[1],  alive) 
         
     #Author: Ibezim Ikenna
     def test_us08(self):
