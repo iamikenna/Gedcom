@@ -3,10 +3,10 @@ Author: Ibezim Ikenna
 User function to read files for my homework and display in a pretty table
 """
 
-from typing import IO, Dict, Tuple, List
 import string
-
+from typing import IO, Dict, Tuple, List
 from datetime import datetime #Date calculation
+from dateutil.relativedelta import relativedelta # Using this for us08
 from prettytable import PrettyTable #Used to build a table
 from collections import defaultdict
 
@@ -323,9 +323,7 @@ class GedcomRepo:
 
     def date_convert(self, g_date): 
 
-
         """Converting '15 MAY 2020' into '2020-5-15' and g_date takes a date in a list:[] form """
-
 
         g_date = " ".join(g_date)
         try:
@@ -334,6 +332,7 @@ class GedcomRepo:
             return(f"Invalid Date: {g_date}")
         else:
             return(g_object.date())
+        
 
     def pretty_table_indiv(self):
 
@@ -369,10 +368,10 @@ class GedcomRepo:
         
         
     """This would be used for our user stories"""
-
+    #Author: Ibezim Ikenna
     def us27(self):
 
-        """Include person's current age when listing individuals --Ikenna"""
+        """Include person's current age when listing individuals """
        
         print("This is user story 27 --Ikenna")
         id_age = []
@@ -381,16 +380,16 @@ class GedcomRepo:
             id_age.append((i.id, i.age))
         print(self.pretty_table_indiv())#This prints out a list of indiviuals and their ages included
         return id_age
-
+    
+    #Author: Ibezim Ikenna
     def us22(self):
 
         """All individual IDs should be unique and all family IDs should be unique --Ikenna"""
         
-        print("This is user story 22 --Ikenna")
+        print("This is user story 22")
         d_i = defaultdict(int)
         d_f = defaultdict(int)
         l_i, l_f = [],[]
-        #Give variable names to d, f?
         for offset_1, vals_1 in self.indi_storage.items():
             
             d_i[vals_1.id] += 1
@@ -410,12 +409,10 @@ class GedcomRepo:
                     print(f"ERROR: ID: {offset_2} is not unique and has another FAMILY: {h_name}, {w_name}")
         return l_i,l_f
     
-    
-    """This would be used for our user stories"""
-
+    #Author: Ibezim Ikenna
     # def us07(self):
 
-    #     """ Less then 150 years old --Ikenna"""
+    #     """ Less then 150 years old"""
 
     #     print("This is user story 07 --Ikenna")
         # alive, death = [], []
@@ -440,20 +437,36 @@ class GedcomRepo:
         #                 print(f"Error US07: Current date after birth of {val.name} ({val.id}) was {b_age} years which occurs after 150 years")
         # return death, alive
 
-            
-    def us08(self):
+    #Author: Ibezim Ikenna 
+    # def us08(self):
 
-        """Birth before marriage of parents --Ikenna"""
+    #     """Birth before marriage of parents and within 9 months after divorce"""
+    # print("This is user story 08 --Ikenna")
+    #     marr_err, div_err = [], []
+    #     for val in self.fam_storage.values():
+    #         if val.married != "NA":
+    #             for val2 in val.children:
+    #                 for val3 in self.indi_storage.values():
+    #                     if val3.id == val2:
+    #                         try:
+    #                             if val.married >= val3.birthday: #keeping track of marriage error
+    #                                 marr_err.append((val3.id, val.id))
+    #                                 print(f"Anomaly US09: Birth date of {val3.name} ({val3.id}) occurs before the marriage date of his parents in Family {val.id}")
+    #                         except TypeError:
+    #                             continue
+                            
+    #                         try:
+    #                             if val3.birthday > (val.divorced + relativedelta(months=+9)): #keeping track of divorce error
+    #                                 div_err.append((val3.id, val.id))
+    #                                 print(f"Anomaly US09: Birth date of {val3.name} ({val3.id}) occurs after 9 months of the divorce date of his parents in Family {val.id}")
+    #                         except TypeError:
+    #                             continue
+    #     return (sorted(marr_err), sorted(div_err))
+                            
+                            
+                           
+                        
         
-        # for i in self.indi_storage.values():
-        #     if i.id == "I7":
-        #         print(i.name,i.gender,i.birthday,i.age,i.alive, i.death, i.child, i.spouse)
-            
-        
-        print("This is user story 08 --Ikenna")
-        
-        
-                
 def main():
     """
     Testing
@@ -463,9 +476,10 @@ def main():
     test.ged_reader() #Calling the gedcom file reader
     # test.us27() #Calling the user story 27 function
     # test.us22() #Calling the user story 22 function
-    test.us08()
+    # test.us07()
+    # test.us08()
     # test.pretty_table_fam()  
-    test.pretty_table_indiv() 
+    # test.pretty_table_indiv() 
     # test.indi_storage
 
     #print('\n\n\n')
