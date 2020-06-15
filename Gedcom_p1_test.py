@@ -23,22 +23,21 @@ class UserStoryTest(unittest.TestCase):
     # Author: Ibezim Ikenna
     def test_us22(self):
         """function to test the id duplicates"""
-        test = GedcomRepo(
-            "family.ged")
+        test = GedcomRepo("family.ged")
         test.ged_reader()
         ind_id_duplicates, fam_id_duplicates, error = ['I1', 'I17', 'I15', 'I15'], [
             'F8', 'F9'], ['0r', 'I1', 'I17', 'I15', 'I15']
         # Testing duplicates ID for individual table
         self.assertEqual(test.us22()[0],  ind_id_duplicates)
-        self.assertNotEqual(test.us22()[0],  error)
         # Testing duplicates ID for family table
         self.assertEqual(test.us22()[1],  fam_id_duplicates)
+        #Testing for errors
+        self.assertNotEqual(test.us22()[0],  error)
 
     # Author: Ibezim Ikenna
     def test_us27(self):
         """function to test for individual complete data"""
-        test = GedcomRepo(
-            "family.ged")
+        test = GedcomRepo("family.ged")
         test.ged_reader()
         id_age, error = [('I1', "NA"), ('I2', 69),
                          ('I3', 68), ('I4', 40),
@@ -48,7 +47,7 @@ class UserStoryTest(unittest.TestCase):
                          ('I17', 71), ('I1', 65), ('I17', 71), ('I15', 65),
                          ('I15', 65)
                          ], []
-        # Testing duplicates ID for individual table
+       
         self.assertEqual(test.us27(),  id_age)
         self.assertNotEqual(test.us27(),  error)
 
@@ -57,7 +56,7 @@ class UserStoryTest(unittest.TestCase):
 
     #     """Checking for less than 150 years """
 
-    #     test = GedcomRepo("/Applications/XAMPP/xamppfiles/htdocs/Gedcom/Gedcom/family.ged")
+    #     test = GedcomRepo("family.ged")
     #     test.ged_reader()
         # death, alive, error = [('I12', 153)],
         #                     [('I6', 170)],
@@ -71,7 +70,7 @@ class UserStoryTest(unittest.TestCase):
 
     #     """ Birth before marriage of parents"""
 
-    #     test = GedcomRepo("/Applications/XAMPP/xamppfiles/htdocs/Gedcom/Gedcom/family.ged")
+    #     test = GedcomRepo("family.ged")
     #     test.ged_reader()
     #     marr_ex = sorted([('I6', 'F2'), ('I1', 'F2'), ('I2', 'F3'), ('I15', 'F7'), ('I15', 'F7'), ('I15', 'F7')])
     #     div_ex = sorted([('I2', 'F3')])
