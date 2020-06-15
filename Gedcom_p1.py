@@ -425,8 +425,7 @@ class GedcomRepo:
                 if vals_2 > 1 and offset_2 == vals_1.id:
                     name = vals_1.name
                     l_i.append(offset_2)
-                    print(
-                        f"ERROR: ID: {offset_2} is not unique and has another INDIVIDUAL: {name}")
+                    print(f"ERROR: US22: ID: {offset_2} is not unique and has another INDIVIDUAL: {name}")
 
         for offset_1, vals_1 in self.fam_storage.items():
             d_f[vals_1.id] += 1
@@ -435,8 +434,7 @@ class GedcomRepo:
                     h_name = vals_1.husbandName
                     w_name = vals_1.wifeName
                     l_f.append(offset_2)
-                    print(
-                        f"ERROR: ID: {offset_2} is not unique and has another FAMILY: {h_name}, {w_name}")
+                    print(f"ERROR: US22: ID: {offset_2} is not unique and has another FAMILY: {h_name}, {w_name}")
         return l_i, l_f
 
     # Author: Ibezim Ikenna
@@ -509,8 +507,8 @@ def main():
 
     test.us04()
     test.us05()
-    # test.us27() #Calling the user story 27 function
-    # test.us22() #Calling the user story 22 function
+    test.us27() #Calling the user story 27 function
+    test.us22() #Calling the user story 22 function
     # test.us07()
     # test.us08()
     # test.pretty_table_fam()
