@@ -491,13 +491,46 @@ class GedcomRepo:
     #                             continue
     #     return (sorted(marr_err), sorted(div_err))
 
+    # Author: Christopher McKenzie
+    def us01(self):
+        """Dates should not be after the current date."""
+        
+        present = datetime.date(datetime.now())
+
+        for person in self.indi_storage.values():
+            if type(person.birthday) != str and person.birthday > present:
+                print(f'ERROR: INDIVIDUAL: US01: {person.id}: {person.name}: Birthday {person.birthday} occurs in the future.')
+            elif type(person.death) != str and person.death > present: #We say != str to avoid both NA and Invalid Date
+                print(f'ERROR: INDIVIDUAL: US01: {person.id}: {person.name}: Death {person.death} occurs in the future.')
+
+        for family in self.fam_storage.values():
+            if type(family.married) != str and family.married > present:
+                print(f'ERROR: FAMILY: US01: {family.id}: Marriage {family.married} occurs in the future.')
+            elif type(family.divorced) != str and family.divorced > present:
+                print(f'ERROR: FAMILY: US01: {family.id}: Divorce {family.divorced} occurs in the future.')
+
+    #Author: Christopher McKenzie
+    def us02(self):
+
+        """Birth should occur before marriage of an individual."""
+
+        for family in self.fam_storage.values():
+            if family.married != str:
+                for person in self.indi_storage.values():
+                    
+                    if person.name == family.husbandName and person.id == family.husbandId and person.birthday > family.married:
+                        print(f"ERROR: FAMILY: US02: {person.id}: {person.name}: Husband's birthday {person.birthday} occurs after marriage {family.married}.")
+
+                    elif person.name == family.wifeName and person.id == family.wifeId and person.birthday > family.married:
+                        print(f"ERROR: FAMILY: US02: {person.id}: {person.name}: Wife's birthday {person.birthday} occurs after marriage {family.married}.") 
+
 
 def main():
     """
     Testing
     """
     # test = GedcomRepo("/Applications/XAMPP/xamppfiles/htdocs/Gedcom/Gedcom/family.ged") #--Ikenna
-    path = input("Enter file name:")
+    path = input("Enter file name: ")
     # Please change to your current path
     test = GedcomRepo(path)
     test.ged_reader()  # Calling the gedcom file reader
@@ -505,6 +538,8 @@ def main():
     test.pretty_table_fam()
     test.pretty_table_indiv()
 
+    test.us01()
+    test.us02()
     test.us04()
     test.us05()
     test.us27() #Calling the user story 27 function

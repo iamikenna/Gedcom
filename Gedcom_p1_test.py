@@ -50,6 +50,66 @@ class UserStoryTest(unittest.TestCase):
        
         self.assertEqual(test.us27(),  id_age)
         self.assertNotEqual(test.us27(),  error)
+    
+    # Author: Christopher McKenzie
+    def test_us01(self):
+        
+        """Tests that dates do not occur before current date."""
+
+        test: GedcomRepo = GedcomRepo("family.ged")
+        test.ged_reader()
+        present: date = datetime.date(datetime.now())
+        
+        #exp_bday = 
+        #exp_deat = 
+        #exp_marr =
+        exp_div = {f'ERROR: FAMILY: US01: F3: Divorce 1945-07-10 occurs in the future.'}
+        
+        prd_bday = {f'ERROR: INDIVIDUAL: US01: {person.id}: {person.name}: Birthday {person.birthday} occurs in the future.'\
+            for person in test.indi_storage.values() if type(person.birthday) != str\
+            and person.birthday > present}
+            
+        prd_deat = {f'ERROR: INDIVIDUAL: US01: {person.id}: {person.name}: Death {person.death} occurs in the future.'\
+            for person in test.indi_storage.values() if type(person.death) != str\
+            and person.death !='NA'\
+            and person.death > present}
+
+        prd_marr = {f'ERROR: FAMILY: US01: {family.id}: Marriage {family.married} occurs in the future.'\
+            for family in test.fam_storage.values() if type(family.married) != str\
+            and family.married !='NA'\
+            and family.married > present}
+
+        prd_div = {f'ERROR: FAMILY: US01: {family.id}: Divorce {family.divorced} occurs in the future.'\
+            for family in test.fam_storage.values() if type(family.divorced) != str\
+            and family.divorced !='NA'\
+            and family.divorced < present}
+        
+        #self.assertEqual(exp_bday, prd_bday)
+        #self.assertEqual(exp_deat, prd_deat)
+        #self.assertEqual(exp_marr, prd_marr)
+        #self.assertEqual(exp_div, prd_div)
+            
+    # Author: Christopher McKenzie
+    def test_us02(self):
+        
+        """Tests that marriage only occurs after birth."""
+        
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+
+        #exp_husb =
+
+        #exp_wife =
+
+        prd_husb = {f"ERROR: FAMILY: US02: {person.id}: {person.name}: Husband's birthday {person.birthday} occurs after marriage {family.married}."\
+            for family in test.fam_storage.values() if type(family.married) != str\
+            for person in test.indi_storage.values() if person.name == family.husbandName\
+            and person.id == family.husbandId and person.birthday > family.married}
+            
+        prd_wife = {f"ERROR: FAMILY: US02: {person.id}: {person.name}: Wife's birthday {person.birthday} occurs after marriage {family.married}."\
+            for family in test.fam_storage.values() if type(family.married) != str\
+            for person in test.indi_storage.values() if person.name == family.wifeName\
+            and person.id == family.wifeId and person.birthday > family.married}
 
     # Author: Ibezim Ikenna
     # def test_us07(self):
