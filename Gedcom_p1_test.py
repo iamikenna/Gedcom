@@ -5,53 +5,7 @@ from datetime import datetime
 
 class UserStoryTest(unittest.TestCase):
     """ Class test for all user stories """
-
-    # Author: Lehmann Margaret
-    def test_us04(self):
-        """ Tests marriage before divorce """
-        test = GedcomRepo("family.ged")
-        test.ged_reader()
-        self.assertEqual(len(test.us04()), 3)
-
-    # Author: Lehmann Margaret
-    def test_us05(self):
-        """ Tests marriagne before death """
-        test = GedcomRepo("family.ged")
-        test.ged_reader()
-        self.assertEqual(len(test.us05()), 1)
-
-    # Author: Ibezim Ikenna
-    def test_us22(self):
-        """function to test the id duplicates"""
-        test = GedcomRepo("family.ged")
-        test.ged_reader()
-        ind_id_duplicates, fam_id_duplicates, error = ['I1', 'I17', 'I15', 'I15'], [
-            'F8', 'F9'], ['0r', 'I1', 'I17', 'I15', 'I15']
-        # Testing duplicates ID for individual table
-        self.assertEqual(test.us22()[0],  ind_id_duplicates)
-        # Testing duplicates ID for family table
-        self.assertEqual(test.us22()[1],  fam_id_duplicates)
-        #Testing for errors
-        self.assertNotEqual(test.us22()[0],  error)
-
-    # Author: Ibezim Ikenna
-    def test_us27(self):
-        """function to test for individual complete data"""
-        test = GedcomRepo("family.ged")
-        test.ged_reader()
-        id_age, error = [('I1', "NA"), ('I2', 69),
-                         ('I3', 68), ('I4', 40),
-                         ('I5', 32), ('I6', 170), ('I7', 32), ('I8', 3),
-                         ('I9', 43), ('I10', 18), ('I11', 17), ('I12', 112),
-                         ('I13', 95), ('I14', 103), ('I15', 65), ('I16', 23),
-                         ('I17', 71), ('I1', 65), ('I17', 71), ('I15', 65),
-                         ('I15', 65)
-                         ], []
-       
-        self.assertEqual(test.us27(),  id_age)
-        self.assertNotEqual(test.us27(),  error)
     
-    # Author: Christopher McKenzie
     def test_us01(self):
         
         """Tests that dates do not occur before current date."""
@@ -110,6 +64,54 @@ class UserStoryTest(unittest.TestCase):
             for family in test.fam_storage.values() if type(family.married) != str\
             for person in test.indi_storage.values() if person.name == family.wifeName\
             and person.id == family.wifeId and person.birthday > family.married}
+
+    # Author: Lehmann Margaret
+    def test_us04(self):
+        """ Tests marriage before divorce """
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+        self.assertEqual(len(test.us04()), 3)
+
+    # Author: Lehmann Margaret
+    def test_us05(self):
+        """ Tests marriagne before death """
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+        self.assertEqual(len(test.us05()), 1)
+
+    # Author: Ibezim Ikenna
+    def test_us22(self):
+        """function to test the id duplicates"""
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+        ind_id_duplicates, fam_id_duplicates, error = ['I1', 'I17', 'I15', 'I15'], [
+            'F8', 'F9'], ['0r', 'I1', 'I17', 'I15', 'I15']
+        # Testing duplicates ID for individual table
+        self.assertEqual(test.us22()[0],  ind_id_duplicates)
+        # Testing duplicates ID for family table
+        self.assertEqual(test.us22()[1],  fam_id_duplicates)
+        #Testing for errors
+        self.assertNotEqual(test.us22()[0],  error)
+
+    # Author: Ibezim Ikenna
+    def test_us27(self):
+        """function to test for individual complete data"""
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+        id_age, error = [('I1', "NA"), ('I2', 69),
+                         ('I3', 68), ('I4', 40),
+                         ('I5', 32), ('I6', 170), ('I7', 32), ('I8', 3),
+                         ('I9', 43), ('I10', 18), ('I11', 17), ('I12', 112),
+                         ('I13', 95), ('I14', 103), ('I15', 65), ('I16', 23),
+                         ('I17', 71), ('I1', 65), ('I17', 71), ('I15', 65),
+                         ('I15', 65)
+                         ], []
+       
+        self.assertEqual(test.us27(),  id_age)
+        self.assertNotEqual(test.us27(),  error)
+    
+    # Author: Christopher McKenzie
+    
 
     # Author: Ibezim Ikenna
     # def test_us07(self):
