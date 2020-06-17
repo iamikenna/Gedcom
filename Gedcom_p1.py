@@ -429,18 +429,7 @@ class GedcomRepo:
                         print(ret)
                         ret_strings.append(ret)
         return ret_strings
-
-    # Author: Ibezim Ikenna
-    def us27(self):
-        """Include person's current age when listing individuals """
-        print("This is user story 27 --Ikenna")
-        id_age = []
-        for i in self.indi_storage.values():
-            id_age.append((i.id, i.age))
-        # This prints out a list of indiviuals and their ages included
-        print(self.pretty_table_indiv())
-        return id_age
-
+    
     # Author: Ibezim Ikenna
     def us22(self):
         """All individual IDs should be unique and all family IDs should be unique --Ikenna"""
@@ -467,6 +456,19 @@ class GedcomRepo:
                     l_f.append(offset_2)
                     print(f"ERROR: US22: ID: {offset_2} is not unique and has another FAMILY: {h_name}, {w_name}")
         return l_i, l_f
+
+    # Author: Ibezim Ikenna
+    def us27(self):
+        """Include person's current age when listing individuals """
+        print("This is user story 27 --Ikenna")
+        id_age = []
+        for i in self.indi_storage.values():
+            id_age.append((i.id, i.age))
+        # This prints out a list of indiviuals and their ages included
+        print(self.pretty_table_indiv())
+        return id_age
+
+    
 
     # Author: Ibezim Ikenna
     # def us07(self):
