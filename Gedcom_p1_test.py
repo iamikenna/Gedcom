@@ -6,6 +6,7 @@ from datetime import datetime
 class UserStoryTest(unittest.TestCase):
     """ Class test for all user stories """
     
+    # Author: Christopher McKenzie
     def test_us01(self):
         
         """Tests that dates do not occur before current date."""
@@ -110,7 +111,7 @@ class UserStoryTest(unittest.TestCase):
         self.assertEqual(test.us27(),  id_age)
         self.assertNotEqual(test.us27(),  error)
     
-    # Author: Christopher McKenzie
+    
     
 
     # Author: Ibezim Ikenna
