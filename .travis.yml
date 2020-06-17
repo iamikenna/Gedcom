@@ -8,4 +8,8 @@ install:
   - pip install defaultdict
 # command to run tests
 script:
+<<<<<<< HEAD
  - python -m unittest Gedcom_p1_test
+=======
+ - python -m unittest Gedcom_p1_test
+>>>>>>> 96f88dbeffa0f20951627619311838095f80f6c6
