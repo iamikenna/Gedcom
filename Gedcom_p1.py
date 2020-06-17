@@ -433,7 +433,6 @@ class GedcomRepo:
     # Author: Ibezim Ikenna
     def us22(self):
         """All individual IDs should be unique and all family IDs should be unique --Ikenna"""
-
         print("This is user story 22")
         d_i = defaultdict(int)
         d_f = defaultdict(int)
