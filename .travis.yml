@@ -1,15 +1,10 @@
+  
 language: python
 python:
   - "3.7.3"
 install:
   - pip install datetime
-  - pip install relativedelta
   - pip install PrettyTable
-  - pip install defaultdict
 # command to run tests
 script:
-<<<<<<< HEAD
  - python -m unittest Gedcom_p1_test
-=======
- - python -m unittest Gedcom_p1_test
->>>>>>> 96f88dbeffa0f20951627619311838095f80f6c6
