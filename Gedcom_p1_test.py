@@ -1,7 +1,6 @@
 import unittest
 from Gedcom_p1 import Individual, Family, GedcomRepo
 from datetime import datetime
-from dateutil.relativedelta import relativedelta  # Using this for us08
 from prettytable import PrettyTable  # Used to build a table
 from collections import defaultdict
 
