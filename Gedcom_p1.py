@@ -538,8 +538,8 @@ def main():
     test.pretty_table_fam()
     test.pretty_table_indiv()
 
-    test.us01()
-    test.us02()
+    # test.us01()
+    # test.us02()
     test.us04()
     test.us05()
     test.us27() #Calling the user story 27 function
