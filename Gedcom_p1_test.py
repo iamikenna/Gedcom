@@ -47,27 +47,17 @@ class UserStoryTest(unittest.TestCase):
     #     #self.assertEqual(exp_marr, prd_marr)
     #     #self.assertEqual(exp_div, prd_div)
             
-    # # Author: Christopher McKenzie
+    # Author: Christopher McKenzie
     # def test_us02(self):
         
     #     """Tests that marriage only occurs after birth."""
         
     #     test = GedcomRepo("family.ged")
     #     test.ged_reader()
+    #     errors = ['I2', 'I3', 'I12', 'I13', 'I13', 'I14', 'I4', 'I9', 'I14', 'I16']
 
-    #     #exp_husb =
+    #     self.assertEqual(test.us02(), errors)
 
-    #     #exp_wife =
-
-    #     prd_husb = {f"ERROR: FAMILY: US02: {person.id}: {person.name}: Husband's birthday {person.birthday} occurs after marriage {family.married}."\
-    #         for family in test.fam_storage.values() if type(family.married) != str\
-    #         for person in test.indi_storage.values() if person.name == family.husbandName\
-    #         and person.id == family.husbandId and person.birthday > family.married}
-            
-    #     prd_wife = {f"ERROR: FAMILY: US02: {person.id}: {person.name}: Wife's birthday {person.birthday} occurs after marriage {family.married}."\
-    #         for family in test.fam_storage.values() if type(family.married) != str\
-    #         for person in test.indi_storage.values() if person.name == family.wifeName\
-    #         and person.id == family.wifeId and person.birthday > family.married}
 
     # Author: Lehmann Margaret
     def test_us04(self):
@@ -144,6 +134,24 @@ class UserStoryTest(unittest.TestCase):
     #     self.assertEqual(test.us08()[0],  marr_ex)
     #     self.assertEqual(test.us08()[1],  div_ex)
     #     self.assertNotEqual(test.us08(),  error)
+
+
+    # #Author: Christopher McKenzie
+    # def test_us29(self):
+
+    #     set_deat = {'I16', 'I12'}
+    #     test = GedcomRepo("family.ged")
+    #     test.ged_reader()
+    #     self.assertEqual(test.us29(), set_deat)
+
+    # #Author: Christopher McKenzie
+    # def test_us30(self):
+
+    #     set_marr = {'I13', 'I9', 'I2', 'I6', 'I15', 'I1', 'I4', 'I14', 'I3'}
+    #     test = GedcomRepo("family.ged")
+    #     test.ged_reader()
+    #     self.assertEqual(test.us30(), set_marr)
+
 
 
 if __name__ == "__main__":

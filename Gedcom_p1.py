@@ -372,16 +372,23 @@ class GedcomRepo:
     def us02(self):
 
         """Birth should occur before marriage of an individual."""
-
+        errors = []
         for family in self.fam_storage.values():
-            if family.married != str:
+            if family.married != 'NA':
                 for person in self.indi_storage.values():
                     
-                    if person.name == family.husbandName and person.id == family.husbandId and person.birthday > family.married:
-                        print(f"ERROR: FAMILY: US02: {person.id}: {person.name}: Husband's birthday {person.birthday} occurs after marriage {family.married}.")
-
-                    elif person.name == family.wifeName and person.id == family.wifeId and person.birthday > family.married:
-                        print(f"ERROR: FAMILY: US02: {person.id}: {person.name}: Wife's birthday {person.birthday} occurs after marriage {family.married}.") 
+                    try:
+                        if person.name == family.husbandName and person.id == family.husbandId and person.birthday > family.married:
+                            print(f"ERROR: FAMILY: US02: {person.id}: {person.name}: Husband's birthday {person.birthday} occurs after marriage {family.married}.")
+                            errors.append(person.id)
+                    
+                        elif person.name == family.wifeName and person.id == family.wifeId and person.birthday > family.married:
+                            print(f"ERROR: FAMILY: US02: {person.id}: {person.name}: Wife's birthday {person.birthday} occurs after marriage {family.married}.") 
+                            errors.append(person.id)                    
+                    
+                    except TypeError as e:
+                        print(e)
+        return errors
 
     # Author: Lehmann Margaret
     def us04(self):
@@ -523,6 +530,30 @@ class GedcomRepo:
     #                             continue
     #     return (sorted(marr_err), sorted(div_err))
 
+    # def us29(self):
+
+    #     """List all deceased individuals in a GEDCOM file."""
+
+    #     set_deat = set()
+    #     for person in self.indi_storage.values():
+    #         if person.alive == False:
+    #             set_deat.add(person.id)
+        
+    #     return set_deat
+    
+    # def us30(self):
+
+    #     """List all living married people in a GEDCOM file."""
+
+
+    #     set_marr = set()
+    #     for person in self.indi_storage.values():
+    #         if person.alive == True:
+    #             alive_id = person.id
+    #             for family in self.fam_storage.values():
+    #                 if family.husbandId == alive_id or family.wifeId == alive_id and family.married != 'NA':
+    #                     set_marr.add(alive_id)
+    #     return set_marr
 
 
 def main():
@@ -538,14 +569,16 @@ def main():
     test.pretty_table_fam()
     test.pretty_table_indiv()
 
-    # test.us01()
-    # test.us02()
-    test.us04()
-    test.us05()
-    test.us27() #Calling the user story 27 function
-    test.us22() #Calling the user story 22 function
+    #test.us01()
+    #test.us02()
+    # test.us04()
+    # test.us05()
+    # test.us27() #Calling the user story 27 function
+    # test.us22() #Calling the user story 22 function
     # test.us07()
     # test.us08()
+    # test.us29()
+    # test.us30()
     # test.pretty_table_fam()
     # test.pretty_table_indiv()
     # test.indi_storage
