@@ -4,7 +4,8 @@ python:
 install:
   - pip install datetime
   - pip install PrettyTable
-  -pip install dateutil
+  - pip install python-dateutil
+  
 # command to run tests
 script:
  - python -m unittest Gedcom_p1_test
