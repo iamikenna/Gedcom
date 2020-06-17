@@ -349,6 +349,39 @@ class GedcomRepo:
         print(pretty_table4)
 
     """This would be used for our user stories"""
+    
+        # Author: Christopher McKenzie
+    def us01(self):
+        """Dates should not be after the current date."""
+        
+        present = datetime.date(datetime.now())
+
+        for person in self.indi_storage.values():
+            if type(person.birthday) != str and person.birthday > present:
+                print(f'ERROR: INDIVIDUAL: US01: {person.id}: {person.name}: Birthday {person.birthday} occurs in the future.')
+            elif type(person.death) != str and person.death > present: #We say != str to avoid both NA and Invalid Date
+                print(f'ERROR: INDIVIDUAL: US01: {person.id}: {person.name}: Death {person.death} occurs in the future.')
+
+        for family in self.fam_storage.values():
+            if type(family.married) != str and family.married > present:
+                print(f'ERROR: FAMILY: US01: {family.id}: Marriage {family.married} occurs in the future.')
+            elif type(family.divorced) != str and family.divorced > present:
+                print(f'ERROR: FAMILY: US01: {family.id}: Divorce {family.divorced} occurs in the future.')
+
+    #Author: Christopher McKenzie
+    def us02(self):
+
+        """Birth should occur before marriage of an individual."""
+
+        for family in self.fam_storage.values():
+            if family.married != str:
+                for person in self.indi_storage.values():
+                    
+                    if person.name == family.husbandName and person.id == family.husbandId and person.birthday > family.married:
+                        print(f"ERROR: FAMILY: US02: {person.id}: {person.name}: Husband's birthday {person.birthday} occurs after marriage {family.married}.")
+
+                    elif person.name == family.wifeName and person.id == family.wifeId and person.birthday > family.married:
+                        print(f"ERROR: FAMILY: US02: {person.id}: {person.name}: Wife's birthday {person.birthday} occurs after marriage {family.married}.") 
 
     # Author: Lehmann Margaret
     def us04(self):
@@ -400,10 +433,8 @@ class GedcomRepo:
     # Author: Ibezim Ikenna
     def us27(self):
         """Include person's current age when listing individuals """
-
         print("This is user story 27 --Ikenna")
         id_age = []
-
         for i in self.indi_storage.values():
             id_age.append((i.id, i.age))
         # This prints out a list of indiviuals and their ages included
@@ -491,38 +522,6 @@ class GedcomRepo:
     #                             continue
     #     return (sorted(marr_err), sorted(div_err))
 
-    # Author: Christopher McKenzie
-    def us01(self):
-        """Dates should not be after the current date."""
-        
-        present = datetime.date(datetime.now())
-
-        for person in self.indi_storage.values():
-            if type(person.birthday) != str and person.birthday > present:
-                print(f'ERROR: INDIVIDUAL: US01: {person.id}: {person.name}: Birthday {person.birthday} occurs in the future.')
-            elif type(person.death) != str and person.death > present: #We say != str to avoid both NA and Invalid Date
-                print(f'ERROR: INDIVIDUAL: US01: {person.id}: {person.name}: Death {person.death} occurs in the future.')
-
-        for family in self.fam_storage.values():
-            if type(family.married) != str and family.married > present:
-                print(f'ERROR: FAMILY: US01: {family.id}: Marriage {family.married} occurs in the future.')
-            elif type(family.divorced) != str and family.divorced > present:
-                print(f'ERROR: FAMILY: US01: {family.id}: Divorce {family.divorced} occurs in the future.')
-
-    #Author: Christopher McKenzie
-    def us02(self):
-
-        """Birth should occur before marriage of an individual."""
-
-        for family in self.fam_storage.values():
-            if family.married != str:
-                for person in self.indi_storage.values():
-                    
-                    if person.name == family.husbandName and person.id == family.husbandId and person.birthday > family.married:
-                        print(f"ERROR: FAMILY: US02: {person.id}: {person.name}: Husband's birthday {person.birthday} occurs after marriage {family.married}.")
-
-                    elif person.name == family.wifeName and person.id == family.wifeId and person.birthday > family.married:
-                        print(f"ERROR: FAMILY: US02: {person.id}: {person.name}: Wife's birthday {person.birthday} occurs after marriage {family.married}.") 
 
 
 def main():
