@@ -1,10 +1,10 @@
-  
 language: python
 python:
   - "3.7.3"
 install:
   - pip install datetime
   - pip install PrettyTable
+  -pip install dateutil
 # command to run tests
 script:
  - python -m unittest Gedcom_p1_test
