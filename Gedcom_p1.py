@@ -2,7 +2,7 @@
 Author: Ibezim Ikenna
 User function to read files for my homework and display in a pretty table
 """
-#TEST
+
 import string
 from typing import IO, Dict, Tuple, List
 from datetime import datetime  # Date calculation
@@ -98,9 +98,6 @@ class GedcomRepo:
         # user_input = "" #proj02test.ged  #export-Forest.ged #sample-2.ged #p_gedcomData.ged #pro_gedcom.ged #general.ged #family.ged #original_fam.ged
         # Storing the level element as key and tag elements as values
 
-        # Are these placeholders?
-        # Separate lines for each variable?
-        # Maybe take out 'fam_'
         dict_storage, indi_counter, fam_counter, death_c, child_c, spouse_c, death, marr_cnt, div_cnt, fam_, birth_cnt = {
             '0': ['HEAD', 'NOTE', 'TRLR'],
             '1': ['BIRT', 'CHIL', 'DIV', 'HUSB', 'WIFE', 'MARR', 'NAME', 'SEX', 'DEAT', 'FAMC', 'FAMS'],
@@ -120,16 +117,13 @@ class GedcomRepo:
                     line_list: List[str] = line.split(" ")
                     len_line: int = len(line_list)
 
-                    # Checking the lines for that special case
-                    # Should we just set it to level = blank, arg = blank 2, tag = blank 3?
                     if len_line == 3 and line_list[2] in dict_storage['5'] \
                             and line_list[0] == '0':
-                        # This assigns line_list[0] to level, line_list[1] to arg, line_list[2] to tag for that special format
                         level, arg, tag = line_list
                         valid = 'Y'
                     elif len_line >= 2:
                         level, tag, arg = line_list[0], line_list[1], " ".join(
-                            line_list[2:])  # Separate lines for each variable?
+                            line_list[2:])
                         if level in dict_storage and tag in dict_storage[level]:
                             valid: str = 'Y'
                         else:
@@ -141,7 +135,6 @@ class GedcomRepo:
                         indi_counter += 1  # This serves as a counter for individuals
                         indi: Individual = Individual(
                             arg.strip("@"), indi_counter)
-                        # Ask about this line. Whats going on here?
                         self.indi_storage[indi_counter] = indi
 
                     # Assigning values to  Individual characteristics
@@ -157,7 +150,7 @@ class GedcomRepo:
 
                     elif level == "1" and tag == "BIRT" and \
                             indi_counter in self.indi_storage.keys():
-                        tag_curr = tag  # Used keeping track of dates and tags
+                        tag_curr = tag
 
                     # Setting up birthday
                     elif level == "2" and tag == "DATE" and \
@@ -169,7 +162,6 @@ class GedcomRepo:
                             tag_curr == "BIRT":
 
                         try:
-                            # Maybe we should move our date_convert function to before our ged_reader?
                             self.indi_storage[indi_counter].birthday = self.date_convert(
                                 arg.split(" "))
                         except AttributeError:
@@ -181,7 +173,7 @@ class GedcomRepo:
                         # Setting up age
                         try:
                             alive_age = datetime.today().year \
-                                - self.date_convert(arg.split(" ")).year  # Is this only finding the difference between the years?
+                                - self.date_convert(arg.split(" ")).year
                         except AttributeError:
                             print(f"Invalid date: {arg}")
                         else:
@@ -213,20 +205,14 @@ class GedcomRepo:
                                 else:
                                     self.indi_storage[indi_counter].age = death_age
 
-                    # Why the plus/minus for spouse_c and child_c?
-                    # Setting up IDs(F1, F2, F3) for children and spouses?
                     elif level == "1" and tag == "FAMS" and \
                             indi_counter in self.indi_storage.keys():
-                        # and \
-                        # self.indi_storage[indi_counter].spouse == set():
+
                         self.indi_storage[indi_counter].spouse.add(
                             arg.strip("@"))
 
-                    # Repeat for child if above works
-
                     elif level == "1" and tag == "FAMC" and \
-                            indi_counter in self.indi_storage.keys():  # and \
-                        # self.indi_storage[indi_counter].child == set():
+                            indi_counter in self.indi_storage.keys():
                         self.indi_storage[indi_counter].child.add(
                             arg.strip("@"))
 
@@ -259,7 +245,7 @@ class GedcomRepo:
                         except AttributeError:
                             print(f"Invalid date: {arg}")
 
-                    # Setting up divorce date in next elif
+                    # Setting up divorce date
                     elif level == "1" and tag == "DIV" and \
                             fam_counter in self.fam_storage.keys():
                         tag_curr = "DIV"
@@ -350,13 +336,13 @@ class GedcomRepo:
 
     """This would be used for our user stories"""
     
-        # Author: Christopher McKenzie
+    # Author: Christopher McKenzie
     def us01(self):
 
         """Dates should not be after the current date."""
         
         present = datetime.date(datetime.now())
-        errors = []
+        errors: List[str] = []
         for person in self.indi_storage.values():
             if type(person.birthday) != str and person.birthday > present:
                 print(f'ERROR: INDIVIDUAL: US01: {person.id}: Birthday {person.birthday} occurs in the future.')
