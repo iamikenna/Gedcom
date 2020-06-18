@@ -16,53 +16,27 @@ class UserStoryTest(unittest.TestCase):
         self.test.ged_reader()
 
     # Author: Christopher McKenzie
-    # def test_us01(self):
+    def test_us01(self):
         
-    #     """Tests that dates do not occur before current date."""
+        """Tests that dates do not occur before current date."""
 
-    #     test: GedcomRepo = GedcomRepo("family.ged")
-    #     test.ged_reader()
-    #     present: date = datetime.date(datetime.now())
-        
-    #     #exp_bday = 
-    #     #exp_deat = 
-    #     #exp_marr =
-    #     exp_div = {f'ERROR: FAMILY: US01: F3: Divorce 1945-07-10 occurs in the future.'}
-        
-    #     prd_bday = {f'ERROR: INDIVIDUAL: US01: {person.id}: {person.name}: Birthday {person.birthday} occurs in the future.'\
-    #         for person in test.indi_storage.values() if type(person.birthday) != str\
-    #         and person.birthday > present}
-            
-    #     prd_deat = {f'ERROR: INDIVIDUAL: US01: {person.id}: {person.name}: Death {person.death} occurs in the future.'\
-    #         for person in test.indi_storage.values() if type(person.death) != str\
-    #         and person.death !='NA'\
-    #         and person.death > present}
+        test = GedcomRepo("test.ged")
+        test.ged_reader()
+        present: date = datetime.date(datetime.now())
+        errors = ['I18', 'I19', 'F11', 'F12']
 
-    #     prd_marr = {f'ERROR: FAMILY: US01: {family.id}: Marriage {family.married} occurs in the future.'\
-    #         for family in test.fam_storage.values() if type(family.married) != str\
-    #         and family.married !='NA'\
-    #         and family.married > present}
-
-    #     prd_div = {f'ERROR: FAMILY: US01: {family.id}: Divorce {family.divorced} occurs in the future.'\
-    #         for family in test.fam_storage.values() if type(family.divorced) != str\
-    #         and family.divorced !='NA'\
-    #         and family.divorced < present}
-        
-    #     #self.assertEqual(exp_bday, prd_bday)
-    #     #self.assertEqual(exp_deat, prd_deat)
-    #     #self.assertEqual(exp_marr, prd_marr)
-    #     #self.assertEqual(exp_div, prd_div)
+        self.assertEqual(test.us01(), errors)
             
     # Author: Christopher McKenzie
-    # def test_us02(self):
+    def test_us02(self):
         
-    #     """Tests that marriage only occurs after birth."""
+        """Tests that marriage only occurs after birth."""
         
-    #     test = GedcomRepo("family.ged")
-    #     test.ged_reader()
-    #     errors = ['I2', 'I3', 'I12', 'I13', 'I13', 'I14', 'I4', 'I9', 'I14', 'I16']
+        test = GedcomRepo("test.ged")
+        test.ged_reader()
+        errors = ['I23', 'I24', 'I25', 'I26']
 
-    #     self.assertEqual(test.us02(), errors)
+        self.assertEqual(test.us02(), errors)
 
 
     # Author: Lehmann Margaret

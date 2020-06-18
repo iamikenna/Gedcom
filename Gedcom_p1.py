@@ -352,21 +352,28 @@ class GedcomRepo:
     
         # Author: Christopher McKenzie
     def us01(self):
+
         """Dates should not be after the current date."""
         
         present = datetime.date(datetime.now())
-
+        errors = []
         for person in self.indi_storage.values():
             if type(person.birthday) != str and person.birthday > present:
-                print(f'ERROR: INDIVIDUAL: US01: {person.id}: {person.name}: Birthday {person.birthday} occurs in the future.')
+                print(f'ERROR: INDIVIDUAL: US01: {person.id}: Birthday {person.birthday} occurs in the future.')
+                errors.append(person.id)
             elif type(person.death) != str and person.death > present: #We say != str to avoid both NA and Invalid Date
-                print(f'ERROR: INDIVIDUAL: US01: {person.id}: {person.name}: Death {person.death} occurs in the future.')
+                print(f'ERROR: INDIVIDUAL: US01: {person.id}: Death {person.death} occurs in the future.')
+                errors.append(person.id)
 
         for family in self.fam_storage.values():
             if type(family.married) != str and family.married > present:
                 print(f'ERROR: FAMILY: US01: {family.id}: Marriage {family.married} occurs in the future.')
+                errors.append(family.id)
             elif type(family.divorced) != str and family.divorced > present:
                 print(f'ERROR: FAMILY: US01: {family.id}: Divorce {family.divorced} occurs in the future.')
+                errors.append(family.id)
+
+        return errors
 
     #Author: Christopher McKenzie
     def us02(self):
@@ -379,11 +386,11 @@ class GedcomRepo:
                     
                     try:
                         if person.name == family.husbandName and person.id == family.husbandId and person.birthday > family.married:
-                            print(f"ERROR: FAMILY: US02: {person.id}: {person.name}: Husband's birthday {person.birthday} occurs after marriage {family.married}.")
+                            print(f"ERROR: FAMILY: US02: {family.id}: Husband's birthday {person.birthday} occurs after marriage {family.married}.")
                             errors.append(person.id)
                     
                         elif person.name == family.wifeName and person.id == family.wifeId and person.birthday > family.married:
-                            print(f"ERROR: FAMILY: US02: {person.id}: {person.name}: Wife's birthday {person.birthday} occurs after marriage {family.married}.") 
+                            print(f"ERROR: FAMILY: US02: {family.id}: Wife's birthday {person.birthday} occurs after marriage {family.married}.") 
                             errors.append(person.id)                    
                     
                     except TypeError as e:
@@ -566,11 +573,11 @@ def main():
     test = GedcomRepo(path)
     test.ged_reader()  # Calling the gedcom file reader
 
-    test.pretty_table_fam()
-    test.pretty_table_indiv()
+    #test.pretty_table_fam()
+    #test.pretty_table_indiv()
 
-    #test.us01()
-    #test.us02()
+    test.us01()
+    test.us02()
     # test.us04()
     # test.us05()
     # test.us27() #Calling the user story 27 function
