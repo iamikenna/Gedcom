@@ -335,50 +335,55 @@ class GedcomRepo:
         print(pretty_table4)
 
     """This would be used for our user stories"""
-    
+
     # Author: Christopher McKenzie
     def us01(self):
-
         """Dates should not be after the current date."""
-        
+
         present = datetime.date(datetime.now())
         errors: List[str] = []
         for person in self.indi_storage.values():
             if type(person.birthday) != str and person.birthday > present:
-                print(f'ERROR: INDIVIDUAL: US01: {person.id}: Birthday {person.birthday} occurs in the future.')
+                print(
+                    f'ERROR: INDIVIDUAL: US01: {person.id}: Birthday {person.birthday} occurs in the future.')
                 errors.append(person.id)
-            elif type(person.death) != str and person.death > present: #We say != str to avoid both NA and Invalid Date
-                print(f'ERROR: INDIVIDUAL: US01: {person.id}: Death {person.death} occurs in the future.')
+            # We say != str to avoid both NA and Invalid Date
+            elif type(person.death) != str and person.death > present:
+                print(
+                    f'ERROR: INDIVIDUAL: US01: {person.id}: Death {person.death} occurs in the future.')
                 errors.append(person.id)
 
         for family in self.fam_storage.values():
             if type(family.married) != str and family.married > present:
-                print(f'ERROR: FAMILY: US01: {family.id}: Marriage {family.married} occurs in the future.')
+                print(
+                    f'ERROR: FAMILY: US01: {family.id}: Marriage {family.married} occurs in the future.')
                 errors.append(family.id)
             elif type(family.divorced) != str and family.divorced > present:
-                print(f'ERROR: FAMILY: US01: {family.id}: Divorce {family.divorced} occurs in the future.')
+                print(
+                    f'ERROR: FAMILY: US01: {family.id}: Divorce {family.divorced} occurs in the future.')
                 errors.append(family.id)
 
         return errors
 
-    #Author: Christopher McKenzie
+    # Author: Christopher McKenzie
     def us02(self):
-
         """Birth should occur before marriage of an individual."""
         errors = []
         for family in self.fam_storage.values():
             if family.married != 'NA':
                 for person in self.indi_storage.values():
-                    
+
                     try:
                         if person.name == family.husbandName and person.id == family.husbandId and person.birthday > family.married:
-                            print(f"ERROR: FAMILY: US02: {family.id}: Husband's birthday {person.birthday} occurs after marriage {family.married}.")
+                            print(
+                                f"ERROR: FAMILY: US02: {family.id}: Husband's birthday {person.birthday} occurs after marriage {family.married}.")
                             errors.append(person.id)
-                    
+
                         elif person.name == family.wifeName and person.id == family.wifeId and person.birthday > family.married:
-                            print(f"ERROR: FAMILY: US02: {family.id}: Wife's birthday {person.birthday} occurs after marriage {family.married}.") 
-                            errors.append(person.id)                    
-                    
+                            print(
+                                f"ERROR: FAMILY: US02: {family.id}: Wife's birthday {person.birthday} occurs after marriage {family.married}.")
+                            errors.append(person.id)
+
                     except TypeError as e:
                         print(e)
         return errors
@@ -386,13 +391,13 @@ class GedcomRepo:
     # Author: Lehmann Margaret
     def us04(self):
         """ Marriage should occur before divorce of spouses, and divorce can only occur after marriage """
-        ret_strings: List[str] = []
+        errors: List[str] = []
         for fam in self.fam_storage.values():
             if fam.divorced != "NA":
                 if fam.divorced < fam.married:
-                    ret = f"ERROR: FAMILY: US04: {fam.id}: Divorced {fam.divorced} before married {fam.married}."
-                    print(ret)
-                    ret_strings.append(ret)
+                    error = f"ERROR: FAMILY: US04: {fam.id}: Divorced {fam.divorced} before married {fam.married}."
+                    print(error)
+                    errors.append(error)
 
             for fam_compare in self.fam_storage.values():
                 if fam_compare.married != "NA" and fam.married != "NA":
@@ -400,37 +405,34 @@ class GedcomRepo:
                             fam_compare.married < fam.married and \
                             (fam_compare.divorced == "NA" or
                              fam_compare.divorced > fam.married):
-                        ret = f"ERROR: FAMILY: US04: {fam.id}: Wife {fam.wifeId} previous marriage {fam_compare.id} divorced {fam_compare.divorced} after remarried {fam.married}."
-                        print(ret)
-                        ret_strings.append(ret)
+                        error = f"ERROR: FAMILY: US04: {fam.id}: Wife {fam.wifeId} previous marriage {fam_compare.id} divorced {fam_compare.divorced} after remarried {fam.married}."
+                        print(error)
+                        errors.append(error)
 
                     elif fam_compare.husbandId == fam.husbandId and \
                             fam_compare.married < fam.married and \
                             (fam_compare.divorced == "NA" or
                              fam_compare.divorced > fam.married):
-                        ret = f"ERROR: FAMILY: US04: {fam.id}: Husband {fam.husbandId} previous marriage {fam_compare.id} divorced {fam_compare.divorced} after remarried {fam.married}."
-                        print(ret)
-                        ret_strings.append(ret)
-        return ret_strings
+                        error = f"ERROR: FAMILY: US04: {fam.id}: Husband {fam.husbandId} previous marriage {fam_compare.id} divorced {fam_compare.divorced} after remarried {fam.married}."
+                        print(error)
+                        errors.append(error)
+        return errors
 
     # Author: Lehmann Margaret
     def us05(self):
         """ Marriage should occur before death of either spouse """
-        ret_strings: List[str] = []
+        errors = []
         for fam in self.fam_storage.values():
-            for indi in self.indi_storage.values():
-                if indi.death != "NA" and fam.married != "NA":
-                    if indi.id == fam.wifeId and fam.married > indi.death:
-                        ret = f"ERROR: FAMILY: US05: {fam.id}: Married {fam.married} after wife's {indi.id} death on {indi.death}."
-                        print(ret)
-                        ret_strings.append(ret)
-                    elif indi.id == fam.husbandId and fam.married > indi.death:
-                        ret = f"ERROR: FAMILY: US05: {fam.id}: Married {fam.married} after husbands's {indi.id} death on {indi.death}."
-                        print(ret)
-                        ret_strings.append(ret)
-        return ret_strings
-    
+            if fam.married != 'NA':
+                for indi in self.indi_storage.values():
+                    if (indi.id == fam.husbandId or indi.id == fam.wifeId) and indi.death != 'NA' and fam.married >= indi.death:
+                        error = f"ERROR: FAMILY: us05: {fam.id}: Marriage date {fam.married} did not occur before death of individual {indi.id} on {indi.death}."
+                        print(error)
+                        errors.append(error)
+        return errors
+
     # Author: Ibezim Ikenna
+
     def us22(self):
         """All individual IDs should be unique and all family IDs should be unique --Ikenna"""
         print("This is user story 22")
@@ -444,7 +446,8 @@ class GedcomRepo:
                 if vals_2 > 1 and offset_2 == vals_1.id:
                     name = vals_1.name
                     l_i.append(offset_2)
-                    print(f"ERROR: US22: ID: {offset_2} is not unique and has another INDIVIDUAL: {name}")
+                    print(
+                        f"ERROR: US22: ID: {offset_2} is not unique and has another INDIVIDUAL: {name}")
 
         for offset_1, vals_1 in self.fam_storage.items():
             d_f[vals_1.id] += 1
@@ -453,7 +456,8 @@ class GedcomRepo:
                     h_name = vals_1.husbandName
                     w_name = vals_1.wifeName
                     l_f.append(offset_2)
-                    print(f"ERROR: US22: ID: {offset_2} is not unique and has another FAMILY: {h_name}, {w_name}")
+                    print(
+                        f"ERROR: US22: ID: {offset_2} is not unique and has another FAMILY: {h_name}, {w_name}")
         return l_i, l_f
 
     # Author: Ibezim Ikenna
@@ -466,8 +470,6 @@ class GedcomRepo:
         # This prints out a list of indiviuals and their ages included
         print(self.pretty_table_indiv())
         return id_age
-
-    
 
     # Author: Ibezim Ikenna
     # def us07(self):
@@ -531,13 +533,12 @@ class GedcomRepo:
     #     for person in self.indi_storage.values():
     #         if person.alive == False:
     #             set_deat.add(person.id)
-        
+
     #     return set_deat
-    
+
     # def us30(self):
 
     #     """List all living married people in a GEDCOM file."""
-
 
     #     set_marr = set()
     #     for person in self.indi_storage.values():
@@ -553,28 +554,23 @@ def main():
     """
     Testing
     """
-    # test = GedcomRepo("/Applications/XAMPP/xamppfiles/htdocs/Gedcom/Gedcom/family.ged") #--Ikenna
     path = input("Enter file name: ")
-    # Please change to your current path
     test = GedcomRepo(path)
     test.ged_reader()  # Calling the gedcom file reader
 
-    #test.pretty_table_fam()
-    #test.pretty_table_indiv()
+    test.pretty_table_fam()
+    test.pretty_table_indiv()
 
     test.us01()
     test.us02()
-    # test.us04()
-    # test.us05()
-    # test.us27() #Calling the user story 27 function
-    # test.us22() #Calling the user story 22 function
+    test.us04()
+    test.us05()
+    test.us27()  # Calling the user story 27 function
+    test.us22()  # Calling the user story 22 function
     # test.us07()
     # test.us08()
     # test.us29()
     # test.us30()
-    # test.pretty_table_fam()
-    # test.pretty_table_indiv()
-    # test.indi_storage
 
     # print('\n\n\n')
     # print("This is the Individuals data in a dictionary format\n\n\n")
