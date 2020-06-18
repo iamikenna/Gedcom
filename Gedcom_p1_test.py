@@ -8,6 +8,13 @@ from collections import defaultdict
 class UserStoryTest(unittest.TestCase):
     """ Class test for all user stories """
     
+    def setUp(self):
+
+        """ Initial setup code for unit tests """
+        
+        self.test = GedcomRepo("family.ged")
+        self.test.ged_reader()
+
     # Author: Christopher McKenzie
     # def test_us01(self):
         
@@ -61,36 +68,36 @@ class UserStoryTest(unittest.TestCase):
     # Author: Lehmann Margaret
     def test_us04(self):
         """ Tests marriage before divorce """
-        test = GedcomRepo("family.ged")
-        test.ged_reader()
-        self.assertEqual(len(test.us04()), 3)
+        #test = GedcomRepo("family.ged")
+        #test.ged_reader()
+        self.assertEqual(len(self.test.us04()), 3)
 
     # Author: Lehmann Margaret
     def test_us05(self):
         """ Tests marriagne before death """
-        test = GedcomRepo("family.ged")
-        test.ged_reader()
-        self.assertEqual(len(test.us05()), 1)
+        #test = GedcomRepo("family.ged")
+        #test.ged_reader()
+        self.assertEqual(len(self.test.us05()), 1)
 
     # Author: Ibezim Ikenna
     def test_us22(self):
         """function to test the id duplicates"""
-        test = GedcomRepo("family.ged")
-        test.ged_reader()
+        #test = GedcomRepo("family.ged")
+        #test.ged_reader()
         ind_id_duplicates, fam_id_duplicates, error = ['I1', 'I17', 'I15', 'I15'], [
             'F8', 'F9'], ['0r', 'I1', 'I17', 'I15', 'I15']
         # Testing duplicates ID for individual table
-        self.assertEqual(test.us22()[0],  ind_id_duplicates)
+        self.assertEqual(self.test.us22()[0],  ind_id_duplicates)
         # Testing duplicates ID for family table
-        self.assertEqual(test.us22()[1],  fam_id_duplicates)
+        self.assertEqual(self.test.us22()[1],  fam_id_duplicates)
         #Testing for errors
-        self.assertNotEqual(test.us22()[0],  error)
+        self.assertNotEqual(self.test.us22()[0],  error)
 
     # Author: Ibezim Ikenna
     def test_us27(self):
         """function to test for individual complete data"""
-        test = GedcomRepo("family.ged")
-        test.ged_reader()
+        #test = GedcomRepo("family.ged")
+        #test.ged_reader()
         id_age, error = [('I1', "NA"), ('I2', 69),
                          ('I3', 68), ('I4', 40),
                          ('I5', 32), ('I6', 170), ('I7', 32), ('I8', 3),
@@ -100,8 +107,8 @@ class UserStoryTest(unittest.TestCase):
                          ('I15', 65)
                          ], []
        
-        self.assertEqual(test.us27(),  id_age)
-        self.assertNotEqual(test.us27(),  error)
+        self.assertEqual(self.test.us27(),  id_age)
+        self.assertNotEqual(self.test.us27(),  error)
     
     
     
