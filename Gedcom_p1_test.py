@@ -41,7 +41,7 @@ class UserStoryTest(unittest.TestCase):
         """ Tests marriage before divorce """
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        self.assertEqual(len(self.test.us04()), 3)
+        self.assertEqual(len(self.test.us04()), 2)
 
     # Author: Lehmann Margaret
     def test_us05(self):

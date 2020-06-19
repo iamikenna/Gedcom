@@ -398,24 +398,6 @@ class GedcomRepo:
                     error = f"ERROR: FAMILY: US04: {fam.id}: Divorced {fam.divorced} before married {fam.married}."
                     print(error)
                     errors.append(error)
-
-            for fam_compare in self.fam_storage.values():
-                if fam_compare.married != "NA" and fam.married != "NA":
-                    if fam_compare.wifeId == fam.wifeId and \
-                            fam_compare.married < fam.married and \
-                            (fam_compare.divorced == "NA" or
-                             fam_compare.divorced > fam.married):
-                        error = f"ERROR: FAMILY: US04: {fam.id}: Wife {fam.wifeId} previous marriage {fam_compare.id} divorced {fam_compare.divorced} after remarried {fam.married}."
-                        print(error)
-                        errors.append(error)
-
-                    elif fam_compare.husbandId == fam.husbandId and \
-                            fam_compare.married < fam.married and \
-                            (fam_compare.divorced == "NA" or
-                             fam_compare.divorced > fam.married):
-                        error = f"ERROR: FAMILY: US04: {fam.id}: Husband {fam.husbandId} previous marriage {fam_compare.id} divorced {fam_compare.divorced} after remarried {fam.married}."
-                        print(error)
-                        errors.append(error)
         return errors
 
     # Author: Lehmann Margaret
@@ -426,7 +408,7 @@ class GedcomRepo:
             if fam.married != 'NA':
                 for indi in self.indi_storage.values():
                     if (indi.id == fam.husbandId or indi.id == fam.wifeId) and indi.death != 'NA' and fam.married >= indi.death:
-                        error = f"ERROR: FAMILY: us05: {fam.id}: Marriage date {fam.married} did not occur before death of individual {indi.id} on {indi.death}."
+                        error = f"ERROR: FAMILY: US05: {fam.id}: Marriage date {fam.married} did not occur before death of individual {indi.id} on {indi.death}."
                         print(error)
                         errors.append(error)
         return errors
@@ -559,13 +541,12 @@ def main():
     test.ged_reader()  # Calling the gedcom file reader
 
     test.pretty_table_fam()
-    test.pretty_table_indiv()
+    test.us27()  # Calling the user story 27 function
 
     test.us01()
     test.us02()
     test.us04()
     test.us05()
-    test.us27()  # Calling the user story 27 function
     test.us22()  # Calling the user story 22 function
     # test.us07()
     # test.us08()
