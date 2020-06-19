@@ -336,11 +336,9 @@ class GedcomRepo:
 
     """This would be used for our user stories"""
 
-    # Author: Christopher McKenzie
+    # Author: McKenzie Christopher
     def us01(self):
-
         """Dates should not be after the current date."""
-
         present = datetime.date(datetime.now())
         errors: List[str] = []
         for person in self.indi_storage.values():
@@ -363,11 +361,9 @@ class GedcomRepo:
 
         return errors
 
-    # Author: Christopher McKenzie
+    # Author: McKenzie Christopher
     def us02(self):
-
         """Birth should occur before marriage of an individual."""
-
         errors: List[str] = []
         for family in self.fam_storage.values():
             if family.married != 'NA':
@@ -386,9 +382,7 @@ class GedcomRepo:
 
     # Author: Shaffer Wayne
     def us03(self):
-
         """ Birth must come before death """
-
         print("This is user story 03 -- Wayne")
 
         errors = []
@@ -428,9 +422,7 @@ class GedcomRepo:
 
     # Author Shaffer Wayne
     def us06(self):
-
         """ Divorce must be before death for each individual """
-
         print("This is user story 06")
         errors = []
 
