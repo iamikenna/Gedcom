@@ -38,8 +38,8 @@ class UserStoryTest(unittest.TestCase):
     # Author: Shaffer Wayne
     def test_us03(self):
         """ Tests birth before death """
-        errors = self.test.us03()
-        assert(errors > 0)
+        error_list = self.test.us03()
+        assert(len(error_list) > 0)
 
     # Author: Lehmann Margaret
 
