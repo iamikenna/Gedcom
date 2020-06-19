@@ -338,52 +338,48 @@ class GedcomRepo:
 
     # Author: Christopher McKenzie
     def us01(self):
+
         """Dates should not be after the current date."""
 
         present = datetime.date(datetime.now())
         errors: List[str] = []
         for person in self.indi_storage.values():
-            if type(person.birthday) != str and person.birthday > present:
-                print(
-                    f'ERROR: INDIVIDUAL: US01: {person.id}: Birthday {person.birthday} occurs in the future.')
-                errors.append(person.id)
             # We say != str to avoid both NA and Invalid Date
+            if type(person.birthday) != str and person.birthday > present:
+                print(f'ERROR: INDIVIDUAL: US01: {person.id}: Birthday {person.birthday} occurs in the future.')
+                errors.append(person.id)
+
             elif type(person.death) != str and person.death > present:
-                print(
-                    f'ERROR: INDIVIDUAL: US01: {person.id}: Death {person.death} occurs in the future.')
+                print(f'ERROR: INDIVIDUAL: US01: {person.id}: Death {person.death} occurs in the future.')
                 errors.append(person.id)
 
         for family in self.fam_storage.values():
             if type(family.married) != str and family.married > present:
-                print(
-                    f'ERROR: FAMILY: US01: {family.id}: Marriage {family.married} occurs in the future.')
+                print(f'ERROR: FAMILY: US01: {family.id}: Marriage {family.married} occurs in the future.')
                 errors.append(family.id)
             elif type(family.divorced) != str and family.divorced > present:
-                print(
-                    f'ERROR: FAMILY: US01: {family.id}: Divorce {family.divorced} occurs in the future.')
+                print(f'ERROR: FAMILY: US01: {family.id}: Divorce {family.divorced} occurs in the future.')
                 errors.append(family.id)
 
         return errors
 
     # Author: Christopher McKenzie
     def us02(self):
+
         """Birth should occur before marriage of an individual."""
-        errors = []
+
+        errors: List[str] = []
         for family in self.fam_storage.values():
             if family.married != 'NA':
                 for person in self.indi_storage.values():
-
                     try:
                         if person.name == family.husbandName and person.id == family.husbandId and person.birthday > family.married:
-                            print(
-                                f"ERROR: FAMILY: US02: {family.id}: Husband's birthday {person.birthday} occurs after marriage {family.married}.")
+                            print(f"ERROR: FAMILY: US02: {family.id}: Husband's birthday {person.birthday} occurs after marriage {family.married}.")
                             errors.append(person.id)
 
                         elif person.name == family.wifeName and person.id == family.wifeId and person.birthday > family.married:
-                            print(
-                                f"ERROR: FAMILY: US02: {family.id}: Wife's birthday {person.birthday} occurs after marriage {family.married}.")
+                            print(f"ERROR: FAMILY: US02: {family.id}: Wife's birthday {person.birthday} occurs after marriage {family.married}.")
                             errors.append(person.id)
-
                     except TypeError as e:
                         print(e)
         return errors
