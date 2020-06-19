@@ -566,14 +566,16 @@ def main():
     test = GedcomRepo(path)
     test.ged_reader()  # Calling the gedcom file reader
 
-    test.pretty_table_fam()
-    test.us27()  # Calling the user story 27 function
+    #test.pretty_table_indiv()
+    #test.pretty_table_fam()
+    #test.us27()  # Calling the user story 27 function
 
-    test.us01()
-    test.us02()
-    test.us04()
-    test.us05()
-    test.us22()  # Calling the user story 22 function
+    #test.us01()
+    #test.us02()
+    test.us03()
+    #test.us04()
+    #test.us05()
+    #test.us22()  # Calling the user story 22 function
     # test.us07()
     # test.us08()
     # test.us29()
