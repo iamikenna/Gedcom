@@ -384,6 +384,23 @@ class GedcomRepo:
                         print(e)
         return errors
 
+    # Author: Shaffer Wayne
+    def us03(self):
+
+        """ Birth must come before death """
+
+        print("This is user story 03 -- Wayne")
+
+        errors = []
+
+        for individual in self.indi_storage.values():
+            if individual.death != "NA" and individual.birthday >= individual.death:
+                error = f"ERROR: Individual: US03: {individual.id}: {individual.name}'s death, {individual.death} occurs before birth, {individual.birthday}"
+                errors.append(error)
+                print(error)
+
+        return errors
+
     # Author: Lehmann Margaret
     def us04(self):
         """ Marriage should occur before divorce of spouses, and divorce can only occur after marriage """
@@ -407,6 +424,27 @@ class GedcomRepo:
                         error = f"ERROR: FAMILY: US05: {fam.id}: Marriage date {fam.married} did not occur before death of individual {indi.id} on {indi.death}."
                         print(error)
                         errors.append(error)
+        return errors
+
+    # Author Shaffer Wayne
+    def us06(self):
+
+        """ Divorce must be before death for each individual """
+
+        print("This is user story 06")
+        errors = []
+
+        #for all dead people
+        for individual in [individual for individual in self.indi_storage.values() if individual.death != "NA"]:
+            #for all divorced families
+            for family in [family for family in self.fam_storage.values() if family.divorced != "NA"]:
+                if individual.id == family.husbandId or \
+                    individual.id == family.wifeId:
+                    if family.divorced >= individual.death:
+                        error = f"ERROR: {individual.name}'s divorce, {family.divorced}, is not before deathdate, {individual.death}"
+                        errors.append(error)
+                        print(error)
+
         return errors
 
     # Author: Ibezim Ikenna

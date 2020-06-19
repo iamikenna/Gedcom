@@ -35,6 +35,12 @@ class UserStoryTest(unittest.TestCase):
 
         self.assertEqual(test.us02(), errors)
 
+    # Author: Shaffer Wayne
+    def test_us03(self):
+        """ Tests birth before death """
+        errors = self.test.us03()
+        assert(errors > 0)
+
     # Author: Lehmann Margaret
 
     def test_us04(self):
@@ -49,6 +55,11 @@ class UserStoryTest(unittest.TestCase):
         test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(len(self.test.us05()), 1)
+
+    # Author: Shaffer Wayne
+    def test_us06(self):
+        """ Tests divorce before death for each individual """
+        self.assertTrue(len(self.test.us06()) > 0)
 
     # Author: Ibezim Ikenna
     def test_us22(self):
