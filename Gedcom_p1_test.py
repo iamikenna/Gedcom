@@ -64,8 +64,6 @@ class UserStoryTest(unittest.TestCase):
     # Author: Ibezim Ikenna
     def test_us22(self):
         """function to test the id duplicates"""
-        #test = GedcomRepo("family.ged")
-        # test.ged_reader()
         ind_id_duplicates, fam_id_duplicates, error = ['I1', 'I17', 'I15', 'I15'], [
             'F8', 'F9'], ['0r', 'I1', 'I17', 'I15', 'I15']
         # Testing duplicates ID for individual table
