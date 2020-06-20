@@ -1,8 +1,9 @@
 import unittest
 from Gedcom_p1 import Individual, Family, GedcomRepo
 from datetime import datetime
-from prettytable import PrettyTable  # Used to build a table
+from prettytable import PrettyTable
 from collections import defaultdict
+from typing import List
 
 
 class UserStoryTest(unittest.TestCase):
@@ -11,48 +12,44 @@ class UserStoryTest(unittest.TestCase):
     def setUp(self):
         """ Initial setup code for unit tests """
 
-        self.test = GedcomRepo("family.ged")
+        self.test: GedcomRepo = GedcomRepo("family.ged")
         self.test.ged_reader()
 
     # Author: McKenzie Christopher
     def test_us01(self):
         """Tests that dates do not occur before current date."""
 
-        test = GedcomRepo("family.ged")
-        test.ged_reader()
-        present: date = datetime.date(datetime.now())
-        errors = ['US01_I11', 'US01_I17', 'US01_F4', 'US01_F8']
-        self.assertEqual(test.us01(), errors)
+        present: datetime.date = datetime.date(datetime.now())
+        errors: List[str] = ['US01_I11', 'US01_I17', 'US01_F4', 'US01_F8']
+        self.assertEqual(self.test.us01(), errors)
 
         """Tests the following boundaries:
         1. Missing/incorrectly formatted death date for dead individual
-        2. Missing/incorrectly birthday
-        3. Missing/incorrectly divorce date
-        4. Missing/incorrectly marriage date."""
+        2. Missing/incorrectly formatted birthday
+        3. Missing/incorrectly formatted divorce date
+        4. Missing/incorrectly formatted marriage date."""
 
-        bounds = GedcomRepo("us01_us02_bounds.ged")
+        bounds: GedcomRepo = GedcomRepo("us01_us02_bounds.ged")
         bounds.ged_reader()
-        b_errors = ['US01_I17', 'US01_F8']
+        b_errors: List[str] = ['US01_I17', 'US01_F8']
         self.assertEqual(bounds.us01(), b_errors)
 
     # Author: McKenzie Christopher
     def test_us02(self):
         """Tests that marriage only occurs after birth."""
 
-        test = GedcomRepo("family.ged")
-        test.ged_reader()
         errors = ['I13', 'I14']
-        self.assertEqual(test.us02(), errors)
+        self.assertEqual(self.test.us02(), errors)
 
         """Tests the following boundaries:
         1. Missing/incorrectly formatted death date for dead individual
-        2. Missing/incorrectly birthday
-        3. Missing/incorrectly divorce date
-        4. Missing/incorrectly marriage date."""
+        2. Missing/incorrectly formatted birthday
+        3. Missing/incorrectly formatted divorce date
+        4. Missing/incorrectly formatted marriage date."""
 
-        bounds = GedcomRepo("us01_us02_bounds.ged") #Tests missing death dates for dead people and birthdays
+        bounds: GedcomRepo = GedcomRepo("us01_us02_bounds.ged") #Tests missing death dates for dead people and birthdays
         bounds.ged_reader()
-        b_errors = ['I14']
+        b_errors: List[str] = ['I14']
         self.assertEqual(bounds.us02(), b_errors)
 
     # Author: Shaffer Wayne
