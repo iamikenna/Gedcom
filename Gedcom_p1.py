@@ -344,19 +344,23 @@ class GedcomRepo:
         for person in self.indi_storage.values():
             # We say != str to avoid both NA and Invalid Date
             if type(person.birthday) != str and person.birthday > present:
-                print(f'ERROR: INDIVIDUAL: US01: {person.id}: Birthday {person.birthday} occurs in the future.')
+                print(
+                    f'ERROR: INDIVIDUAL: US01: {person.id}: Birthday {person.birthday} occurs in the future.')
                 errors.append(person.id)
 
             elif type(person.death) != str and person.death > present:
-                print(f'ERROR: INDIVIDUAL: US01: {person.id}: Death {person.death} occurs in the future.')
+                print(
+                    f'ERROR: INDIVIDUAL: US01: {person.id}: Death {person.death} occurs in the future.')
                 errors.append(person.id)
 
         for family in self.fam_storage.values():
             if type(family.married) != str and family.married > present:
-                print(f'ERROR: FAMILY: US01: {family.id}: Marriage {family.married} occurs in the future.')
+                print(
+                    f'ERROR: FAMILY: US01: {family.id}: Marriage {family.married} occurs in the future.')
                 errors.append(family.id)
             elif type(family.divorced) != str and family.divorced > present:
-                print(f'ERROR: FAMILY: US01: {family.id}: Divorce {family.divorced} occurs in the future.')
+                print(
+                    f'ERROR: FAMILY: US01: {family.id}: Divorce {family.divorced} occurs in the future.')
                 errors.append(family.id)
 
         return errors
@@ -370,11 +374,13 @@ class GedcomRepo:
                 for person in self.indi_storage.values():
                     try:
                         if person.name == family.husbandName and person.id == family.husbandId and person.birthday > family.married:
-                            print(f"ERROR: FAMILY: US02: {family.id}: Husband's birthday {person.birthday} occurs after marriage {family.married}.")
+                            print(
+                                f"ERROR: FAMILY: US02: {family.id}: Husband's birthday {person.birthday} occurs after marriage {family.married}.")
                             errors.append(person.id)
 
                         elif person.name == family.wifeName and person.id == family.wifeId and person.birthday > family.married:
-                            print(f"ERROR: FAMILY: US02: {family.id}: Wife's birthday {person.birthday} occurs after marriage {family.married}.")
+                            print(
+                                f"ERROR: FAMILY: US02: {family.id}: Wife's birthday {person.birthday} occurs after marriage {family.married}.")
                             errors.append(person.id)
                     except TypeError as e:
                         print(e)
@@ -426,12 +432,12 @@ class GedcomRepo:
         print("This is user story 06")
         errors = []
 
-        #for all dead people
+        # for all dead people
         for individual in [individual for individual in self.indi_storage.values() if individual.death != "NA"]:
-            #for all divorced families
+            # for all divorced families
             for family in [family for family in self.fam_storage.values() if family.divorced != "NA"]:
                 if individual.id == family.husbandId or \
-                    individual.id == family.wifeId:
+                        individual.id == family.wifeId:
                     if family.divorced >= individual.death:
                         error = f"ERROR: {individual.name}'s divorce, {family.divorced}, is not before deathdate, {individual.death}"
                         errors.append(error)
@@ -568,17 +574,16 @@ def main():
     # test.pretty_table_fam()
     test.us27()  # Calling the user story 27 function
 
-    #test.pretty_table_indiv()
-    #test.pretty_table_fam()
-    #test.us27()  # Calling the user story 27 function
+    # test.pretty_table_indiv()
+    test.pretty_table_fam()
+    # test.us27()  # Calling the user story 27 function
 
-
-    #test.us01()
-    #test.us02()
+    test.us01()
+    test.us02()
     test.us03()
-    #test.us04()
-    #test.us05()
-    #test.us22()  # Calling the user story 22 function
+    test.us04()
+    test.us05()
+    test.us22()  # Calling the user story 22 function
     # test.us07()
     # test.us08()
     # test.us29()
@@ -599,6 +604,7 @@ def main():
     # print("This is the general dictionary for both individuals and family\n\n\n")
     # print(gen_storage)
     # print("\n\n\n")
+
 
     # print("test anything you want here!!!!!!\n\n\n")
     # print(gen_storage["individual"][1].birthday) # testing datetime
