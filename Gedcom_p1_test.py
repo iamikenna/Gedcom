@@ -11,17 +11,17 @@ class UserStoryTest(unittest.TestCase):
     def setUp(self):
         """ Initial setup code for unit tests """
 
-        self.test = GedcomRepo("family.ged")
+        self.test = GedcomRepo("family2.ged")
         self.test.ged_reader()
 
     # Author: Christopher McKenzie
     def test_us01(self):
         """Tests that dates do not occur before current date."""
 
-        test = GedcomRepo("test.ged")
+        test = GedcomRepo("family2.ged")
         test.ged_reader()
         present: date = datetime.date(datetime.now())
-        errors = ['I18', 'I19', 'F11', 'F12']
+        errors = ['US01_I11', 'US01_I17', 'US01_F4', 'US01_F8']
 
         self.assertEqual(test.us01(), errors)
 
@@ -29,9 +29,9 @@ class UserStoryTest(unittest.TestCase):
     def test_us02(self):
         """Tests that marriage only occurs after birth."""
 
-        test = GedcomRepo("test.ged")
+        test = GedcomRepo("family2.ged")
         test.ged_reader()
-        errors = ['I23', 'I24', 'I25', 'I26']
+        errors = ['I13', 'I14']
 
         self.assertEqual(test.us02(), errors)
 
@@ -45,16 +45,16 @@ class UserStoryTest(unittest.TestCase):
 
     def test_us04(self):
         """ Tests marriage before divorce """
-        test = GedcomRepo("family.ged")
+        test = GedcomRepo("family2.ged")
         test.ged_reader()
-        self.assertEqual(len(self.test.us04()), 2)
+        self.assertEqual(len(self.test.us04()), 1)
 
     # Author: Lehmann Margaret
     def test_us05(self):
         """ Tests marriagne before death """
-        test = GedcomRepo("family.ged")
+        test = GedcomRepo("family2.ged")
         test.ged_reader()
-        self.assertEqual(len(self.test.us05()), 1)
+        self.assertEqual(len(self.test.us05()), 2)
 
     # Author: Shaffer Wayne
     def test_us06(self):
@@ -66,8 +66,8 @@ class UserStoryTest(unittest.TestCase):
         """function to test the id duplicates"""
         #test = GedcomRepo("family.ged")
         # test.ged_reader()
-        ind_id_duplicates, fam_id_duplicates, error = ['I1', 'I17', 'I15', 'I15'], [
-            'F8', 'F9'], ['0r', 'I1', 'I17', 'I15', 'I15']
+        ind_id_duplicates, fam_id_duplicates, error = ['I1', 'US01_I17', 'I15', 'I15'], [
+            'US01_F8', 'F9'], ['0r', 'I1', 'US01_I17', 'I15', 'I15']
         # Testing duplicates ID for individual table
         self.assertEqual(self.test.us22()[0],  ind_id_duplicates)
         # Testing duplicates ID for family table
@@ -83,9 +83,9 @@ class UserStoryTest(unittest.TestCase):
         id_age, error = [('I1', "NA"), ('I2', 69),
                          ('I3', 68), ('I4', 40),
                          ('I5', 32), ('I6', 170), ('I7', 32), ('I8', 3),
-                         ('I9', 43), ('I10', 18), ('I11', 17), ('I12', 112),
-                         ('I13', 95), ('I14', 103), ('I15', 65), ('I16', -2),
-                         ('I17', 71), ('I1', 65), ('I17', 71), ('I15', 65),
+                         ('I9', 43), ('I10', 18), ('US01_I11', 47), ('I12', 112),
+                         ('I13', 67), ('I14', 64), ('I15', 65), ('I16', 0),
+                         ('US01_I17', -30), ('I1', 65), ('US01_I17', 71), ('I15', 65),
                          ('I15', 65)
                          ], []
 
