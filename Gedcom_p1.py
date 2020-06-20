@@ -565,10 +565,13 @@ def main():
     path = input("Enter file name: ")
     test = GedcomRepo(path)
     test.ged_reader()  # Calling the gedcom file reader
+    # test.pretty_table_fam()
+    test.us27()  # Calling the user story 27 function
 
     #test.pretty_table_indiv()
     #test.pretty_table_fam()
     #test.us27()  # Calling the user story 27 function
+
 
     #test.us01()
     #test.us02()
