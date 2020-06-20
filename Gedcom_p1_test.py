@@ -11,14 +11,14 @@ class UserStoryTest(unittest.TestCase):
     def setUp(self):
         """ Initial setup code for unit tests """
 
-        self.test = GedcomRepo("family2.ged")
+        self.test = GedcomRepo("family.ged")
         self.test.ged_reader()
 
     # Author: Christopher McKenzie
     def test_us01(self):
         """Tests that dates do not occur before current date."""
 
-        test = GedcomRepo("family2.ged")
+        test = GedcomRepo("family.ged")
         test.ged_reader()
         present: date = datetime.date(datetime.now())
         errors = ['US01_I11', 'US01_I17', 'US01_F4', 'US01_F8']
@@ -29,7 +29,7 @@ class UserStoryTest(unittest.TestCase):
     def test_us02(self):
         """Tests that marriage only occurs after birth."""
 
-        test = GedcomRepo("family2.ged")
+        test = GedcomRepo("family.ged")
         test.ged_reader()
         errors = ['I13', 'I14']
 
@@ -45,14 +45,14 @@ class UserStoryTest(unittest.TestCase):
 
     def test_us04(self):
         """ Tests marriage before divorce """
-        test = GedcomRepo("family2.ged")
+        test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(len(self.test.us04()), 1)
 
     # Author: Lehmann Margaret
     def test_us05(self):
         """ Tests marriagne before death """
-        test = GedcomRepo("family2.ged")
+        test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(len(self.test.us05()), 2)
 
@@ -64,8 +64,8 @@ class UserStoryTest(unittest.TestCase):
     # Author: Ibezim Ikenna
     def test_us22(self):
         """function to test the id duplicates"""
-        ind_id_duplicates, fam_id_duplicates, error = ['I1', 'I17', 'I15', 'I15'], [
-            'F8', 'F9'], ['0r', 'I1', 'I17', 'I15', 'I15']
+        ind_id_duplicates, fam_id_duplicates, error = ['I1', 'US01_I17', 'I15', 'I15'], [
+            'US01_F8', 'F9'], ['0r', 'US01_I1', 'I17', 'I15', 'I15']
         # Testing duplicates ID for individual table
         self.assertEqual(self.test.us22()[0],  ind_id_duplicates)
         # Testing duplicates ID for family table
