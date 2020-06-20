@@ -14,7 +14,7 @@ class UserStoryTest(unittest.TestCase):
         self.test = GedcomRepo("family.ged")
         self.test.ged_reader()
 
-    # Author: Christopher McKenzie
+    # Author: McKenzie Christopher
     def test_us01(self):
         """Tests that dates do not occur before current date."""
 
@@ -22,18 +22,38 @@ class UserStoryTest(unittest.TestCase):
         test.ged_reader()
         present: date = datetime.date(datetime.now())
         errors = ['US01_I11', 'US01_I17', 'US01_F4', 'US01_F8']
-
         self.assertEqual(test.us01(), errors)
 
-    # Author: Christopher McKenzie
+        """Tests the following boundaries:
+        1. Missing/incorrectly formatted death date for dead individual
+        2. Missing/incorrectly birthday
+        3. Missing/incorrectly divorce date
+        4. Missing/incorrectly marriage date."""
+
+        bounds = GedcomRepo("us01_us02_bounds.ged")
+        bounds.ged_reader()
+        b_errors = ['US01_I17', 'US01_F8']
+        self.assertEqual(bounds.us01(), b_errors)
+
+    # Author: McKenzie Christopher
     def test_us02(self):
         """Tests that marriage only occurs after birth."""
 
         test = GedcomRepo("family.ged")
         test.ged_reader()
         errors = ['I13', 'I14']
-
         self.assertEqual(test.us02(), errors)
+
+        """Tests the following boundaries:
+        1. Missing/incorrectly formatted death date for dead individual
+        2. Missing/incorrectly birthday
+        3. Missing/incorrectly divorce date
+        4. Missing/incorrectly marriage date."""
+
+        bounds = GedcomRepo("us01_us02_bounds.ged") #Tests missing death dates for dead people and birthdays
+        bounds.ged_reader()
+        b_errors = ['I14']
+        self.assertEqual(bounds.us02(), b_errors)
 
     # Author: Shaffer Wayne
     def test_us03(self):
