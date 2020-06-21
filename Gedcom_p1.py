@@ -583,6 +583,7 @@ def main():
     test.us03()
     test.us04()
     test.us05()
+    test.us06()
     test.us22()  # Calling the user story 22 function
     # test.us07()
     # test.us08()

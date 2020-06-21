@@ -84,11 +84,12 @@ class UserStoryTest(unittest.TestCase):
         ind_id_duplicates, fam_id_duplicates, error = ['I1', 'US01_I17', 'I15', 'I15'], [
             'US01_F8', 'F9'], ['0r', 'US01_I1', 'I17', 'I15', 'I15']
         # Testing duplicates ID for individual table
-        self.assertEqual(self.test.us22()[0],  ind_id_duplicates)
+        my_func = self.test.us22()
+        self.assertEqual(my_func[0],  ind_id_duplicates)
         # Testing duplicates ID for family table
-        self.assertEqual(self.test.us22()[1],  fam_id_duplicates)
+        self.assertEqual(my_func[1],  fam_id_duplicates)
         # Testing for errors
-        self.assertNotEqual(self.test.us22()[0],  error)
+        self.assertNotEqual(my_func[0],  error)
 
     # Author: Ibezim Ikenna
     def test_us27(self):
@@ -103,9 +104,10 @@ class UserStoryTest(unittest.TestCase):
                          ('US01_I17', -30), ('I1', 65), ('US01_I17', 71), ('I15', 65),
                          ('I15', 65)
                          ], []
+        my_func = self.test.us27()
 
-        self.assertEqual(self.test.us27(),  id_age)
-        self.assertNotEqual(self.test.us27(),  error)
+        self.assertEqual(my_func,  id_age)
+        self.assertNotEqual(my_func,  error)
 
     # Author: Ibezim Ikenna
     # def test_us07(self):
@@ -154,3 +156,4 @@ class UserStoryTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(exit=False, verbosity=2)
+    
