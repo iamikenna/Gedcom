@@ -484,7 +484,6 @@ class GedcomRepo:
         # This prints out a list of indiviuals and their ages included
         print(self.pretty_table_indiv())
         return id_age
-
     # Author: Ibezim Ikenna
     # def us07(self):
 
