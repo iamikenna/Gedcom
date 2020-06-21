@@ -439,7 +439,7 @@ class GedcomRepo:
                 if individual.id == family.husbandId or \
                         individual.id == family.wifeId:
                     if family.divorced >= individual.death:
-                        error = f"ERROR: {individual.name}'s divorce, {family.divorced}, is not before deathdate, {individual.death}"
+                        error = f"ERROR: US06: FAMILY: {individual.name}'s divorce, {family.divorced}, is not before deathdate, {individual.death}"
                         errors.append(error)
                         print(error)
 
@@ -484,6 +484,7 @@ class GedcomRepo:
         # This prints out a list of indiviuals and their ages included
         print(self.pretty_table_indiv())
         return id_age
+
     # Author: Ibezim Ikenna
     # def us07(self):
 
@@ -570,13 +571,14 @@ def main():
     path = input("Enter file name: ")
     test = GedcomRepo(path)
     test.ged_reader()  # Calling the gedcom file reader
-    # test.pretty_table_fam()
-    test.us27()  # Calling the user story 27 function
-
-    # test.pretty_table_indiv()
+    print('\n\n\n')
+    test.pretty_table_indiv()
     test.pretty_table_fam()
-    # test.us27()  # Calling the user story 27 function
-
+    print("\n\n\n")
+   
+    print("Our user stories begin here!!!!!")
+    print("\n\n\n")
+    
     test.us01()
     test.us02()
     test.us03()
@@ -584,6 +586,7 @@ def main():
     test.us05()
     test.us06()
     test.us22()  # Calling the user story 22 function
+    test.us27()  # Calling the user story 27 function
     # test.us07()
     # test.us08()
     # test.us29()
