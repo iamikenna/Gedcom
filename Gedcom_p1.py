@@ -82,10 +82,11 @@ class GedcomRepo:
 
     """
 
-    def __init__(self, path) -> None:
+    def __init__(self, path, date=datetime.date(datetime.now())) -> None:
         """Initialize printing pretty tables here
         refer to Individual and family here"""
         self.path = path
+        self.date = date
         # indi_storage[indiv_id] = Individual()
         self.indi_storage: Dict[int, Individual] = dict()
         # fam_storage[fam_counter] = Family()
@@ -575,10 +576,10 @@ def main():
     test.pretty_table_indiv()
     test.pretty_table_fam()
     print("\n\n\n")
-   
+
     print("Our user stories begin here!!!!!")
     print("\n\n\n")
-    
+
     test.us01()
     test.us02()
     test.us03()
@@ -607,7 +608,6 @@ def main():
     # print("This is the general dictionary for both individuals and family\n\n\n")
     # print(gen_storage)
     # print("\n\n\n")
-
 
     # print("test anything you want here!!!!!!\n\n\n")
     # print(gen_storage["individual"][1].birthday) # testing datetime

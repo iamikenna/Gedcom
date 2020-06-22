@@ -9,19 +9,15 @@ from typing import List
 class UserStoryTest(unittest.TestCase):
     """ Class test for all user stories """
 
-    def setUp(self):
-        """ Initial setup code for unit tests """
-
-        self.test: GedcomRepo = GedcomRepo("family.ged")
-        self.test.ged_reader()
-
     # Author: McKenzie Christopher
     def test_us01(self):
         """Tests that dates do not occur before current date."""
+        test: GedcomRepo = GedcomRepo("family.ged")
+        test.ged_reader()
 
         present: datetime.date = datetime.date(datetime.now())
         errors: List[str] = ['US01_I11', 'US01_I17', 'US01_F4', 'US01_F8']
-        self.assertEqual(self.test.us01(), errors)
+        self.assertEqual(test.us01(), errors)
 
         """Tests the following boundaries:
         1. Missing/incorrectly formatted death date for dead individual
@@ -37,9 +33,11 @@ class UserStoryTest(unittest.TestCase):
     # Author: McKenzie Christopher
     def test_us02(self):
         """Tests that marriage only occurs after birth."""
+        test: GedcomRepo = GedcomRepo("family.ged")
+        test.ged_reader()
 
         errors = ['I13', 'I14']
-        self.assertEqual(self.test.us02(), errors)
+        self.assertEqual(test.us02(), errors)
 
         """Tests the following boundaries:
         1. Missing/incorrectly formatted death date for dead individual
@@ -47,7 +45,8 @@ class UserStoryTest(unittest.TestCase):
         3. Missing/incorrectly formatted divorce date
         4. Missing/incorrectly formatted marriage date."""
 
-        bounds: GedcomRepo = GedcomRepo("us01_us02_bounds.ged") #Tests missing death dates for dead people and birthdays
+        # Tests missing death dates for dead people and birthdays
+        bounds: GedcomRepo = GedcomRepo("us01_us02_bounds.ged")
         bounds.ged_reader()
         b_errors: List[str] = ['I14']
         self.assertEqual(bounds.us02(), b_errors)
@@ -55,7 +54,9 @@ class UserStoryTest(unittest.TestCase):
     # Author: Shaffer Wayne
     def test_us03(self):
         """ Tests birth before death """
-        error_list = self.test.us03()
+        test: GedcomRepo = GedcomRepo("family.ged")
+        test.ged_reader()
+        error_list = test.us03()
         assert(len(error_list) > 0)
 
     # Author: Lehmann Margaret
@@ -64,27 +65,31 @@ class UserStoryTest(unittest.TestCase):
         """ Tests marriage before divorce """
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        self.assertEqual(len(self.test.us04()), 1)
+        self.assertEqual(len(test.us04()), 1)
 
     # Author: Lehmann Margaret
     def test_us05(self):
         """ Tests marriagne before death """
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        self.assertEqual(len(self.test.us05()), 2)
+        self.assertEqual(len(test.us05()), 2)
 
     # Author: Shaffer Wayne
     def test_us06(self):
         """ Tests divorce before death for each individual """
-        self.assertTrue(len(self.test.us06()) > 0)
+        test: GedcomRepo = GedcomRepo("family.ged")
+        test.ged_reader()
+        self.assertTrue(len(test.us06()) > 0)
 
     # Author: Ibezim Ikenna
     def test_us22(self):
         """function to test the id duplicates"""
+        test: GedcomRepo = GedcomRepo("family.ged")
+        test.ged_reader()
         ind_id_duplicates, fam_id_duplicates, error = ['I1', 'US01_I17', 'I15', 'I15'], [
             'US01_F8', 'F9'], ['0r', 'US01_I1', 'I17', 'I15', 'I15']
         # Testing duplicates ID for individual table
-        my_func = self.test.us22()
+        my_func = test.us22()
         self.assertEqual(my_func[0],  ind_id_duplicates)
         # Testing duplicates ID for family table
         self.assertEqual(my_func[1],  fam_id_duplicates)
@@ -94,8 +99,8 @@ class UserStoryTest(unittest.TestCase):
     # Author: Ibezim Ikenna
     def test_us27(self):
         """function to test for individual complete data"""
-        #test = GedcomRepo("family.ged")
-        # test.ged_reader()
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
         id_age, error = [('I1', "NA"), ('I2', 69),
                          ('I3', 68), ('I4', 40),
                          ('I5', 32), ('I6', 170), ('I7', 32), ('I8', 3),
@@ -104,7 +109,7 @@ class UserStoryTest(unittest.TestCase):
                          ('US01_I17', -30), ('I1', 65), ('US01_I17', 71), ('I15', 65),
                          ('I15', 65)
                          ], []
-        my_func = self.test.us27()
+        my_func = test.us27()
 
         self.assertEqual(my_func,  id_age)
         self.assertNotEqual(my_func,  error)
@@ -156,4 +161,3 @@ class UserStoryTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(exit=False, verbosity=2)
-    
