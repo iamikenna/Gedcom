@@ -80,6 +80,30 @@ class UserStoryTest(unittest.TestCase):
         test: GedcomRepo = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertTrue(len(test.us06()) > 0)
+        
+    # Author: Ibezim Ikenna
+    def test_us07(self):
+        """Checking for less than 150 years """
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+        death, alive, error = [('US07_I1', 200),('US07_I0886', 198)], [('I6', 170)],['0r','I1', 'I17', 'I15', 'I15']
+        my_func = test.us07()
+        self.assertEqual(my_func[0],  death)
+        self.assertNotEqual(my_func[0],  error)
+        self.assertEqual(my_func[1],  alive)
+
+    # Author: Ibezim Ikenna
+    def test_us08(self):
+        """ Birth before marriage of parents"""
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+        marr_ex = sorted([('I6', 'F2'), ('I15', 'US02_F7'), ('I2', 'US02_F3'), ('I15', 'US02_F7'), ('I1', 'F2'), ('I15', 'US02_F7')])
+        div_ex = sorted([('I2', 'US02_F3')])
+        error = []
+        my_func = test.us08()
+        self.assertEqual(my_func[0],  marr_ex)
+        self.assertEqual(my_func[1],  div_ex)
+        self.assertNotEqual(my_func,  error)
 
     # Author: Ibezim Ikenna
     def test_us22(self):
@@ -101,7 +125,7 @@ class UserStoryTest(unittest.TestCase):
         """function to test for individual complete data"""
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        id_age, error = [('I1', "NA"), ('I2', 69),
+        id_age, error = [('I1', "NA"),('US07_I1', 200), ('US07_I0886', 198),('I2', 69),
                          ('I3', 68), ('I4', 40),
                          ('I5', 32), ('I6', 170), ('I7', 32), ('I8', 3),
                          ('I9', 43), ('I10', 18), ('US01_I11', 47), ('I12', 112),
@@ -114,33 +138,7 @@ class UserStoryTest(unittest.TestCase):
         self.assertEqual(my_func,  id_age)
         self.assertNotEqual(my_func,  error)
 
-    # Author: Ibezim Ikenna
-    # def test_us07(self):
-
-    #     """Checking for less than 150 years """
-
-    #     test = GedcomRepo("family.ged")
-    #     test.ged_reader()
-        # death, alive, error = [('I12', 153)],
-        #                     [('I6', 170)],
-        #                     ['0r','I1', 'I17', 'I15', 'I15']
-    #     self.assertEqual(test.us07()[0],  death)
-    #     self.assertNotEqual(test.us07()[0],  error)
-    #     self.assertEqual(test.us07()[1],  alive)
-
-    # Author: Ibezim Ikenna
-    # def test_us08(self):
-
-    #     """ Birth before marriage of parents"""
-
-    #     test = GedcomRepo("family.ged")
-    #     test.ged_reader()
-    #     marr_ex = sorted([('I6', 'F2'), ('I1', 'F2'), ('I2', 'F3'), ('I15', 'F7'), ('I15', 'F7'), ('I15', 'F7')])
-    #     div_ex = sorted([('I2', 'F3')])
-    #     error = []
-    #     self.assertEqual(test.us08()[0],  marr_ex)
-    #     self.assertEqual(test.us08()[1],  div_ex)
-    #     self.assertNotEqual(test.us08(),  error)
+    
 
     # #Author: Christopher McKenzie
     # def test_us29(self):
