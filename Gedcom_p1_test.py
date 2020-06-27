@@ -104,6 +104,30 @@ class UserStoryTest(unittest.TestCase):
         self.assertEqual(my_func[0],  marr_ex)
         self.assertEqual(my_func[1],  div_ex)
         self.assertNotEqual(my_func,  error)
+        
+    #Author: Ibezim Ikenna
+    # def test_us11(self):
+    #     """Marriage should not occur during marriage to another spouse"""
+    #     test = GedcomRepo("family.ged")
+    #     test.ged_reader()
+    #     couples = ['us_11_I13']
+    #     error = []
+    #     my_func = test.us11()
+    #     self.assertEqual(my_func,  couples)
+    #     self.assertNotEqual(my_func,  error)
+        
+    #Author: Ibezim Ikenna
+    # def test_us14(self):
+    #     """No more than five siblings should be born at the same time --Ikenna"""
+    #     test = GedcomRepo("family.ged")
+    #     test.ged_reader()
+    #     family = ['us14_F2']
+    #     error = []
+    #     my_func = test.us14()
+    
+    #     self.assertEqual(my_func,  family)
+    #     self.assertNotEqual(my_func,  error)
+        
 
     # Author: Ibezim Ikenna
     def test_us22(self):
@@ -131,7 +155,7 @@ class UserStoryTest(unittest.TestCase):
                          ('I9', 43), ('I10', 18), ('US01_I11', 47), ('I12', 112),
                          ('I13', 67), ('I14', 64), ('I15', 65), ('I16', 0),
                          ('US01_I17', -30), ('I1', 65), ('US01_I17', 71), ('I15', 65),
-                         ('I15', 65)
+                         ('I15', 65), ('us14_I9', 2), ('us14_I4', 2), ('us14_I5', 2), ('us14_20', 2), ('us14_I6', 2), ('us14_I8', 2)
                          ], []
         my_func = test.us27()
 

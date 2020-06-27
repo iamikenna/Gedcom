@@ -499,7 +499,43 @@ class GedcomRepo:
                             except TypeError:
                                 continue
         return (sorted(marr_err), sorted(div_err))
-
+    
+    # Author: Ibezim Ikenna
+    # def us11(self):
+    #     """Marriage should not occur during marriage to another spouse"""
+    #     print("This is user story 11 --Ikenna")
+    #     marr_storage = defaultdict(int)
+    #     error = []
+    #     for indiv in self.fam_storage.values():
+    #         if type(indiv.married) != str and indiv.divorced == 'NA':
+    #             marr_storage[indiv.husbandId] += 1
+    #             marr_storage[indiv.wifeId] += 1
+                
+    #     for offset, value in marr_storage.items():
+    #         if value > 1:
+    #             error.append(offset)
+    #             print(f"Error US11: INDIVIDUAL: ID: {offset} is married to another family while still in another :MARRIAGE")
+    #     return error
+    
+    # Author: Ibezim Ikenna
+    # def us14(self):
+    #     """No more than five siblings should be born at the same time"""
+    #     print("This is user story 14 --Ikenna")
+    #     date_storage = defaultdict(int)
+    #     error = []
+    #     for indiv in self.fam_storage.values():
+    #         for offset in indiv.children:
+    #             for offset2 in self.indi_storage.values():
+    #                 if offset2.id == offset:
+    #                     date_storage[offset2.birthday] += 1
+                            
+    #     for offset3, value in date_storage.items():
+    #         if value > 5:
+    #             error.append(indiv.id)
+    #             print(f"Anomaly US14: FAMILY: ID: {indiv.id} has more than 5 sibling born at the same time")    
+    #     return error 
+    
+    
     # Author: Ibezim Ikenna
     def us22(self):
         """All individual IDs should be unique and all family IDs should be unique --Ikenna"""
@@ -591,6 +627,8 @@ def main():
     test.us06()
     test.us07()
     test.us08()
+    # test.us11()
+    # test.us14()
     test.us22()  # Calling the user story 22 function
     test.us27()  # Calling the user story 27 function
     
