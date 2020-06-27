@@ -443,9 +443,7 @@ class GedcomRepo:
                         error = f"ERROR: US06: FAMILY: {individual.name}'s divorce, {family.divorced}, is not before deathdate, {individual.death}"
                         errors.append(error)
                         print(error)
-
         return errors
-    
     
     # Author: Ibezim Ikenna
     def us07(self):
@@ -535,7 +533,6 @@ class GedcomRepo:
     #             print(f"Anomaly US14: FAMILY: ID: {indiv.id} has more than 5 sibling born at the same time")    
     #     return error 
     
-    
     # Author: Ibezim Ikenna
     def us22(self):
         """All individual IDs should be unique and all family IDs should be unique --Ikenna"""
@@ -574,10 +571,9 @@ class GedcomRepo:
         for i in self.indi_storage.values():
             id_age.append((i.id, i.age))
         # This prints out a list of indiviuals and their ages included
-        print(self.pretty_table_indiv())
+        else:
+            print(self.pretty_table_indiv())
         return id_age
-
-    
 
     # def us29(self):
 

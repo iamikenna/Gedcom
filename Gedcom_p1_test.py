@@ -149,13 +149,15 @@ class UserStoryTest(unittest.TestCase):
         """function to test for individual complete data"""
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        id_age, error = [('I1', "NA"),('US07_I1', 200), ('US07_I0886', 198),('I2', 69),
+        id_age, error = [('I1', "NA"),('US07_I1', 200), 
+                         ('US07_I0886', 198),('I2', 69),
                          ('I3', 68), ('I4', 40),
                          ('I5', 32), ('I6', 170), ('I7', 32), ('I8', 3),
                          ('I9', 43), ('I10', 18), ('US01_I11', 47), ('I12', 112),
                          ('I13', 67), ('I14', 64), ('I15', 65), ('I16', 0),
                          ('US01_I17', -30), ('I1', 65), ('US01_I17', 71), ('I15', 65),
-                         ('I15', 65), ('us14_I9', 2), ('us14_I4', 2), ('us14_I5', 2), ('us14_20', 2), ('us14_I6', 2), ('us14_I8', 2)
+                         ('I15', 65), ('us14_I9', 2), ('us14_I4', 2), ('us14_I5', 2), 
+                         ('us14_20', 2), ('us14_I6', 2), ('us14_I8', 2)
                          ], []
         my_func = test.us27()
 
