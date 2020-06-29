@@ -520,7 +520,15 @@ class GedcomRepo:
                     elif indi.id == family.husbandId:
                         father = indi
 
-                # TODO finish
+                if child != "NA" and child.birthday != "NA":
+                    if mother != "NA" and mother.death != "NA" and mother.death > child.birthday:
+                        error = f"ERROR: US09: FAMILY: {family.id}: Mother died {mother.death}, before the birth of child {child.id} on {child.birthday}."
+                        print(error)
+                        errors.append(error)
+                    if father != "NA" and father.death != "NA" and (father.death + relativedelta(months=9)) > child.birthday:
+                        error = f"ERROR: US09: FAMILY: {family.id}: Father died {father.death}, over 9 months before the birth of child {child.id} on {child.birthday}."
+                        print(error)
+                        errors.append(error)
 
         return errors
 
@@ -528,6 +536,25 @@ class GedcomRepo:
     def us10(self):
         """ Marriage should be at least 14 years after birth of both spouses (parents must be at least 14 years old) """
         errors = []
+        for family in self.fam_storage.values():
+            wife = "NA"
+            husband = "NA"
+            for individual in self.indi_storage.values():
+                if family.wifeId == individual.id:
+                    wife = individual
+                elif family.husbandId == individual.id:
+                    husband = individual
+
+            if family.married != "NA":
+                if wife != "NA" and wife.birthday != "NA" and family.married < wife.birthday + relativedelta(years=14):
+                    error = f"ERROR: US10: FAMILY: {family.id}: Wife was born {wife.birthday}, less than 14 years before she was married {family.married}."
+                    print(error)
+                    errors.append(error)
+                if husband != "NA" and husband.birthday != "NA" and family.married < husband.birthday + relativedelta(years=14):
+                    error = f"ERROR: US10: FAMILY: {family.id}: Husband was born {husband.birthday}, less than 14 years before he was married {family.married}."
+                    print(error)
+                    errors.append(error)
+
         return errors
 
     # Author: Ibezim Ikenna
@@ -655,6 +682,8 @@ def main():
     test.us06()
     test.us07()
     test.us08()
+    test.us09()
+    test.us10()
     # test.us11()
     # test.us14()
     test.us22()  # Calling the user story 22 function
