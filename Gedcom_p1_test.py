@@ -166,21 +166,21 @@ class UserStoryTest(unittest.TestCase):
 
     
 
-    # #Author: Christopher McKenzie
-    # def test_us29(self):
+    #Author: Christopher McKenzie
+    def test_us29(self):
 
-    #     set_deat = {'I16', 'I12'}
-    #     test = GedcomRepo("family.ged")
-    #     test.ged_reader()
-    #     self.assertEqual(test.us29(), set_deat)
+        set_deat = {'US07_I1', 'I16', 'US07_I0886', 'I12', 'US01_I11'}
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+        self.assertEqual(test.us29(), set_deat)
 
-    # #Author: Christopher McKenzie
-    # def test_us30(self):
+    #Author: Christopher McKenzie
+    def test_us30(self):
 
-    #     set_marr = {'I13', 'I9', 'I2', 'I6', 'I15', 'I1', 'I4', 'I14', 'I3'}
-    #     test = GedcomRepo("family.ged")
-    #     test.ged_reader()
-    #     self.assertEqual(test.us30(), set_marr)
+        set_marr = {'I4', 'I14', 'I1', 'I9', 'I2', 'I3', 'I15', 'I13', 'I6'}
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+        self.assertEqual(test.us30(), set_marr)
 
 
 if __name__ == "__main__":

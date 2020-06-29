@@ -575,29 +575,31 @@ class GedcomRepo:
             print(self.pretty_table_indiv())
         return id_age
 
-    # def us29(self):
+    # Author: McKenzie Christopher
+    def us29(self):
 
-    #     """List all deceased individuals in a GEDCOM file."""
+        """List all deceased individuals in a GEDCOM file."""
 
-    #     set_deat = set()
-    #     for person in self.indi_storage.values():
-    #         if person.alive == False:
-    #             set_deat.add(person.id)
+        set_deat = set()
+        for person in self.indi_storage.values():
+            if person.alive == False:
+                set_deat.add(person.id)
 
-    #     return set_deat
+        return set_deat
 
-    # def us30(self):
+    # Author: McKenzie Christopher
+    def us30(self):
 
-    #     """List all living married people in a GEDCOM file."""
+        """List all living married people in a GEDCOM file."""
 
-    #     set_marr = set()
-    #     for person in self.indi_storage.values():
-    #         if person.alive == True:
-    #             alive_id = person.id
-    #             for family in self.fam_storage.values():
-    #                 if family.husbandId == alive_id or family.wifeId == alive_id and family.married != 'NA':
-    #                     set_marr.add(alive_id)
-    #     return set_marr
+        set_marr = set()
+        for person in self.indi_storage.values():
+            if person.alive == True:
+                alive_id = person.id
+                for family in self.fam_storage.values():
+                    if family.husbandId == alive_id or family.wifeId == alive_id and family.married != 'NA':
+                        set_marr.add(alive_id)
+        return set_marr
 
 
 def main():
@@ -628,8 +630,8 @@ def main():
     test.us22()  # Calling the user story 22 function
     test.us27()  # Calling the user story 27 function
     
-    # test.us29()
-    # test.us30()
+    test.us29()
+    test.us30()
 
     # print('\n\n\n')
     # print("This is the Individuals data in a dictionary format\n\n\n")
