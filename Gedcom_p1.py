@@ -395,7 +395,7 @@ class GedcomRepo:
         errors = []
 
         for individual in self.indi_storage.values():
-            if individual.death != "NA" and individual.birthday >= individual.death: 
+            if individual.death != "NA" and individual.birthday >= individual.death:
                 error = f"ERROR: Individual: US03: {individual.id}: {individual.name}'s death, {individual.death} occurs before birth, {individual.birthday}"
                 errors.append(error)
                 print(error)
@@ -444,15 +444,15 @@ class GedcomRepo:
                         errors.append(error)
                         print(error)
         return errors
-    
+
     # Author: Ibezim Ikenna
     def us07(self):
         """ Less then 150 years old"""
         print("This is user story 07 --Ikenna")
         alive, death = [], []
-        
+
         for val in self.indi_storage.values():
-            if val.death != "NA" and val.birthday != "NA": # Making sure dead people are less than 150 years old
+            if val.death != "NA" and val.birthday != "NA":  # Making sure dead people are less than 150 years old
                 try:
                     d_age = val.death.year - val.birthday.year
                 except AttributeError:
@@ -460,7 +460,8 @@ class GedcomRepo:
                 else:
                     if d_age >= 150:
                         death.append((val.id, d_age))
-                        print(f"Error US07: Death after birth of {val.name} ({val.id}) was {d_age} years which occurs after 150 years")
+                        print(
+                            f"Error US07: Death after birth of {val.name} ({val.id}) was {d_age} years which occurs after 150 years")
             elif val.death == "NA" and val.birthday != "NA":
                 try:
                     b_age = datetime.today().year - val.birthday.year
@@ -468,8 +469,9 @@ class GedcomRepo:
                     print(f"{val.birthday}")
                 else:
                     if b_age >= 150:
-                        alive.append((val.id,b_age))
-                        print(f"Error US07: Current date after birth of {val.name} ({val.id}) was {b_age} years which occurs after 150 years")
+                        alive.append((val.id, b_age))
+                        print(
+                            f"Error US07: Current date after birth of {val.name} ({val.id}) was {b_age} years which occurs after 150 years")
         return death, alive
 
     # Author: Ibezim Ikenna
@@ -477,27 +479,57 @@ class GedcomRepo:
         """Birth before marriage of parents and within 9 months after divorce"""
         print("This is user story 08 --Ikenna")
         marr_err, div_err = [], []
-        
+
         for val in self.fam_storage.values():
             if val.married != "NA":
                 for val2 in val.children:
                     for val3 in self.indi_storage.values():
                         if val3.id == val2:
                             try:
-                                if val.married >= val3.birthday: #keeping track of marriage error
+                                if val.married >= val3.birthday:  # keeping track of marriage error
                                     marr_err.append((val3.id, val.id))
-                                    print(f"Anomaly US08: Birth date of {val3.name} ({val3.id}) occurs before the marriage date of his parents in Family {val.id}")
+                                    print(
+                                        f"Anomaly US08: Birth date of {val3.name} ({val3.id}) occurs before the marriage date of his parents in Family {val.id}")
                             except TypeError:
                                 continue
 
                             try:
-                                if val3.birthday > (val.divorced + relativedelta(months=+9)): #keeping track of divorce error
+                                # keeping track of divorce error
+                                if val3.birthday > (val.divorced + relativedelta(months=+9)):
                                     div_err.append((val3.id, val.id))
-                                    print(f"Anomaly US08: Birth date of {val3.name} ({val3.id}) occurs after 9 months of the divorce date of his parents in Family {val.id}")
+                                    print(
+                                        f"Anomaly US08: Birth date of {val3.name} ({val3.id}) occurs after 9 months of the divorce date of his parents in Family {val.id}")
                             except TypeError:
                                 continue
         return (sorted(marr_err), sorted(div_err))
-    
+
+    # Author: Lehmann Margaret
+    def us09(self):
+        """ Child should be born before death of mother and before 9 months after death of father """
+        errors = []
+        for family in self.fam_storage.values():
+            for child_id in family.children:
+                child = "NA"
+                mother = "NA"
+                father = "NA"
+                for indi in self.indi_storage.values():
+                    if indi.id == child_id:
+                        child = indi
+                    elif indi.id == family.wifeId:
+                        mother = indi
+                    elif indi.id == family.husbandId:
+                        father = indi
+
+                # TODO finish
+
+        return errors
+
+    # Author: Lehmann Margaret
+    def us10(self):
+        """ Marriage should be at least 14 years after birth of both spouses (parents must be at least 14 years old) """
+        errors = []
+        return errors
+
     # Author: Ibezim Ikenna
     # def us11(self):
     #     """Marriage should not occur during marriage to another spouse"""
@@ -508,13 +540,13 @@ class GedcomRepo:
     #         if type(indiv.married) != str and indiv.divorced == 'NA':
     #             marr_storage[indiv.husbandId] += 1
     #             marr_storage[indiv.wifeId] += 1
-                
+
     #     for offset, value in marr_storage.items():
     #         if value > 1:
     #             error.append(offset)
     #             print(f"Error US11: INDIVIDUAL: ID: {offset} is married to another family while still in another :MARRIAGE")
     #     return error
-    
+
     # Author: Ibezim Ikenna
     # def us14(self):
     #     """No more than five siblings should be born at the same time"""
@@ -526,13 +558,13 @@ class GedcomRepo:
     #             for offset2 in self.indi_storage.values():
     #                 if offset2.id == offset:
     #                     date_storage[offset2.birthday] += 1
-                            
+
     #     for offset3, value in date_storage.items():
     #         if value > 5:
     #             error.append(indiv.id)
-    #             print(f"Anomaly US14: FAMILY: ID: {indiv.id} has more than 5 sibling born at the same time")    
-    #     return error 
-    
+    #             print(f"Anomaly US14: FAMILY: ID: {indiv.id} has more than 5 sibling born at the same time")
+    #     return error
+
     # Author: Ibezim Ikenna
     def us22(self):
         """All individual IDs should be unique and all family IDs should be unique --Ikenna"""
@@ -540,7 +572,7 @@ class GedcomRepo:
         d_i = defaultdict(int)
         d_f = defaultdict(int)
         l_i, l_f = [], []
-        
+
         for offset_1, vals_1 in self.indi_storage.items():
 
             d_i[vals_1.id] += 1
@@ -567,7 +599,7 @@ class GedcomRepo:
         """Include person's current age when listing individuals """
         print("This is user story 27 --Ikenna")
         id_age = []
-        
+
         for i in self.indi_storage.values():
             id_age.append((i.id, i.age))
         # This prints out a list of indiviuals and their ages included
@@ -577,7 +609,6 @@ class GedcomRepo:
 
     # Author: McKenzie Christopher
     def us29(self):
-
         """List all deceased individuals in a GEDCOM file."""
 
         set_deat = set()
@@ -589,7 +620,6 @@ class GedcomRepo:
 
     # Author: McKenzie Christopher
     def us30(self):
-
         """List all living married people in a GEDCOM file."""
 
         set_marr = set()
@@ -629,7 +659,7 @@ def main():
     # test.us14()
     test.us22()  # Calling the user story 22 function
     test.us27()  # Calling the user story 27 function
-    
+
     test.us29()
     test.us30()
 
@@ -648,6 +678,7 @@ def main():
     # print("This is the general dictionary for both individuals and family\n\n\n")
     # print(gen_storage)
     # print("\n\n\n")
+
 
     # print("test anything you want here!!!!!!\n\n\n")
     # print(gen_storage["individual"][1].birthday) # testing datetime
