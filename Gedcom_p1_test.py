@@ -60,7 +60,6 @@ class UserStoryTest(unittest.TestCase):
         assert(len(error_list) > 0)
 
     # Author: Lehmann Margaret
-
     def test_us04(self):
         """ Tests marriage before divorce """
         test = GedcomRepo("family.ged")
@@ -69,7 +68,7 @@ class UserStoryTest(unittest.TestCase):
 
     # Author: Lehmann Margaret
     def test_us05(self):
-        """ Tests marriagne before death """
+        """ Tests marriage before death """
         test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(len(test.us05()), 2)
@@ -109,17 +108,17 @@ class UserStoryTest(unittest.TestCase):
 
     # Author: Lehmann Margaret
     def test_us09(self):
-        """ Tests marriagne before death """
+        """ Tests child born before death of parents """
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        #self.assertEqual(len(test.us09()), 2)
+        self.assertEqual(len(test.us09()), 3)
 
     # Author: Lehmann Margaret
     def test_us10(self):
-        """ Tests marriagne before death """
+        """ Tests marriage atleast 14 years old"""
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        #self.assertEqual(len(test.us05()), 2)
+        self.assertEqual(len(test.us10()), 4)
 
     # Author: Ibezim Ikenna
     # def test_us11(self):
@@ -173,7 +172,10 @@ class UserStoryTest(unittest.TestCase):
                          ('I13', 67), ('I14', 64), ('I15', 65), ('I16', 0),
                          ('US01_I17', -30), ('I1', 65), ('US01_I17', 71), ('I15', 65),
                          ('I15', 65), ('us14_I9', 2), ('us14_I4', 2), ('us14_I5', 2),
-                         ('us14_20', 2), ('us14_I6', 2), ('us14_I8', 2)
+                         ('us14_20', 2), ('us14_I6', 2), ('us14_I8', 2),
+                         ('US09_I1', 28), ('US09_I2', 48), ('US09_I3', 27),
+                         ('US09_I4', 30), ('US09_I5', 72), ('US09_I6', 42),
+                         ('US09_I7', 40), ('US09_I8', 35), ('US09_I9', 70)
                          ], []
         my_func = test.us27()
 
@@ -183,7 +185,8 @@ class UserStoryTest(unittest.TestCase):
     # Author: Christopher McKenzie
     def test_us29(self):
 
-        set_deat = {'US07_I1', 'I16', 'US07_I0886', 'I12', 'US01_I11'}
+        set_deat = {'US07_I1', 'I16', 'US07_I0886', 'I12',
+                    'US01_I11', 'US09_I8', 'US09_I3', 'US09_I4'}
         test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(test.us29(), set_deat)
@@ -191,7 +194,8 @@ class UserStoryTest(unittest.TestCase):
     # Author: Christopher McKenzie
     def test_us30(self):
 
-        set_marr = {'I4', 'I14', 'I1', 'I9', 'I2', 'I3', 'I15', 'I13', 'I6'}
+        set_marr = {'I4', 'I14', 'I1', 'I9', 'I2', 'I3', 'I15',
+                    'I13', 'I6', 'US09_I7', 'US09_I6', 'US09_I2'}
         test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(test.us30(), set_marr)

@@ -521,11 +521,11 @@ class GedcomRepo:
                         father = indi
 
                 if child != "NA" and child.birthday != "NA":
-                    if mother != "NA" and mother.death != "NA" and mother.death > child.birthday:
+                    if mother != "NA" and mother.death != "NA" and mother.death < child.birthday:
                         error = f"ERROR: US09: FAMILY: {family.id}: Mother died {mother.death}, before the birth of child {child.id} on {child.birthday}."
                         print(error)
                         errors.append(error)
-                    if father != "NA" and father.death != "NA" and (father.death + relativedelta(months=9)) > child.birthday:
+                    if father != "NA" and father.death != "NA" and (father.death + relativedelta(months=9)) < child.birthday:
                         error = f"ERROR: US09: FAMILY: {family.id}: Father died {father.death}, over 9 months before the birth of child {child.id} on {child.birthday}."
                         print(error)
                         errors.append(error)
@@ -707,7 +707,6 @@ def main():
     # print("This is the general dictionary for both individuals and family\n\n\n")
     # print(gen_storage)
     # print("\n\n\n")
-
 
     # print("test anything you want here!!!!!!\n\n\n")
     # print(gen_storage["individual"][1].birthday) # testing datetime
