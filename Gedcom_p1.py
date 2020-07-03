@@ -194,7 +194,7 @@ class GedcomRepo:
                             #     self.indi_storage[indi_counter].alive = True
                             # else:
                             self.indi_storage[indi_counter].death = self.date_convert(
-                                    arg.split(" "))
+                                arg.split(" "))
                         except AttributeError:
                             print(f"Invalid date: {arg}")
                         else:
@@ -204,7 +204,7 @@ class GedcomRepo:
                                 if type(present) == type(self.date_convert(arg.split(" "))) and present < self.date_convert(arg.split(" ")):
                                     self.indi_storage[indi_counter].alive = True
                                 elif type(self.indi_storage[indi_counter].death) == str:
-                                     self.indi_storage[indi_counter].alive = True
+                                    self.indi_storage[indi_counter].alive = True
                                 # Setting up age of death
                                 try:
                                     death_age = self.date_convert(arg.split(" ")).year \
@@ -659,7 +659,7 @@ class GedcomRepo:
         for person in self.indi_storage.values():
             if person.alive == False:
                 set_deat.add(person.id)
-            # try: 
+            # try:
             #     if person.alive == False: #and person.death < present: #So future dates aren't included
             #         set_deat.add(person.id)
             # except TypeError:
@@ -677,17 +677,17 @@ class GedcomRepo:
             if person.alive == True:
                 alive_id = person.id
                 for family in self.fam_storage.values():
-                   #try:
-                        if type(family.married) != str: #Does not include Invalid Dates and NA
+                   # try:
+                    if type(family.married) != str:  # Does not include Invalid Dates and NA
 
-                            if family.husbandId == alive_id or family.wifeId == alive_id:
-                                set_marr.add(alive_id)
+                        if family.husbandId == alive_id or family.wifeId == alive_id:
+                            set_marr.add(alive_id)
 
-                                if family.married > present: #Does not include future marriage dates
-                                    set_marr.remove(alive_id)
+                            if family.married > present:  # Does not include future marriage dates
+                                set_marr.remove(alive_id)
 
-                                elif type(family.divorced) == type(present) and family.divorced < present:
-                                    set_marr.remove(alive_id)
+                            elif type(family.divorced) == type(present) and family.divorced < present:
+                                set_marr.remove(alive_id)
 
         print(f'US30: List of all living married people: {set_marr}')
         return set_marr
@@ -708,20 +708,20 @@ def main():
     print("Our user stories begin here!!!!!")
     print("\n\n\n")
 
-    # test.us01()
-    # test.us02()
-    # test.us03()
-    # test.us04()
-    # test.us05()
-    # test.us06()
-    # test.us07()
-    # test.us08()
-    # test.us09()
-    # test.us10()
+    test.us01()
+    test.us02()
+    test.us03()
+    test.us04()
+    test.us05()
+    test.us06()
+    test.us07()
+    test.us08()
+    test.us09()
+    test.us10()
     # # test.us11()
     # # test.us14()
-    # test.us22()  # Calling the user story 22 function
-    # test.us27()  # Calling the user story 27 function
+    test.us22()  # Calling the user story 22 function
+    test.us27()  # Calling the user story 27 function
 
     test.us29()
     test.us30()
@@ -741,6 +741,7 @@ def main():
     # print("This is the general dictionary for both individuals and family\n\n\n")
     # print(gen_storage)
     # print("\n\n\n")
+
 
     # print("test anything you want here!!!!!!\n\n\n")
     # print(gen_storage["individual"][1].birthday) # testing datetime
