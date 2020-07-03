@@ -296,12 +296,15 @@ class GedcomRepo:
 
     def date_convert(self, g_date):
         """Converting '15 MAY 2020' into '2020-5-15' and g_date takes a date in a list:[] form """
-
+        present = datetime.date(datetime.now())
         g_date = " ".join(g_date)
         try:
             g_object = datetime.strptime(g_date, "%d %b %Y")
+            print(g_object.date())
         except (ValueError, AttributeError):
             return(f"Invalid Date: {g_date}")
+        if g_object.date() > present:
+            return(f"Future Date: {g_date}")
         else:
             return(g_object.date())
 
@@ -638,24 +641,39 @@ class GedcomRepo:
     def us29(self):
         """List all deceased individuals in a GEDCOM file."""
 
+        present = datetime.date(datetime.now())
         set_deat = set()
         for person in self.indi_storage.values():
-            if person.alive == False:
-                set_deat.add(person.id)
-
+            try: 
+                if person.alive == False and person.death < present: #So future dates aren't included
+                    set_deat.add(person.id)
+            except TypeError:
+                set_deat.add(person.id) #Invalid dates are fine (come out as string). Individual may still be dead with invalid date
+        print(f'US29: List of all deceased individuals people: {set_deat}')
         return set_deat
 
     # Author: McKenzie Christopher
     def us30(self):
         """List all living married people in a GEDCOM file."""
 
+        present = datetime.date(datetime.now())
         set_marr = set()
         for person in self.indi_storage.values():
             if person.alive == True:
                 alive_id = person.id
                 for family in self.fam_storage.values():
-                    if family.husbandId == alive_id or family.wifeId == alive_id and family.married != 'NA':
-                        set_marr.add(alive_id)
+                   try:
+                        if family.husbandId == alive_id or family.wifeId == alive_id and family.married != 'NA':
+                            set_marr.add(alive_id)
+
+                            if type(family.divorced) == type(present) and family.divorced < present:
+                                set_marr.remove(alive_id)
+                            elif family.married > present:
+                                set_marr.remove(alive_id)
+
+                   except TypeError: #CAUTION: RECHECK THIS. Should still allow invalid dates
+                        set_marr.add(alive_id) 
+        print(f'US30: List of all living married people: {set_marr}')
         return set_marr
 
 
