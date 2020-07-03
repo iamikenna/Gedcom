@@ -189,14 +189,19 @@ class GedcomRepo:
                             self.indi_storage[indi_counter].death == "NA" and \
                             tag_curr == "DEAT":
                         try:
+                            present = datetime.date(datetime.now())
+                            # if type(present) == type(self.date_convert(arg.split(" "))) and present < self.date_convert(arg.split(" ")):
+                            #     self.indi_storage[indi_counter].alive = True
+                            # else:
                             self.indi_storage[indi_counter].death = self.date_convert(
-                                arg.split(" "))
+                                    arg.split(" "))
                         except AttributeError:
                             print(f"Invalid date: {arg}")
                         else:
                             if self.indi_storage[indi_counter].death != "NA":
                                 self.indi_storage[indi_counter].alive = False
-
+                                if type(present) == type(self.date_convert(arg.split(" "))) and present < self.date_convert(arg.split(" ")):
+                                    self.indi_storage[indi_counter].alive = True
                                 # Setting up age of death
                                 try:
                                     death_age = self.date_convert(arg.split(" ")).year \
@@ -300,11 +305,11 @@ class GedcomRepo:
         g_date = " ".join(g_date)
         try:
             g_object = datetime.strptime(g_date, "%d %b %Y")
-            print(g_object.date())
         except (ValueError, AttributeError):
             return(f"Invalid Date: {g_date}")
         if g_object.date() > present:
-            return(f"Future Date: {g_date}")
+            print(f"Future Date: {g_date}")
+            return(g_object.date())
         else:
             return(g_object.date())
 
@@ -398,11 +403,13 @@ class GedcomRepo:
         errors = []
 
         for individual in self.indi_storage.values():
-            if individual.death != "NA" and individual.birthday >= individual.death:
-                error = f"ERROR: Individual: US03: {individual.id}: {individual.name}'s death, {individual.death} occurs before birth, {individual.birthday}"
-                errors.append(error)
-                print(error)
-
+            try:
+                if individual.death != "NA" and individual.birthday >= individual.death:
+                    error = f"ERROR: Individual: US03: {individual.id}: {individual.name}'s death, {individual.death} occurs before birth, {individual.birthday}"
+                    errors.append(error)
+                    print(error)
+            except TypeError as e:
+                print(f'Future; {e}')
         return errors
 
     # Author: Lehmann Margaret
@@ -410,11 +417,14 @@ class GedcomRepo:
         """ Marriage should occur before divorce of spouses, and divorce can only occur after marriage """
         errors: List[str] = []
         for fam in self.fam_storage.values():
-            if fam.divorced != "NA":
-                if fam.divorced < fam.married:
-                    error = f"ERROR: FAMILY: US04: {fam.id}: Divorced {fam.divorced} before married {fam.married}."
-                    print(error)
-                    errors.append(error)
+            try:
+                if fam.divorced != "NA":
+                    if fam.divorced < fam.married:
+                        error = f"ERROR: FAMILY: US04: {fam.id}: Divorced {fam.divorced} before married {fam.married}."
+                        print(error)
+                        errors.append(error)
+            except TypeError as e:
+                print(f'Future; {e}')
         return errors
 
     # Author: Lehmann Margaret
@@ -696,19 +706,19 @@ def main():
     test.us02()
     test.us03()
     test.us04()
-    test.us05()
-    test.us06()
-    test.us07()
-    test.us08()
-    test.us09()
-    test.us10()
-    # test.us11()
-    # test.us14()
-    test.us22()  # Calling the user story 22 function
-    test.us27()  # Calling the user story 27 function
+    # test.us05()
+    # test.us06()
+    # test.us07()
+    # test.us08()
+    # test.us09()
+    # test.us10()
+    # # test.us11()
+    # # test.us14()
+    # test.us22()  # Calling the user story 22 function
+    # test.us27()  # Calling the user story 27 function
 
-    test.us29()
-    test.us30()
+    # test.us29()
+    # test.us30()
 
     # print('\n\n\n')
     # print("This is the Individuals data in a dictionary format\n\n\n")
