@@ -222,7 +222,7 @@ class UserStoryTest(unittest.TestCase):
 
         bounds: GedcomRepo = GedcomRepo("us29_us30.ged")
         bounds.ged_reader()
-        b_set = {'I13', 'I1', 'I15', 'US30_I9', 'I6'} #New version of code
+        b_set = {'I13', 'I1', 'I15', 'US30_I9', 'I6'}
         self.assertEqual(bounds.us30(), b_set)
 
 

@@ -654,11 +654,13 @@ class GedcomRepo:
         present = datetime.date(datetime.now())
         set_deat = set()
         for person in self.indi_storage.values():
-            try: 
-                if person.alive == False and person.death < present: #So future dates aren't included
-                    set_deat.add(person.id)
-            except TypeError:
-                set_deat.add(person.id) #Invalid dates are fine (come out as string). Individual may still be dead with invalid date
+            if person.alive == False:
+                set_deat.add(person.id)
+            # try: 
+            #     if person.alive == False: #and person.death < present: #So future dates aren't included
+            #         set_deat.add(person.id)
+            # except TypeError:
+            #     set_deat.add(person.id) #Invalid dates are fine (come out as string). Individual may still be dead with invalid date
         print(f'US29: List of all deceased individuals people: {set_deat}')
         return set_deat
 
@@ -672,7 +674,7 @@ class GedcomRepo:
             if person.alive == True:
                 alive_id = person.id
                 for family in self.fam_storage.values():
-                   try:
+                    try:
                         if family.husbandId == alive_id or family.wifeId == alive_id and family.married != 'NA':
                             set_marr.add(alive_id)
 
@@ -681,8 +683,8 @@ class GedcomRepo:
                             elif family.married > present:
                                 set_marr.remove(alive_id)
 
-                   except TypeError: #CAUTION: RECHECK THIS. Should still allow invalid dates
-                        set_marr.add(alive_id) 
+                    except TypeError: #CAUTION: RECHECK THIS. Should skip invalid dates
+                        continue 
         print(f'US30: List of all living married people: {set_marr}')
         return set_marr
 
