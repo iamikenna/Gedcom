@@ -137,21 +137,48 @@ class UserStoryTest(unittest.TestCase):
     #     self.assertEqual(test.us08()[1],  div_ex)
     #     self.assertNotEqual(test.us08(),  error)
 
-    # #Author: Christopher McKenzie
-    # def test_us29(self):
+    # Author: Christopher McKenzie
+    def test_us29(self):
+        """Tests if function lists all dead individuals."""
 
-    #     set_deat = {'I16', 'I12'}
-    #     test = GedcomRepo("family.ged")
-    #     test.ged_reader()
-    #     self.assertEqual(test.us29(), set_deat)
+        set_deat = {'US07_I0886', 'I12', 'US07_I1', 'I16'}
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+        self.assertEqual(test.us29(), set_deat)
 
-    # #Author: Christopher McKenzie
-    # def test_us30(self):
+        """Below tests the following boundaries:
+        1. Missing death date
+        2. Future death date
+        3. Living individual with death date
+        4. Invalid death date."""
 
-    #     set_marr = {'I13', 'I9', 'I2', 'I6', 'I15', 'I1', 'I4', 'I14', 'I3'}
-    #     test = GedcomRepo("family.ged")
-    #     test.ged_reader()
-    #     self.assertEqual(test.us30(), set_marr)
+        bounds: GedcomRepo = GedcomRepo("us29_us30.ged")
+        bounds.ged_reader()
+        b_set = {'US30_I2', 'US07_I0886', 'I12', 'US30_I4', 'US29_I1'}
+        self.assertEqual(bounds.us29(), b_set)
+
+    # Author: Christopher McKenzie
+    def test_us30(self):
+        """Tests if function lists all living married people."""
+
+        set_marr = {'I6', 'I4', 'I1', 'I15', 'I9', 'I2', 'I3'}
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+        self.assertEqual(test.us30(), set_marr)
+
+        """Below tests the following boundaries:
+        1. Married but one spouse dead
+        2. Future death date
+        3. Living individual with death date
+        4. Missing marriage date
+        5. Future marriage date
+        6. Invalid death date
+        7. Invalid marriage date."""
+
+        bounds: GedcomRepo = GedcomRepo("us29_us30.ged")
+        bounds.ged_reader()
+        b_set = {'US30_I9', 'I1', 'I15', 'I6', 'I13'} #New version of code
+        self.assertEqual(bounds.us30(), b_set)
 
 
 if __name__ == "__main__":
