@@ -199,9 +199,12 @@ class GedcomRepo:
                             print(f"Invalid date: {arg}")
                         else:
                             if self.indi_storage[indi_counter].death != "NA":
+                                #print("Death status: ",self.indi_storage[indi_counter].death)
                                 self.indi_storage[indi_counter].alive = False
                                 if type(present) == type(self.date_convert(arg.split(" "))) and present < self.date_convert(arg.split(" ")):
                                     self.indi_storage[indi_counter].alive = True
+                                elif type(self.indi_storage[indi_counter].death) == str:
+                                     self.indi_storage[indi_counter].alive = True
                                 # Setting up age of death
                                 try:
                                     death_age = self.date_convert(arg.split(" ")).year \
@@ -674,17 +677,18 @@ class GedcomRepo:
             if person.alive == True:
                 alive_id = person.id
                 for family in self.fam_storage.values():
-                    try:
-                        if family.husbandId == alive_id or family.wifeId == alive_id and family.married != 'NA':
-                            set_marr.add(alive_id)
+                   #try:
+                        if type(family.married) != str: #Does not include Invalid Dates and NA
 
-                            if type(family.divorced) == type(present) and family.divorced < present:
-                                set_marr.remove(alive_id)
-                            elif family.married > present:
-                                set_marr.remove(alive_id)
+                            if family.husbandId == alive_id or family.wifeId == alive_id:
+                                set_marr.add(alive_id)
 
-                    except TypeError: #CAUTION: RECHECK THIS. Should skip invalid dates
-                        continue 
+                                if family.married > present: #Does not include future marriage dates
+                                    set_marr.remove(alive_id)
+
+                                elif type(family.divorced) == type(present) and family.divorced < present:
+                                    set_marr.remove(alive_id)
+
         print(f'US30: List of all living married people: {set_marr}')
         return set_marr
 
