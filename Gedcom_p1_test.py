@@ -194,8 +194,7 @@ class UserStoryTest(unittest.TestCase):
         """Below tests the following boundaries:
         1. Missing death date
         2. Future death date
-        3. Living individual with death date
-        4. Invalid death date."""
+        3. Invalid death date."""
 
         bounds: GedcomRepo = GedcomRepo("us29_us30.ged")
         bounds.ged_reader()
@@ -214,11 +213,10 @@ class UserStoryTest(unittest.TestCase):
         """Below tests the following boundaries:
         1. Married but one spouse dead
         2. Future death date
-        3. Living individual with death date
-        4. Missing marriage date
-        5. Future marriage date
-        6. Invalid death date
-        7. Invalid marriage date."""
+        3. Missing marriage date
+        4. Future marriage date
+        5. Invalid death date
+        6. Invalid marriage date."""
 
         bounds: GedcomRepo = GedcomRepo("us29_us30.ged")
         bounds.ged_reader()
