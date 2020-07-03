@@ -186,7 +186,7 @@ class UserStoryTest(unittest.TestCase):
     def test_us29(self):
         """Tests if function lists all dead individuals."""
 
-        set_deat = {'US07_I0886', 'I12', 'US07_I1', 'I16'}
+        set_deat = {'US09_I3', 'I16', 'US09_I4', 'US09_I8', 'US07_I0886', 'US07_I1', 'I12'}
         test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(test.us29(), set_deat)
@@ -199,14 +199,14 @@ class UserStoryTest(unittest.TestCase):
 
         bounds: GedcomRepo = GedcomRepo("us29_us30.ged")
         bounds.ged_reader()
-        b_set = {'US30_I2', 'US07_I0886', 'I12', 'US30_I4', 'US29_I1'}
+        b_set = {'US29_US30_I11', 'US30_I2', 'I12', 'US30_I4', 'US07_I0886'}
         self.assertEqual(bounds.us29(), b_set)
 
     # Author: Christopher McKenzie
     def test_us30(self):
         """Tests if function lists all living married people."""
 
-        set_marr = {'I6', 'I4', 'I1', 'I15', 'I9', 'I2', 'I3'}
+        set_marr = {'I2', 'I15', 'I1', 'I3', 'US09_I2', 'I4', 'I6', 'US09_I6', 'I9', 'US09_I7'}
         test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(test.us30(), set_marr)
@@ -222,7 +222,7 @@ class UserStoryTest(unittest.TestCase):
 
         bounds: GedcomRepo = GedcomRepo("us29_us30.ged")
         bounds.ged_reader()
-        b_set = {'US30_I9', 'I1', 'I15', 'I6', 'I13'} #New version of code
+        b_set = {'I13', 'I1', 'I15', 'US30_I9', 'I6'} #New version of code
         self.assertEqual(bounds.us30(), b_set)
 
 

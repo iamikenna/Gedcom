@@ -702,10 +702,10 @@ def main():
     print("Our user stories begin here!!!!!")
     print("\n\n\n")
 
-    test.us01()
-    test.us02()
-    test.us03()
-    test.us04()
+    # test.us01()
+    # test.us02()
+    # test.us03()
+    # test.us04()
     # test.us05()
     # test.us06()
     # test.us07()
@@ -717,8 +717,8 @@ def main():
     # test.us22()  # Calling the user story 22 function
     # test.us27()  # Calling the user story 27 function
 
-    # test.us29()
-    # test.us30()
+    test.us29()
+    test.us30()
 
     # print('\n\n\n')
     # print("This is the Individuals data in a dictionary format\n\n\n")
