@@ -590,6 +590,63 @@ class GedcomRepo:
     #             print(f"Error US11: INDIVIDUAL: ID: {offset} is married to another family while still in another :MARRIAGE")
     #     return error
 
+    # Author: Shaffer Wayne
+    def us12(self):
+        """ Compares ages of parents to ages of their children.
+            - Mother must not be more than 60 years older than her children.
+            - Father must not be more than 80 years older than his children.
+        """
+        print("This is user story US12 - Wayne")
+
+        error_families = []
+
+        fams_with_children = [family for family in self.fam_storage.values() \
+            if len(family.children) > 0]
+
+        for family in fams_with_children:
+            for individual in self.indi_storage.values():
+                if individual.id == family.husbandId:
+                    husband = individual
+                if individual.id == family.wifeId:
+                    wife = individual
+                
+            children = [child for child in self.indi_storage.values() \
+                if child.id in family.children]
+
+            #find youngest child
+            youngest_child = None
+            sorted_children = sorted(children, key = lambda i: str(i.age), reverse = True)
+            for child in sorted_children:
+                if child.age != "NA":
+                    youngest_child = child
+            
+            if youngest_child == None:
+                error = f"""ERROR: US12: FAMILY: {family.id}:
+                            This family has no listed ages for any of its {len(children)} children.
+                            Comparison not possible."""
+                print(error)
+                error_families.append(family.id)
+            
+            else:
+                # now compare husband/wife ages 
+                if wife.age - youngest_child.age >= 60:
+                    error = f"""ERROR: US12: FAMILY: {family.id}:
+                                Wife {wife.name} was born {wife.birthday}, more than 60 years
+                                before her youngest child {youngest_child.name}, 
+                                who was born on {youngest_child.birthday}."""
+                    print(error)
+                    error_families.append(family.id)
+
+                if husband.age - youngest_child.age >= 80:
+                    error = f"""ERROR: US12: FAMILY: {family.id}:
+                                Husband {husband.name} was born {husband.birthday}, more than 80 years
+                                before his youngest child {youngest_child.name},
+                                who was born on {youngest_child.birthday}."""
+                    print(error)
+                    error_families.append(family.id)
+
+        return error_families
+
     # Author: Ibezim Ikenna
     # def us14(self):
     #     """No more than five siblings should be born at the same time"""
@@ -607,6 +664,36 @@ class GedcomRepo:
     #             error.append(indiv.id)
     #             print(f"Anomaly US14: FAMILY: ID: {indiv.id} has more than 5 sibling born at the same time")
     #     return error
+
+    # Author: Shaffer Wayne
+    def us21(self):
+        """ In all families, father should be male, and mother should be female. """
+        
+        error_families = []
+
+        print("This is user story 21 -- Wayne")
+
+        for family in self.fam_storage.values():
+            #identify husband and wife
+            for individual in self.indi_storage.values():
+                if individual.id == family.husbandId:
+                    husband = individual
+                if individual.id == family.wifeId:
+                    wife = individual
+
+            if husband.gender != "M":
+                error = f"""ERROR: US21: FAMILY: {family.id}: 
+                            {husband.name} is the wrong gender!"""
+                print(error)
+                error_families.append(husband.id)
+
+            if wife.gender != "F":
+                error = f"""ERROR: US21: FAMILY: {family.id}: 
+                            {wife.name} is the wrong gender!"""
+                print(error)
+                error_families.append(wife.id)
+
+        return error_families
 
     # Author: Ibezim Ikenna
     def us22(self):
@@ -719,7 +806,9 @@ def main():
     test.us09()
     test.us10()
     # # test.us11()
+    test.us12()
     # # test.us14()
+    test.us21()
     test.us22()  # Calling the user story 22 function
     test.us27()  # Calling the user story 27 function
 

@@ -131,6 +131,14 @@ class UserStoryTest(unittest.TestCase):
     #     self.assertEqual(my_func,  couples)
     #     self.assertNotEqual(my_func,  error)
 
+    # Author: Shaffer Wayne
+    def test_us12(self):
+        """ Tests parents too old """
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+        failed_families = ["F5", "F9", "F9", "US12_F1", "US12_F3"]
+        self.assertEqual(test.us12(), failed_families)
+
     # Author: Ibezim Ikenna
     # def test_us14(self):
     #     """No more than five siblings should be born at the same time --Ikenna"""
@@ -142,6 +150,14 @@ class UserStoryTest(unittest.TestCase):
 
     #     self.assertEqual(my_func,  family)
     #     self.assertNotEqual(my_func,  error)
+
+    # Author: Shaffer Wayne
+    def test_us21(self):
+        """ Test if husband and wife are correct gender in each family. """
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+        failed_families = ["I1", "US21_I41", "US21_I42", "US21_I52"]
+        self.assertEqual(test.us21(), failed_families)
 
     # Author: Ibezim Ikenna
 
