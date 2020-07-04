@@ -225,7 +225,6 @@ class UserStoryTest(unittest.TestCase):
     # Author: Christopher McKenzie
     def test_us30(self):
         """Tests if function lists all living married people."""
-
         set_marr = {'US12_I12', 'I3', 'I4', 'US12_I32', 'US12_I11',
                     'US21_I42', 'US21_I51', 'I9', 'US12_I31', 'US21_I52',
                     'US09_I7', 'US21_I41', 'US09_I6', 'US12_I22', 'I2',
@@ -246,7 +245,6 @@ class UserStoryTest(unittest.TestCase):
         bounds.ged_reader()
         b_set = {'I13', 'US30_I14'}
         self.assertEqual(bounds.us30(), b_set)
-
 
 
 if __name__ == "__main__":

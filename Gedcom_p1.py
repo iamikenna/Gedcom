@@ -751,6 +751,7 @@ class GedcomRepo:
             #         set_deat.add(person.id)
             # except TypeError:
             #     set_deat.add(person.id) #Invalid dates are fine (come out as string). Individual may still be dead with invalid date
+
         print(f'US29: List of all deceased individuals people: {set_deat}')
         return set_deat
 
@@ -779,7 +780,7 @@ class GedcomRepo:
         print(f'US30: List of all living married people: {set_marr}')
         return set_marr
 
-
+      
 def main():
     """
     Testing
