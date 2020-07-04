@@ -82,10 +82,11 @@ class GedcomRepo:
 
     """
 
-    def __init__(self, path) -> None:
+    def __init__(self, path, date=datetime.date(datetime.now())) -> None:
         """Initialize printing pretty tables here
         refer to Individual and family here"""
         self.path = path
+        self.date = date
         # indi_storage[indiv_id] = Individual()
         self.indi_storage: Dict[int, Individual] = dict()
         # fam_storage[fam_counter] = Family()
@@ -188,14 +189,22 @@ class GedcomRepo:
                             self.indi_storage[indi_counter].death == "NA" and \
                             tag_curr == "DEAT":
                         try:
+                            present = datetime.date(datetime.now())
+                            # if type(present) == type(self.date_convert(arg.split(" "))) and present < self.date_convert(arg.split(" ")):
+                            #     self.indi_storage[indi_counter].alive = True
+                            # else:
                             self.indi_storage[indi_counter].death = self.date_convert(
                                 arg.split(" "))
                         except AttributeError:
                             print(f"Invalid date: {arg}")
                         else:
                             if self.indi_storage[indi_counter].death != "NA":
+                                #print("Death status: ",self.indi_storage[indi_counter].death)
                                 self.indi_storage[indi_counter].alive = False
-
+                                if type(present) == type(self.date_convert(arg.split(" "))) and present < self.date_convert(arg.split(" ")):
+                                    self.indi_storage[indi_counter].alive = True
+                                elif type(self.indi_storage[indi_counter].death) == str:
+                                    self.indi_storage[indi_counter].alive = True
                                 # Setting up age of death
                                 try:
                                     death_age = self.date_convert(arg.split(" ")).year \
@@ -299,11 +308,11 @@ class GedcomRepo:
         g_date = " ".join(g_date)
         try:
             g_object = datetime.strptime(g_date, "%d %b %Y")
-            print(g_object.date())
         except (ValueError, AttributeError):
             return(f"Invalid Date: {g_date}")
         if g_object.date() > present:
-            return(f"Future Date: {g_date}")
+            print(f"Future Date: {g_date}")
+            return(g_object.date())
         else:
             return(g_object.date())
 
@@ -397,11 +406,13 @@ class GedcomRepo:
         errors = []
 
         for individual in self.indi_storage.values():
-            if individual.death != "NA" and individual.birthday >= individual.death:
-                error = f"ERROR: Individual: US03: {individual.id}: {individual.name}'s death, {individual.death} occurs before birth, {individual.birthday}"
-                errors.append(error)
-                print(error)
-
+            try:
+                if individual.death != "NA" and individual.birthday >= individual.death:
+                    error = f"ERROR: Individual: US03: {individual.id}: {individual.name}'s death, {individual.death} occurs before birth, {individual.birthday}"
+                    errors.append(error)
+                    print(error)
+            except TypeError as e:
+                print(f'Future; {e}')
         return errors
 
     # Author: Lehmann Margaret
@@ -409,11 +420,14 @@ class GedcomRepo:
         """ Marriage should occur before divorce of spouses, and divorce can only occur after marriage """
         errors: List[str] = []
         for fam in self.fam_storage.values():
-            if fam.divorced != "NA":
-                if fam.divorced < fam.married:
-                    error = f"ERROR: FAMILY: US04: {fam.id}: Divorced {fam.divorced} before married {fam.married}."
-                    print(error)
-                    errors.append(error)
+            try:
+                if fam.divorced != "NA":
+                    if fam.divorced < fam.married:
+                        error = f"ERROR: FAMILY: US04: {fam.id}: Divorced {fam.divorced} before married {fam.married}."
+                        print(error)
+                        errors.append(error)
+            except TypeError as e:
+                print(f'Future; {e}')
         return errors
 
     # Author: Lehmann Margaret
@@ -445,17 +459,250 @@ class GedcomRepo:
                         error = f"ERROR: US06: FAMILY: {individual.name}'s divorce, {family.divorced}, is not before deathdate, {individual.death}"
                         errors.append(error)
                         print(error)
+        return errors
+
+    # Author: Ibezim Ikenna
+    def us07(self):
+        """ Less then 150 years old"""
+        print("This is user story 07 --Ikenna")
+        alive, death = [], []
+
+        for val in self.indi_storage.values():
+            if val.death != "NA" and val.birthday != "NA":  # Making sure dead people are less than 150 years old
+                try:
+                    d_age = val.death.year - val.birthday.year
+                except AttributeError:
+                    print(f"{val.birthday}")
+                else:
+                    if d_age >= 150:
+                        death.append((val.id, d_age))
+                        print(
+                            f"Error US07: Death after birth of {val.name} ({val.id}) was {d_age} years which occurs after 150 years")
+            elif val.death == "NA" and val.birthday != "NA":
+                try:
+                    b_age = datetime.today().year - val.birthday.year
+                except AttributeError:
+                    print(f"{val.birthday}")
+                else:
+                    if b_age >= 150:
+                        alive.append((val.id, b_age))
+                        print(
+                            f"Error US07: Current date after birth of {val.name} ({val.id}) was {b_age} years which occurs after 150 years")
+        return death, alive
+
+    # Author: Ibezim Ikenna
+    def us08(self):
+        """Birth before marriage of parents and within 9 months after divorce"""
+        print("This is user story 08 --Ikenna")
+        marr_err, div_err = [], []
+
+        for val in self.fam_storage.values():
+            if val.married != "NA":
+                for val2 in val.children:
+                    for val3 in self.indi_storage.values():
+                        if val3.id == val2:
+                            try:
+                                if val.married >= val3.birthday:  # keeping track of marriage error
+                                    marr_err.append((val3.id, val.id))
+                                    print(
+                                        f"Anomaly US08: Birth date of {val3.name} ({val3.id}) occurs before the marriage date of his parents in Family {val.id}")
+                            except TypeError:
+                                continue
+
+                            try:
+                                # keeping track of divorce error
+                                if val3.birthday > (val.divorced + relativedelta(months=+9)):
+                                    div_err.append((val3.id, val.id))
+                                    print(
+                                        f"Anomaly US08: Birth date of {val3.name} ({val3.id}) occurs after 9 months of the divorce date of his parents in Family {val.id}")
+                            except TypeError:
+                                continue
+        return (sorted(marr_err), sorted(div_err))
+
+    # Author: Lehmann Margaret
+    def us09(self):
+        """ Child should be born before death of mother and before 9 months after death of father """
+        errors = []
+        for family in self.fam_storage.values():
+            for child_id in family.children:
+                child = "NA"
+                mother = "NA"
+                father = "NA"
+                for indi in self.indi_storage.values():
+                    if indi.id == child_id:
+                        child = indi
+                    elif indi.id == family.wifeId:
+                        mother = indi
+                    elif indi.id == family.husbandId:
+                        father = indi
+
+                if child != "NA" and child.birthday != "NA":
+                    if mother != "NA" and mother.death != "NA" and mother.death < child.birthday:
+                        error = f"ERROR: US09: FAMILY: {family.id}: Mother died {mother.death}, before the birth of child {child.id} on {child.birthday}."
+                        print(error)
+                        errors.append(error)
+                    if father != "NA" and father.death != "NA" and (father.death + relativedelta(months=9)) < child.birthday:
+                        error = f"ERROR: US09: FAMILY: {family.id}: Father died {father.death}, over 9 months before the birth of child {child.id} on {child.birthday}."
+                        print(error)
+                        errors.append(error)
+
+        return errors
+
+    # Author: Lehmann Margaret
+    def us10(self):
+        """ Marriage should be at least 14 years after birth of both spouses (parents must be at least 14 years old) """
+        errors = []
+        for family in self.fam_storage.values():
+            wife = "NA"
+            husband = "NA"
+            for individual in self.indi_storage.values():
+                if family.wifeId == individual.id:
+                    wife = individual
+                elif family.husbandId == individual.id:
+                    husband = individual
+
+            if family.married != "NA":
+                if wife != "NA" and wife.birthday != "NA" and family.married < wife.birthday + relativedelta(years=14):
+                    error = f"ERROR: US10: FAMILY: {family.id}: Wife was born {wife.birthday}, less than 14 years before she was married {family.married}."
+                    print(error)
+                    errors.append(error)
+                if husband != "NA" and husband.birthday != "NA" and family.married < husband.birthday + relativedelta(years=14):
+                    error = f"ERROR: US10: FAMILY: {family.id}: Husband was born {husband.birthday}, less than 14 years before he was married {family.married}."
+                    print(error)
+                    errors.append(error)
 
         return errors
 
     # Author: Ibezim Ikenna
+    # def us11(self):
+    #     """Marriage should not occur during marriage to another spouse"""
+    #     print("This is user story 11 --Ikenna")
+    #     marr_storage = defaultdict(int)
+    #     error = []
+    #     for indiv in self.fam_storage.values():
+    #         if type(indiv.married) != str and indiv.divorced == 'NA':
+    #             marr_storage[indiv.husbandId] += 1
+    #             marr_storage[indiv.wifeId] += 1
 
+    #     for offset, value in marr_storage.items():
+    #         if value > 1:
+    #             error.append(offset)
+    #             print(f"Error US11: INDIVIDUAL: ID: {offset} is married to another family while still in another :MARRIAGE")
+    #     return error
+
+    # Author: Shaffer Wayne
+    def us12(self):
+        """ Compares ages of parents to ages of their children.
+            - Mother must not be more than 60 years older than her children.
+            - Father must not be more than 80 years older than his children.
+        """
+        print("This is user story US12 - Wayne")
+
+        error_families = []
+
+        fams_with_children = [family for family in self.fam_storage.values() \
+            if len(family.children) > 0]
+
+        for family in fams_with_children:
+            for individual in self.indi_storage.values():
+                if individual.id == family.husbandId:
+                    husband = individual
+                if individual.id == family.wifeId:
+                    wife = individual
+                
+            children = [child for child in self.indi_storage.values() \
+                if child.id in family.children]
+
+            #find youngest child
+            youngest_child = None
+            sorted_children = sorted(children, key = lambda i: str(i.age), reverse = True)
+            for child in sorted_children:
+                if child.age != "NA":
+                    youngest_child = child
+            
+            if youngest_child == None:
+                error = f"""ERROR: US12: FAMILY: {family.id}:
+                            This family has no listed ages for any of its {len(children)} children.
+                            Comparison not possible."""
+                print(error)
+                error_families.append(family.id)
+            
+            else:
+                # now compare husband/wife ages 
+                if wife.age - youngest_child.age >= 60:
+                    error = f"""ERROR: US12: FAMILY: {family.id}:
+                                Wife {wife.name} was born {wife.birthday}, more than 60 years
+                                before her youngest child {youngest_child.name}, 
+                                who was born on {youngest_child.birthday}."""
+                    print(error)
+                    error_families.append(family.id)
+
+                if husband.age - youngest_child.age >= 80:
+                    error = f"""ERROR: US12: FAMILY: {family.id}:
+                                Husband {husband.name} was born {husband.birthday}, more than 80 years
+                                before his youngest child {youngest_child.name},
+                                who was born on {youngest_child.birthday}."""
+                    print(error)
+                    error_families.append(family.id)
+
+        return error_families
+
+    # Author: Ibezim Ikenna
+    # def us14(self):
+    #     """No more than five siblings should be born at the same time"""
+    #     print("This is user story 14 --Ikenna")
+    #     date_storage = defaultdict(int)
+    #     error = []
+    #     for indiv in self.fam_storage.values():
+    #         for offset in indiv.children:
+    #             for offset2 in self.indi_storage.values():
+    #                 if offset2.id == offset:
+    #                     date_storage[offset2.birthday] += 1
+
+    #     for offset3, value in date_storage.items():
+    #         if value > 5:
+    #             error.append(indiv.id)
+    #             print(f"Anomaly US14: FAMILY: ID: {indiv.id} has more than 5 sibling born at the same time")
+    #     return error
+
+    # Author: Shaffer Wayne
+    def us21(self):
+        """ In all families, father should be male, and mother should be female. """
+        
+        error_families = []
+
+        print("This is user story 21 -- Wayne")
+
+        for family in self.fam_storage.values():
+            #identify husband and wife
+            for individual in self.indi_storage.values():
+                if individual.id == family.husbandId:
+                    husband = individual
+                if individual.id == family.wifeId:
+                    wife = individual
+
+            if husband.gender != "M":
+                error = f"""ERROR: US21: FAMILY: {family.id}: 
+                            {husband.name} is the wrong gender!"""
+                print(error)
+                error_families.append(husband.id)
+
+            if wife.gender != "F":
+                error = f"""ERROR: US21: FAMILY: {family.id}: 
+                            {wife.name} is the wrong gender!"""
+                print(error)
+                error_families.append(wife.id)
+
+        return error_families
+
+    # Author: Ibezim Ikenna
     def us22(self):
         """All individual IDs should be unique and all family IDs should be unique --Ikenna"""
         print("This is user story 22")
         d_i = defaultdict(int)
         d_f = defaultdict(int)
         l_i, l_f = [], []
+
         for offset_1, vals_1 in self.indi_storage.items():
 
             d_i[vals_1.id] += 1
@@ -482,65 +729,13 @@ class GedcomRepo:
         """Include person's current age when listing individuals """
         print("This is user story 27 --Ikenna")
         id_age = []
+
         for i in self.indi_storage.values():
             id_age.append((i.id, i.age))
         # This prints out a list of indiviuals and their ages included
-        print(self.pretty_table_indiv())
+        else:
+            print(self.pretty_table_indiv())
         return id_age
-
-    # Author: Ibezim Ikenna
-    # def us07(self):
-
-    #     """ Less then 150 years old"""
-
-    #     print("This is user story 07 --Ikenna")
-        # alive, death = [], []
-        # for val in self.indi_storage.values():
-        #     if val.death != "NA" and val.birthday != "NA": # Making sure dead people are less than 150 years old
-        #         try:
-        #             d_age = val.death.year - val.birthday.year
-        #         except AttributeError:
-        #             print(f"{val.birthday}")
-        #         else:
-        #             if d_age >= 150:
-        #                 death.append((val.id, d_age))
-        #                 print(f"Error US07: Death after birth of {val.name} ({val.id}) was {d_age} years which occurs after 150 years")
-        #     elif val.death == "NA" and val.birthday != "NA":
-        #         try:
-        #             b_age = datetime.today().year - val.birthday.year
-        #         except AttributeError:
-        #             print(f"{val.birthday}")
-        #         else:
-        #             if b_age >= 150:
-        #                 alive.append((val.id,b_age))
-        #                 print(f"Error US07: Current date after birth of {val.name} ({val.id}) was {b_age} years which occurs after 150 years")
-        # return death, alive
-
-    # Author: Ibezim Ikenna
-    # def us08(self):
-
-    #     """Birth before marriage of parents and within 9 months after divorce"""
-    # print("This is user story 08 --Ikenna")
-    #     marr_err, div_err = [], []
-    #     for val in self.fam_storage.values():
-    #         if val.married != "NA":
-    #             for val2 in val.children:
-    #                 for val3 in self.indi_storage.values():
-    #                     if val3.id == val2:
-    #                         try:
-    #                             if val.married >= val3.birthday: #keeping track of marriage error
-    #                                 marr_err.append((val3.id, val.id))
-    #                                 print(f"Anomaly US09: Birth date of {val3.name} ({val3.id}) occurs before the marriage date of his parents in Family {val.id}")
-    #                         except TypeError:
-    #                             continue
-
-    #                         try:
-    #                             if val3.birthday > (val.divorced + relativedelta(months=+9)): #keeping track of divorce error
-    #                                 div_err.append((val3.id, val.id))
-    #                                 print(f"Anomaly US09: Birth date of {val3.name} ({val3.id}) occurs after 9 months of the divorce date of his parents in Family {val.id}")
-    #                         except TypeError:
-    #                             continue
-    #     return (sorted(marr_err), sorted(div_err))
 
     # Author: McKenzie Christopher
     def us29(self):
@@ -549,11 +744,14 @@ class GedcomRepo:
         present = datetime.date(datetime.now())
         set_deat = set()
         for person in self.indi_storage.values():
-            try: 
-                if person.alive == False and person.death < present: #So future dates aren't included
-                    set_deat.add(person.id)
-            except TypeError:
-                set_deat.add(person.id) #Invalid dates are fine (come out as string). Individual may still be dead with invalid date
+            if person.alive == False:
+                set_deat.add(person.id)
+            # try:
+            #     if person.alive == False: #and person.death < present: #So future dates aren't included
+            #         set_deat.add(person.id)
+            # except TypeError:
+            #     set_deat.add(person.id) #Invalid dates are fine (come out as string). Individual may still be dead with invalid date
+
         print(f'US29: List of all deceased individuals people: {set_deat}')
         return set_deat
 
@@ -567,21 +765,22 @@ class GedcomRepo:
             if person.alive == True:
                 alive_id = person.id
                 for family in self.fam_storage.values():
-                   try:
-                        if family.husbandId == alive_id or family.wifeId == alive_id and family.married != 'NA':
+                   # try:
+                    if type(family.married) != str:  # Does not include Invalid Dates and NA
+
+                        if family.husbandId == alive_id or family.wifeId == alive_id:
                             set_marr.add(alive_id)
 
-                            if type(family.divorced) == type(present) and family.divorced < present:
-                                set_marr.remove(alive_id)
-                            elif family.married > present:
+                            if family.married > present:  # Does not include future marriage dates
                                 set_marr.remove(alive_id)
 
-                   except TypeError: #CAUTION: RECHECK THIS. Should still allow invalid dates
-                        set_marr.add(alive_id) 
+                            elif type(family.divorced) == type(present) and family.divorced < present:
+                                set_marr.remove(alive_id)
+
         print(f'US30: List of all living married people: {set_marr}')
         return set_marr
 
-
+      
 def main():
     """
     Testing
@@ -593,22 +792,29 @@ def main():
     test.pretty_table_indiv()
     test.pretty_table_fam()
     print("\n\n\n")
-   
+
     print("Our user stories begin here!!!!!")
     print("\n\n\n")
-    
+
     test.us01()
     test.us02()
     test.us03()
     test.us04()
     test.us05()
     test.us06()
+    test.us07()
+    test.us08()
+    test.us09()
+    test.us10()
+    # # test.us11()
+    test.us12()
+    # # test.us14()
+    test.us21()
     test.us22()  # Calling the user story 22 function
     test.us27()  # Calling the user story 27 function
-    # test.us07()
-    # test.us08()
-    # test.us29()
-    # test.us30()
+
+    test.us29()
+    test.us30()
 
     # print('\n\n\n')
     # print("This is the Individuals data in a dictionary format\n\n\n")
