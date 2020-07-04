@@ -118,7 +118,7 @@ class UserStoryTest(unittest.TestCase):
         """ Tests marriage atleast 14 years old"""
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        self.assertEqual(len(test.us10()), 4)
+        self.assertEqual(len(test.us10()), 6)
 
     # Author: Ibezim Ikenna
     # def test_us11(self):
@@ -191,8 +191,13 @@ class UserStoryTest(unittest.TestCase):
                          ('us14_20', 2), ('us14_I6', 2), ('us14_I8', 2),
                          ('US09_I1', 28), ('US09_I2', 48), ('US09_I3', 27),
                          ('US09_I4', 30), ('US09_I5', 72), ('US09_I6', 42),
-                         ('US09_I7', 40), ('US09_I8', 35), ('US09_I9', 70)
-                         ], []
+                         ('US09_I7', 40), ('US09_I8', 35), ('US09_I9', 70),
+                         ('US12_I11', 105), ('US12_I12', 80), ('US12_I13', 60),
+                         ('US12_I14', 58), ('US12_I15', 23), ('US12_I16', 22),
+                         ('US12_I31', 68), ('US12_I32', 65), ('US12_I33', 'NA'),
+                         ('US12_I34', 'NA'), ('US12_I21', 63), ('US12_I22', 57),
+                         ('US12_I23', 40), ('US12_I24', 32), ('US21_I41', 31),
+                         ('US21_I42', 31), ('US21_I51', 31), ('US21_I52', 31)],  []
         my_func = test.us27()
 
         self.assertEqual(my_func,  id_age)
@@ -221,7 +226,10 @@ class UserStoryTest(unittest.TestCase):
     def test_us30(self):
         """Tests if function lists all living married people."""
 
-        set_marr = {'I9', 'I4', 'I3', 'US09_I6', 'I2', 'US09_I2', 'US09_I7'}
+        set_marr = {'US12_I12', 'I3', 'I4', 'US12_I32', 'US12_I11',
+                    'US21_I42', 'US21_I51', 'I9', 'US12_I31', 'US21_I52',
+                    'US09_I7', 'US21_I41', 'US09_I6', 'US12_I22', 'I2',
+                    'US12_I21', 'US09_I2'}
         test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(test.us30(), set_marr)
