@@ -574,21 +574,21 @@ class GedcomRepo:
         return errors
 
     # Author: Ibezim Ikenna
-    # def us11(self):
-    #     """Marriage should not occur during marriage to another spouse"""
-    #     print("This is user story 11 --Ikenna")
-    #     marr_storage = defaultdict(int)
-    #     error = []
-    #     for indiv in self.fam_storage.values():
-    #         if type(indiv.married) != str and indiv.divorced == 'NA':
-    #             marr_storage[indiv.husbandId] += 1
-    #             marr_storage[indiv.wifeId] += 1
+    def us11(self):
+        """Marriage should not occur during marriage to another spouse"""
+        print("This is user story 11 --Ikenna")
+        marr_storage = defaultdict(int)
+        error = []
+        for indiv in self.fam_storage.values():
+            if type(indiv.married) != str and indiv.divorced == 'NA':
+                marr_storage[indiv.husbandId] += 1
+                marr_storage[indiv.wifeId] += 1
 
-    #     for offset, value in marr_storage.items():
-    #         if value > 1:
-    #             error.append(offset)
-    #             print(f"Error US11: INDIVIDUAL: ID: {offset} is married to another family while still in another :MARRIAGE")
-    #     return error
+        for offset, value in marr_storage.items():
+            if value > 1:
+                error.append(offset)
+                print(f"Error US11: INDIVIDUAL: ID: {offset} is married to another family while still in another :MARRIAGE")
+        return error
 
     # Author: Shaffer Wayne
     def us12(self):
@@ -648,22 +648,28 @@ class GedcomRepo:
         return error_families
 
     # Author: Ibezim Ikenna
-    # def us14(self):
-    #     """No more than five siblings should be born at the same time"""
-    #     print("This is user story 14 --Ikenna")
-    #     date_storage = defaultdict(int)
-    #     error = []
-    #     for indiv in self.fam_storage.values():
-    #         for offset in indiv.children:
-    #             for offset2 in self.indi_storage.values():
-    #                 if offset2.id == offset:
-    #                     date_storage[offset2.birthday] += 1
-
-    #     for offset3, value in date_storage.items():
-    #         if value > 5:
-    #             error.append(indiv.id)
-    #             print(f"Anomaly US14: FAMILY: ID: {indiv.id} has more than 5 sibling born at the same time")
-    #     return error
+    def us14(self):
+        """No more than five siblings should be born at the same time"""
+        print("This is user story 14 --Ikenna")
+        date_storage = defaultdict(int)
+        error = []
+        for i in self.fam_storage.values():
+            if len(i.children) > 5: # making sure a family have more than 5 kids
+                for j in i.children:
+                    for k in self.indi_storage.values():
+                        if k.id == j:
+                            date_storage[k.birthday] += 1
+                        else: 
+                            continue
+                    else:
+                        for offset3, value in date_storage.items():
+                            if value > 5:
+                                error.append(i.id)
+                                print(f"Anomaly US14: FAMILY: ID: {i.id} has more than 5 sibling born at the same time")
+            else:
+                continue
+        else:
+            return error
 
     # Author: McKenzie Christopher
     # def us17(self):
@@ -832,10 +838,10 @@ def main():
     test.us08()
     test.us09()
     test.us10()
-    # # test.us11()
+    test.us11()
     test.us12()
-    # # test.us14()
-    test.us17()
+    test.us14()
+    # test.us17()
     
     # test.us21()
     test.us22()  # Calling the user story 22 function
