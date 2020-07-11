@@ -121,15 +121,15 @@ class UserStoryTest(unittest.TestCase):
         self.assertEqual(len(test.us10()), 6)
 
     # Author: Ibezim Ikenna
-    # def test_us11(self):
-    #     """Marriage should not occur during marriage to another spouse"""
-    #     test = GedcomRepo("family.ged")
-    #     test.ged_reader()
-    #     couples = ['us_11_I13']
-    #     error = []
-    #     my_func = test.us11()
-    #     self.assertEqual(my_func,  couples)
-    #     self.assertNotEqual(my_func,  error)
+    def test_us11(self):
+        """Marriage should not occur during marriage to another spouse"""
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+        couples = ['us_11_I13']
+        error = []
+        my_func = test.us11()
+        self.assertEqual(my_func,  couples)
+        self.assertNotEqual(my_func,  error)
 
     # Author: Shaffer Wayne
     def test_us12(self):
@@ -140,16 +140,16 @@ class UserStoryTest(unittest.TestCase):
         self.assertEqual(test.us12(), failed_families)
 
     # Author: Ibezim Ikenna
-    # def test_us14(self):
-    #     """No more than five siblings should be born at the same time --Ikenna"""
-    #     test = GedcomRepo("family.ged")
-    #     test.ged_reader()
-    #     family = ['us14_F2']
-    #     error = []
-    #     my_func = test.us14()
+    def test_us14(self):
+        """No more than five siblings should be born at the same time --Ikenna"""
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+        family = ['us14_F2']
+        error = []
+        my_func = test.us14()
 
-    #     self.assertEqual(my_func,  family)
-    #     self.assertNotEqual(my_func,  error)
+        self.assertEqual(my_func,  family)
+        self.assertNotEqual(my_func,  error)
 
     # Author: Shaffer Wayne
     def test_us21(self):
