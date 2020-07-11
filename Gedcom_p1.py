@@ -666,11 +666,20 @@ class GedcomRepo:
     #     return error
 
     # Author: McKenzie Christopher
-    def us17(self):
-        """Parents should not marry any of their children."""
-        for individual in self.indi_storage.values():
-            for family in self.fam_storage.values():
-                print(f"INDIVIDIAL: {individual.id} / CHILDREN {family.children}")
+    # def us17(self):
+    #     """Parents should not marry any of their children."""
+    #     kids = set()
+    #     couples = defaultdict(list) #couples[husbandId] = wifeId
+    #    # for individual in self.indi_storage.values():
+    #     for family in self.fam_storage.values():
+    #         kids.update(family.children)
+    #         couples[family.husbandId].append(family.wifeId)
+
+        
+    #     print(kids)
+    #     print(list(couples))
+                # if individual.child == family.id:
+                #     print('Caught')
 
     # Author: McKenzie Christopher
     # def us18(self):
@@ -813,27 +822,27 @@ def main():
     print("Our user stories begin here!!!!!")
     print("\n\n\n")
 
-    # test.us01()
-    # test.us02()
-    # test.us03()
-    # test.us04()
-    # test.us05()
-    # test.us06()
-    # test.us07()
-    # test.us08()
-    # test.us09()
-    # test.us10()
-    # # # test.us11()
-    # test.us12()
-    # # # test.us14()
+    test.us01()
+    test.us02()
+    test.us03()
+    test.us04()
+    test.us05()
+    test.us06()
+    test.us07()
+    test.us08()
+    test.us09()
+    test.us10()
+    # # test.us11()
+    test.us12()
+    # # test.us14()
     test.us17()
     
     # test.us21()
-    # test.us22()  # Calling the user story 22 function
-    # test.us27()  # Calling the user story 27 function
+    test.us22()  # Calling the user story 22 function
+    test.us27()  # Calling the user story 27 function
 
-    # test.us29()
-    # test.us30()
+    test.us29()
+    test.us30()
 
     # print('\n\n\n')
     # print("This is the Individuals data in a dictionary format\n\n\n")
