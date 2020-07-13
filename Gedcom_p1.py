@@ -214,6 +214,8 @@ class GedcomRepo:
                                 else:
                                     self.indi_storage[indi_counter].age = death_age
 
+                            
+                                
                     elif level == "1" and tag == "FAMS" and \
                             indi_counter in self.indi_storage.keys():
 
@@ -629,13 +631,16 @@ class GedcomRepo:
             
             else:
                 # now compare husband/wife ages 
-                if wife.age - youngest_child.age >= 60:
-                    error = f"""ERROR: US12: FAMILY: {family.id}:
-                                Wife {wife.name} was born {wife.birthday}, more than 60 years
-                                before her youngest child {youngest_child.name}, 
-                                who was born on {youngest_child.birthday}."""
-                    print(error)
-                    error_families.append(family.id)
+                try:
+                    if wife.age - youngest_child.age >= 60: #Used an exception to handle comparisons 
+                        error = f"""ERROR: US12: FAMILY: {family.id}:
+                                    Wife {wife.name} was born {wife.birthday}, more than 60 years
+                                    before her youngest child {youngest_child.name}, 
+                                    who was born on {youngest_child.birthday}."""
+                        print(error)
+                        error_families.append(family.id)
+                except TypeError:
+                    continue
 
                 if husband.age - youngest_child.age >= 80:
                     error = f"""ERROR: US12: FAMILY: {family.id}:
@@ -757,6 +762,22 @@ class GedcomRepo:
         return l_i, l_f
 
     # Author: Ibezim Ikenna
+    def us23(self):
+        """Unique name and birth date"""
+        print("This is user story 23 --Ikenna")
+        indi_storage1, error = [], []
+        indi_storage2 = defaultdict(int)
+        for i in self.indi_storage.values():
+            indi_storage1.append((i.name, i.birthday))
+        for j in indi_storage1:
+            indi_storage2[j] += 1
+        for k1, v1 in indi_storage2.items():
+            if int(v1) > 1:
+                error.append(k1)
+                print(f"Error: US23: The Individual {k1[0]} with birthday {k1[1]} is not unique and has been repeated {v1} times in the Gedcom file")
+        return error
+    
+    # Author: Ibezim Ikenna
     def us27(self):
         """Include person's current age when listing individuals """
         print("This is user story 27 --Ikenna")
@@ -777,7 +798,7 @@ class GedcomRepo:
         set_deat = set()
         for person in self.indi_storage.values():
             if person.alive == False:
-                set_deat.add(person.id)
+                set_deat.add(person.id) 
             # try:
             #     if person.alive == False: #and person.death < present: #So future dates aren't included
             #         set_deat.add(person.id)
@@ -811,6 +832,37 @@ class GedcomRepo:
 
         print(f'US30: List of all living married people: {set_marr}')
         return set_marr
+    
+    # Author: Ibezim Ikenna
+    def us33(self):
+        """List orphans"""
+        print("This is user story 33 --Ikenna")
+        error = []
+        for j in self.fam_storage.values():
+            for k in j.children:
+                for i in self.indi_storage.values():
+                    try:
+                        if int(i.age) < 18 and k == i.id:
+                            child = j
+                            if j.husbandId == i.id and i.alive == False:
+                                husband = j.husbandId
+                                if j.wifeId == i.id and i.alive == False:
+                                    wife = j.wifeId
+                                    print(k, j.id)
+                                    error.append((k, j.id))
+                        else:
+                            continue
+                        
+                            
+                    except ValueError:
+                        continue
+        else:
+            print(error)
+                        
+            
+                
+        
+        pass
 
       
 def main():
@@ -845,10 +897,12 @@ def main():
     
     # test.us21()
     test.us22()  # Calling the user story 22 function
+    test.us23()
     test.us27()  # Calling the user story 27 function
 
     test.us29()
     test.us30()
+    test.us33()
 
     # print('\n\n\n')
     # print("This is the Individuals data in a dictionary format\n\n\n")

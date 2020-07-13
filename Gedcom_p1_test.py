@@ -1,6 +1,6 @@
 import unittest
 from Gedcom_p1 import Individual, Family, GedcomRepo
-from datetime import datetime
+import datetime
 from prettytable import PrettyTable
 from collections import defaultdict
 from typing import List
@@ -15,7 +15,7 @@ class UserStoryTest(unittest.TestCase):
         test: GedcomRepo = GedcomRepo("family.ged")
         test.ged_reader()
 
-        present: datetime.date = datetime.date(datetime.now())
+        # present: datetime.date = datetime.now() Are you making use of this line?? 
         errors: List[str] = ['US01_I11', 'US01_I17', 'US01_F4', 'US01_F8']
         self.assertEqual(test.us01(), errors)
 
@@ -36,7 +36,7 @@ class UserStoryTest(unittest.TestCase):
         test: GedcomRepo = GedcomRepo("family.ged")
         test.ged_reader()
 
-        errors = ['I13', 'I14']
+        errors = ['I13', 'I14', 'US33_I21', 'US33_I22']
         self.assertEqual(test.us02(), errors)
 
         """Tests the following boundaries:
@@ -111,14 +111,14 @@ class UserStoryTest(unittest.TestCase):
         """ Tests child born before death of parents """
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        self.assertEqual(len(test.us09()), 3)
+        self.assertEqual(len(test.us09()), 4)
 
     # Author: Lehmann Margaret
     def test_us10(self):
         """ Tests marriage atleast 14 years old"""
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        self.assertEqual(len(test.us10()), 6)
+        self.assertEqual(len(test.us10()), 8)
 
     # Author: Ibezim Ikenna
     def test_us11(self):
@@ -160,7 +160,6 @@ class UserStoryTest(unittest.TestCase):
         self.assertEqual(test.us21(), failed_families)
 
     # Author: Ibezim Ikenna
-
     def test_us22(self):
         """function to test the id duplicates"""
         test: GedcomRepo = GedcomRepo("family.ged")
@@ -174,7 +173,20 @@ class UserStoryTest(unittest.TestCase):
         self.assertEqual(my_func[1],  fam_id_duplicates)
         # Testing for errors
         self.assertNotEqual(my_func[0],  error)
+        
+    # Author: Ibezim Ikenna
+    def test_us23(self):
+        """Unique name and birth date"""
+        test: GedcomRepo = GedcomRepo("family.ged")
+        test.ged_reader()
+        duplicates, error = [('Susan /Sargent/', datetime.date(1989, 5, 5))],[]
+        # Testing duplicates names and birthdate in individual table
+        my_func = test.us23()
+        self.assertEqual(my_func, duplicates)
+        # Testing for errors
+        self.assertNotEqual(my_func, error)
 
+    
     # Author: Ibezim Ikenna
     def test_us27(self):
         """function to test for individual complete data"""
@@ -197,8 +209,8 @@ class UserStoryTest(unittest.TestCase):
                          ('US12_I31', 68), ('US12_I32', 65), ('US12_I33', 'NA'),
                          ('US12_I34', 'NA'), ('US12_I21', 63), ('US12_I22', 57),
                          ('US12_I23', 40), ('US12_I24', 32), ('US21_I41', 31),
-                         ('US21_I42', 31), ('US21_I51', 31), ('US21_I52', 31)],  []
-        my_func = test.us27()
+                         ('US21_I42', 31), ('US21_I51', 31), ('US21_I52', 31), ('us23_I1', 31), ('US33_I21', 30), ('US33_I22', 29), ('US33_I23', 1), ('US33_I24', 2) ],  []
+        my_func = test.us27() 
 
         self.assertEqual(my_func,  id_age)
         self.assertNotEqual(my_func,  error)
@@ -207,7 +219,7 @@ class UserStoryTest(unittest.TestCase):
     def test_us29(self):
         """Tests if function lists all dead individuals."""
 
-        set_deat = {'US09_I3', 'I16', 'US09_I4', 'US09_I8', 'US07_I0886', 'US07_I1', 'I12'}
+        set_deat = {'US09_I3', 'I16', 'US09_I4', 'US09_I8', 'US07_I0886', 'US07_I1', 'I12','US33_I21', 'US33_I22'}
         test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(test.us29(), set_deat)
