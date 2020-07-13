@@ -203,6 +203,12 @@ class UserStoryTest(unittest.TestCase):
         self.assertEqual(my_func,  id_age)
         self.assertNotEqual(my_func,  error)
 
+    # Author: Shaffer Wayne
+    def test_us28(self):
+        """ Tests if children are listed oldest to youngest from each family"""
+
+        pass
+
     # Author: Christopher McKenzie
     def test_us29(self):
         """Tests if function lists all dead individuals."""
@@ -246,6 +252,10 @@ class UserStoryTest(unittest.TestCase):
         b_set = {'I13', 'US30_I14'}
         self.assertEqual(bounds.us30(), b_set)
 
+    def test_us32(self):
+        """ Tests if multiple births are listed. """
 
+        pass
+    
 if __name__ == "__main__":
     unittest.main(exit=False, verbosity=2)

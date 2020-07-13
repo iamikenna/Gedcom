@@ -754,6 +754,36 @@ class GedcomRepo:
             print(self.pretty_table_indiv())
         return id_age
 
+    # Author: Shaffer Wayne
+    def us28(self):
+        """ List children from each family by age, oldest first. """
+
+        print("This is user story US28 - Wayne")
+
+        full_list = []
+
+        fams_with_children = [family for family in self.fam_storage.values() \
+            if len(family.children) > 0]
+
+        for family in fams_with_children:
+            children = [child for child in self.indi_storage.values() \
+                if child.id in family.children]
+
+            #Sort children, oldest first
+            sorted_children = sorted(children, key = lambda i: str(i.age), reverse = True)
+
+            print(f"Family: {family.id}")
+
+            # Print sorted list of children
+            for child in sorted_children:
+                print(f"{child.name} :- {child.age} yrs old.")
+            
+            full_list.append([(child.name, child.age) for child in sorted_children])
+            print(f"{full_list}")
+
+        return full_list
+
+        
     # Author: McKenzie Christopher
     def us29(self):
         """List all deceased individuals in a GEDCOM file."""
@@ -797,6 +827,10 @@ class GedcomRepo:
         print(f'US30: List of all living married people: {set_marr}')
         return set_marr
 
+    def us32(self):
+        """ List multiple births from each family. """
+
+        return
       
 def main():
     """
@@ -831,10 +865,10 @@ def main():
     # test.us21()
     # test.us22()  # Calling the user story 22 function
     # test.us27()  # Calling the user story 27 function
-
+    test.us28()
     # test.us29()
     # test.us30()
-
+    test.us32()
     # print('\n\n\n')
     # print("This is the Individuals data in a dictionary format\n\n\n")
     # print(self.indi_storage)
