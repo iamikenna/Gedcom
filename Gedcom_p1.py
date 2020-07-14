@@ -679,14 +679,10 @@ class GedcomRepo:
     # Author: McKenzie Christopher
     def us17(self):
         """Parents should not marry any of their children."""
-        #Maybe make a key/value pairing for all parents and their children
-        #dict[spouse ID] = children
-        #If spouse 2 ID (the child) is in dict[spouse ID] (the children dict), then it should activate
 
         couple = defaultdict()
-        #values can be set/list
+
         for family in self.fam_storage.values():
-            #Figure out how to incorporate one without skipping other spouse
             if family.husbandId not in couple.keys():
                 couple[family.husbandId] = (family.children)
             couple[family.husbandId].union((family.children))
@@ -708,31 +704,24 @@ class GedcomRepo:
     # Author: McKenzie Christopher
     def us18(self):
         """Siblings should not marry one another."""
-        #NOTE: just compare in individual storage. 
-        # (WILL NOT WORK) if individual.child == individual.spouse. Then error.
-        #might have to use both storages
-        #if individual.childID is the same for husband and wife, then error
 
-        couple = defaultdict()
-        #values can be set/list
-        for family in self.fam_storage.values():
+        child = defaultdict()
+        spouse = defaultdict()
+
+        for indi in self.indi_storage.values():
             #Figure out how to incorporate one without skipping other spouse
-            if family.husbandId not in couple.keys():
-                couple[family.husbandId] = (family.children)
-            couple[family.husbandId].union((family.children))
-        
-        for family in self.fam_storage.values():
-            if family.wifeId not in couple.keys():
-                couple[family.wifeId] = (family.children)
-            couple[family.wifeId].union((family.children))
-        
-        #Think about how to compare the siblings
-            if family.husbandId in couple[family.wifeId]:
-                print(f"ERROR: US17: Mother {family.wifeId} is married to son {family.husbandId}.")
-            elif family.wifeId in couple[family.husbandId]:
-                print(f"ERROR: US17: Father {family.husbandId} is married to daughter {family.wifeId}.")
+            if indi.id not in child.keys():
+                child[indi.id] = (indi.child)
+                spouse[indi.id] = (indi.spouse)
+            child[indi.id].union(indi.child)
+            child[indi.id].union(indi.spouse)
 
-
+        for fam in self.fam_storage.values():
+            if child[fam.husbandId] == child[fam.wifeId] and \
+                spouse[fam.husbandId] == spouse[fam.wifeId] and \
+                child[fam.husbandId] != set():
+                print(f"ERROR: US18: Brother {fam.husbandId} is married to sister {fam.wifeId}.")
+        
     # Author: Shaffer Wayne
     def us21(self):
         """ In all families, father should be male, and mother should be female. """
@@ -925,7 +914,7 @@ def main():
     # test.us12()
     # test.us14()
     test.us17()
-    
+    test.us18()
     # # test.us21()
     # test.us22()  # Calling the user story 22 function
     # test.us23()
