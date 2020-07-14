@@ -677,29 +677,60 @@ class GedcomRepo:
             return error
 
     # Author: McKenzie Christopher
-    # def us17(self):
-    #     """Parents should not marry any of their children."""
-    #     kids = set()
-    #     couples = defaultdict(list) #couples[husbandId] = wifeId
-    #    # for individual in self.indi_storage.values():
-    #     for family in self.fam_storage.values():
-    #         kids.update(family.children)
-    #         couples[family.husbandId].append(family.wifeId)
+    def us17(self):
+        """Parents should not marry any of their children."""
+        #Maybe make a key/value pairing for all parents and their children
+        #dict[spouse ID] = children
+        #If spouse 2 ID (the child) is in dict[spouse ID] (the children dict), then it should activate
 
+        couple = defaultdict()
+        #values can be set/list
+        for family in self.fam_storage.values():
+            #Figure out how to incorporate one without skipping other spouse
+            if family.husbandId not in couple.keys():
+                couple[family.husbandId] = (family.children)
+            couple[family.husbandId].union((family.children))
         
-    #     print(kids)
-    #     print(list(couples))
-                # if individual.child == family.id:
-                #     print('Caught')
+        for family in self.fam_storage.values():
+            if family.wifeId not in couple.keys():
+                couple[family.wifeId] = (family.children)
+            couple[family.wifeId].union((family.children))
+
+            if family.husbandId in couple[family.wifeId]:
+                print(f"ERROR: US17: Mother {family.wifeId} is married to son {family.husbandId}.")
+            elif family.wifeId in couple[family.husbandId]:
+                print(f"ERROR: US17: Father {family.husbandId} is married to daughter {family.wifeId}.")
+
+        #DOuble for loop. Loop through families, then loop through them again (get 2 families at once for error condition)
+        #Loop through families then loop through indivs. use spouse list and do comparison
+
 
     # Author: McKenzie Christopher
-    # def us18(self):
-    #     """Siblings should not marry one another."""
+    def us18(self):
+        """Siblings should not marry one another."""
+        #NOTE: just compare in individual storage. 
+        # (WILL NOT WORK) if individual.child == individual.spouse. Then error.
+        #might have to use both storages
+        #if individual.childID is the same for husband and wife, then error
 
-    #     for individual in self.indi_storage.values():
-    #         for family in self.fam_storage.values():
-    #             for child in family.children:
-    #                 if family.wifeID == child and 
+        couple = defaultdict()
+        #values can be set/list
+        for family in self.fam_storage.values():
+            #Figure out how to incorporate one without skipping other spouse
+            if family.husbandId not in couple.keys():
+                couple[family.husbandId] = (family.children)
+            couple[family.husbandId].union((family.children))
+        
+        for family in self.fam_storage.values():
+            if family.wifeId not in couple.keys():
+                couple[family.wifeId] = (family.children)
+            couple[family.wifeId].union((family.children))
+        
+        #Think about how to compare the siblings
+            if family.husbandId in couple[family.wifeId]:
+                print(f"ERROR: US17: Mother {family.wifeId} is married to son {family.husbandId}.")
+            elif family.wifeId in couple[family.husbandId]:
+                print(f"ERROR: US17: Father {family.husbandId} is married to daughter {family.wifeId}.")
 
 
     # Author: Shaffer Wayne
@@ -880,29 +911,29 @@ def main():
     print("Our user stories begin here!!!!!")
     print("\n\n\n")
 
-    test.us01()
-    test.us02()
-    test.us03()
-    test.us04()
-    test.us05()
-    test.us06()
-    test.us07()
-    test.us08()
-    test.us09()
-    test.us10()
-    test.us11()
-    test.us12()
-    test.us14()
-    # test.us17()
+    # test.us01()
+    # test.us02()
+    # test.us03()
+    # test.us04()
+    # test.us05()
+    # test.us06()
+    # test.us07()
+    # test.us08()
+    # test.us09()
+    # test.us10()
+    # test.us11()
+    # test.us12()
+    # test.us14()
+    test.us17()
     
-    # test.us21()
-    test.us22()  # Calling the user story 22 function
-    test.us23()
-    test.us27()  # Calling the user story 27 function
+    # # test.us21()
+    # test.us22()  # Calling the user story 22 function
+    # test.us23()
+    # test.us27()  # Calling the user story 27 function
 
-    test.us29()
-    test.us30()
-    test.us33()
+    # test.us29()
+    # test.us30()
+    # test.us33()
 
     # print('\n\n\n')
     # print("This is the Individuals data in a dictionary format\n\n\n")
