@@ -682,6 +682,7 @@ class GedcomRepo:
 
         couple = defaultdict()
 
+    
         for family in self.fam_storage.values():
             if family.husbandId not in couple.keys():
                 couple[family.husbandId] = (family.children)
@@ -697,8 +698,7 @@ class GedcomRepo:
             elif family.wifeId in couple[family.husbandId]:
                 print(f"ERROR: US17: Father {family.husbandId} is married to daughter {family.wifeId}.")
 
-        #DOuble for loop. Loop through families, then loop through them again (get 2 families at once for error condition)
-        #Loop through families then loop through indivs. use spouse list and do comparison
+
 
 
     # Author: McKenzie Christopher
@@ -717,10 +717,12 @@ class GedcomRepo:
             child[indi.id].union(indi.spouse)
 
         for fam in self.fam_storage.values():
-            if child[fam.husbandId] == child[fam.wifeId] and \
-                spouse[fam.husbandId] == spouse[fam.wifeId] and \
-                child[fam.husbandId] != set():
-                print(f"ERROR: US18: Brother {fam.husbandId} is married to sister {fam.wifeId}.")
+            if fam.husbandId in child and fam.wifeId in child:
+                if child[fam.husbandId] == child[fam.wifeId] and \
+                    spouse[fam.husbandId] == spouse[fam.wifeId] and \
+                    child[fam.husbandId] != set():
+                    print(f"ERROR: US18: Brother {fam.husbandId} married sister {fam.wifeId}.")
+
         
     # Author: Shaffer Wayne
     def us21(self):
