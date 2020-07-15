@@ -681,7 +681,7 @@ class GedcomRepo:
         """Parents should not marry any of their children."""
 
         couple = defaultdict()
-
+        errors: List[str] = []
     
         for family in self.fam_storage.values():
             if family.husbandId not in couple.keys():
@@ -694,10 +694,13 @@ class GedcomRepo:
             couple[family.wifeId].union((family.children))
 
             if family.husbandId in couple[family.wifeId]:
-                print(f"ERROR: US17: Mother {family.wifeId} is married to son {family.husbandId}.")
+                print(f"ERROR: FAMILY: US17: {family.id}: Mother {family.wifeId} is married to son {family.husbandId}.")
+                errors.append(family.id)
             elif family.wifeId in couple[family.husbandId]:
-                print(f"ERROR: US17: Father {family.husbandId} is married to daughter {family.wifeId}.")
+                print(f"ERROR: FAMILY: US17: {family.id}: Father {family.husbandId} is married to daughter {family.wifeId}.")
+                errors.append(family.id)
 
+        return errors
 
 
 
@@ -707,6 +710,7 @@ class GedcomRepo:
 
         child = defaultdict()
         spouse = defaultdict()
+        errors: List[str] = []
 
         for indi in self.indi_storage.values():
             #Figure out how to incorporate one without skipping other spouse
@@ -721,7 +725,10 @@ class GedcomRepo:
                 if child[fam.husbandId] == child[fam.wifeId] and \
                     spouse[fam.husbandId] == spouse[fam.wifeId] and \
                     child[fam.husbandId] != set():
-                    print(f"ERROR: US18: Brother {fam.husbandId} married sister {fam.wifeId}.")
+                    print(f"ERROR: FAMILY: US18: {fam.id}: Brother {fam.husbandId} married sister {fam.wifeId}.")
+                    errors.append(fam.id)
+        
+        return errors
 
         
     # Author: Shaffer Wayne
