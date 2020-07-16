@@ -165,11 +165,13 @@ class UserStoryTest(unittest.TestCase):
         errors: List[str] = ['US17_F2', 'US17_F3']
         self.assertEqual(test.us17(), errors)
 
-        """Bounds tested:
+        """Bounds tested include:
         1. Divorced parent/child
         2. Dead parent
-        3. Missing/incorrectly formmatted divorce date
-        4. Missing/incorrectly formatted marriage date
+        3. Dead child
+        4. Missing/incorrectly formmatted divorce date
+        5. Missing/incorrectly formatted marriage date
+        6. Multiple marriages
         """
 
         bounds: GedcomRepo = GedcomRepo("us17_us18.ged")
@@ -185,7 +187,7 @@ class UserStoryTest(unittest.TestCase):
         errors: List[str] = ['US18_F2', 'US18_F3']
         self.assertEqual(test.us18(), errors)
 
-        """Bounds tested:
+        """Bounds tested include:
         1. Divorced siblings
         2. Dead sibling
         3. Incorrectly formatted divorce date
