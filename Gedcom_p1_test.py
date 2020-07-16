@@ -152,11 +152,23 @@ class UserStoryTest(unittest.TestCase):
     # Author: McKenzie Christopher
     def test_us17(self):
         """Tests if parents are married to children."""
-        test = GedcomRepo("family.ged")
+        test: GedcomRepo = GedcomRepo("family.ged")
         test.ged_reader()
 
         errors: List[str] = ['US17_F2', 'US17_F3']
         self.assertEqual(test.us17(), errors)
+
+        """Bounds tested:
+        1. Divorced parent/child
+        2. Dead parent
+        3. Missing/incorrectly formmatted divorce date
+        4. Missing/incorrectly formatted marriage date
+        """
+
+        bounds: GedcomRepo = GedcomRepo("us17_us18.ged")
+        bounds.ged_reader()
+        b_errors: List[str] = ['US17_F3', 'US17_F6']
+        self.assertEqual(bounds.us17(), b_errors)
 
     def test_us18(self):
         """Tests if siblings are married to each other."""
@@ -165,6 +177,19 @@ class UserStoryTest(unittest.TestCase):
 
         errors: List[str] = ['US18_F2', 'US18_F3']
         self.assertEqual(test.us18(), errors)
+
+        """Bounds tested:
+        1. Divorced siblings
+        2. Dead sibling
+        3. Missing/incorrectly formatted divorce date
+        4. Missing/incorrectly formatted marriage date
+        5. Divorced parents
+        """
+
+        bounds: GedcomRepo = GedcomRepo("us17_us18.ged")
+        bounds.ged_reader()
+        b_errors: List[str] = ['US18_F3', 'US18_F5', 'US18_F6']
+        self.assertEqual(bounds.us18(), b_errors)
 
     # Author: Shaffer Wayne
     def test_us21(self):

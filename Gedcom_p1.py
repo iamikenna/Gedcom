@@ -693,11 +693,11 @@ class GedcomRepo:
                 couple[family.wifeId] = (family.children)
             couple[family.wifeId].union((family.children))
 
-            if family.husbandId in couple[family.wifeId]:
-                print(f"ERROR: FAMILY: US17: {family.id}: Mother {family.wifeId} is married to son {family.husbandId}.")
+            if family.husbandId in couple[family.wifeId] and type(family.married) != str:
+                print(f"ERROR: FAMILY: US17: {family.id}: Mother {family.wifeId} married to son {family.husbandId}.")
                 errors.append(family.id)
-            elif family.wifeId in couple[family.husbandId]:
-                print(f"ERROR: FAMILY: US17: {family.id}: Father {family.husbandId} is married to daughter {family.wifeId}.")
+            elif family.wifeId in couple[family.husbandId] and type(family.married) != str:
+                print(f"ERROR: FAMILY: US17: {family.id}: Father {family.husbandId} married to daughter {family.wifeId}.")
                 errors.append(family.id)
 
         return errors
@@ -724,7 +724,8 @@ class GedcomRepo:
             if fam.husbandId in child and fam.wifeId in child:
                 if child[fam.husbandId] == child[fam.wifeId] and \
                     spouse[fam.husbandId] == spouse[fam.wifeId] and \
-                    child[fam.husbandId] != set():
+                    child[fam.husbandId] != set() and \
+                    type(fam.married) != str:
                     print(f"ERROR: FAMILY: US18: {fam.id}: Brother {fam.husbandId} married sister {fam.wifeId}.")
                     errors.append(fam.id)
         
@@ -828,11 +829,6 @@ class GedcomRepo:
         for person in self.indi_storage.values():
             if person.alive == False:
                 set_deat.add(person.id) 
-            # try:
-            #     if person.alive == False: #and person.death < present: #So future dates aren't included
-            #         set_deat.add(person.id)
-            # except TypeError:
-            #     set_deat.add(person.id) #Invalid dates are fine (come out as string). Individual may still be dead with invalid date
 
         print(f'US29: List of all deceased individuals people: {set_deat}')
         return set_deat
@@ -847,7 +843,6 @@ class GedcomRepo:
             if person.alive == True:
                 alive_id = person.id
                 for family in self.fam_storage.values():
-                   # try:
                     if type(family.married) != str:  # Does not include Invalid Dates and NA
 
                         if family.husbandId == alive_id or family.wifeId == alive_id:
