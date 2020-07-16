@@ -188,7 +188,7 @@ class UserStoryTest(unittest.TestCase):
         """Bounds tested:
         1. Divorced siblings
         2. Dead sibling
-        3. Missing/incorrectly formatted divorce date
+        3. Incorrectly formatted divorce date
         4. Missing/incorrectly formatted marriage date
         5. Divorced parents
         """
