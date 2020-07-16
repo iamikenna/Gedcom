@@ -214,8 +214,6 @@ class GedcomRepo:
                                 else:
                                     self.indi_storage[indi_counter].age = death_age
 
-                            
-                                
                     elif level == "1" and tag == "FAMS" and \
                             indi_counter in self.indi_storage.keys():
 
@@ -589,7 +587,8 @@ class GedcomRepo:
         for offset, value in marr_storage.items():
             if value > 1:
                 error.append(offset)
-                print(f"Error US11: INDIVIDUAL: ID: {offset} is married to another family while still in another :MARRIAGE")
+                print(
+                    f"Error US11: INDIVIDUAL: ID: {offset} is married to another family while still in another :MARRIAGE")
         return error
 
     # Author: Shaffer Wayne
@@ -602,8 +601,8 @@ class GedcomRepo:
 
         error_families = []
 
-        fams_with_children = [family for family in self.fam_storage.values() \
-            if len(family.children) > 0]
+        fams_with_children = [family for family in self.fam_storage.values()
+                              if len(family.children) > 0]
 
         for family in fams_with_children:
             for individual in self.indi_storage.values():
@@ -611,31 +610,32 @@ class GedcomRepo:
                     husband = individual
                 if individual.id == family.wifeId:
                     wife = individual
-                
-            children = [child for child in self.indi_storage.values() \
-                if child.id in family.children]
 
-            #find youngest child
+            children = [child for child in self.indi_storage.values()
+                        if child.id in family.children]
+
+            # find youngest child
             youngest_child = None
-            sorted_children = sorted(children, key = lambda i: str(i.age), reverse = True)
+            sorted_children = sorted(
+                children, key=lambda i: str(i.age), reverse=True)
             for child in sorted_children:
                 if child.age != "NA":
                     youngest_child = child
-            
+
             if youngest_child == None:
                 error = f"""ERROR: US12: FAMILY: {family.id}:
                             This family has no listed ages for any of its {len(children)} children.
                             Comparison not possible."""
                 print(error)
                 error_families.append(family.id)
-            
+
             else:
-                # now compare husband/wife ages 
+                # now compare husband/wife ages
                 try:
-                    if wife.age - youngest_child.age >= 60: #Used an exception to handle comparisons 
+                    if wife.age - youngest_child.age >= 60:  # Used an exception to handle comparisons
                         error = f"""ERROR: US12: FAMILY: {family.id}:
                                     Wife {wife.name} was born {wife.birthday}, more than 60 years
-                                    before her youngest child {youngest_child.name}, 
+                                    before her youngest child {youngest_child.name},
                                     who was born on {youngest_child.birthday}."""
                         print(error)
                         error_families.append(family.id)
@@ -656,25 +656,37 @@ class GedcomRepo:
     def us14(self):
         """No more than five siblings should be born at the same time"""
         print("This is user story 14 --Ikenna")
-        date_storage = defaultdict(int)
         error = []
         for i in self.fam_storage.values():
-            if len(i.children) > 5: # making sure a family have more than 5 kids
+            if len(i.children) > 5:  # making sure a family have more than 5 kids
+                date_storage = defaultdict(int)
                 for j in i.children:
                     for k in self.indi_storage.values():
                         if k.id == j:
                             date_storage[k.birthday] += 1
-                        else: 
+                        else:
                             continue
                     else:
                         for offset3, value in date_storage.items():
                             if value > 5:
                                 error.append(i.id)
-                                print(f"Anomaly US14: FAMILY: ID: {i.id} has more than 5 sibling born at the same time")
+                                print(
+                                    f"Anomaly US14: FAMILY: ID: {i.id} has more than 5 sibling born at the same time")
             else:
                 continue
         else:
             return error
+
+    # Author: Lehmann Margaret
+    def us15(self):
+        """ There should be fewer than 15 siblings in a family """
+        errors = []
+        for fam in self.fam_storage.values():
+            if len(fam.children) >= 15:
+                error = f"ERROR: FAMILY: US15: {fam.id}: Family has {len(fam.children)} which is greater thn 14 children."
+                print(error)
+                errors.append(error)
+        return errors
 
     # Author: McKenzie Christopher
     def us17(self):
@@ -682,29 +694,30 @@ class GedcomRepo:
 
         couple = defaultdict()
         errors: List[str] = []
-    
+
         for family in self.fam_storage.values():
             if family.husbandId not in couple.keys():
                 couple[family.husbandId] = (family.children)
             couple[family.husbandId].union((family.children))
-        
+
         for family in self.fam_storage.values():
             if family.wifeId not in couple.keys():
                 couple[family.wifeId] = (family.children)
             couple[family.wifeId].union((family.children))
 
             if family.husbandId in couple[family.wifeId] and type(family.married) != str:
-                print(f"ERROR: FAMILY: US17: {family.id}: Mother {family.wifeId} married to son {family.husbandId}.")
+                print(
+                    f"ERROR: FAMILY: US17: {family.id}: Mother {family.wifeId} married to son {family.husbandId}.")
                 errors.append(family.id)
             elif family.wifeId in couple[family.husbandId] and type(family.married) != str:
-                print(f"ERROR: FAMILY: US17: {family.id}: Father {family.husbandId} married to daughter {family.wifeId}.")
+                print(
+                    f"ERROR: FAMILY: US17: {family.id}: Father {family.husbandId} married to daughter {family.wifeId}.")
                 errors.append(family.id)
 
         return errors
 
-
-
     # Author: McKenzie Christopher
+
     def us18(self):
         """Siblings should not marry one another."""
 
@@ -713,7 +726,7 @@ class GedcomRepo:
         errors: List[str] = []
 
         for indi in self.indi_storage.values():
-            #Figure out how to incorporate one without skipping other spouse
+            # Figure out how to incorporate one without skipping other spouse
             if indi.id not in child.keys():
                 child[indi.id] = (indi.child)
                 spouse[indi.id] = (indi.spouse)
@@ -723,25 +736,26 @@ class GedcomRepo:
         for fam in self.fam_storage.values():
             if fam.husbandId in child and fam.wifeId in child:
                 if child[fam.husbandId] == child[fam.wifeId] and \
-                    spouse[fam.husbandId] == spouse[fam.wifeId] and \
-                    child[fam.husbandId] != set() and \
-                    type(fam.married) != str:
-                    print(f"ERROR: FAMILY: US18: {fam.id}: Brother {fam.husbandId} married sister {fam.wifeId}.")
+                        spouse[fam.husbandId] == spouse[fam.wifeId] and \
+                        child[fam.husbandId] != set() and \
+                        type(fam.married) != str:
+                    print(
+                        f"ERROR: FAMILY: US18: {fam.id}: Brother {fam.husbandId} married sister {fam.wifeId}.")
                     errors.append(fam.id)
-        
+
         return errors
 
-        
     # Author: Shaffer Wayne
+
     def us21(self):
         """ In all families, father should be male, and mother should be female. """
-        
+
         error_families = []
 
         print("This is user story 21 -- Wayne")
 
         for family in self.fam_storage.values():
-            #identify husband and wife
+            # identify husband and wife
             for individual in self.indi_storage.values():
                 if individual.id == family.husbandId:
                     husband = individual
@@ -749,13 +763,13 @@ class GedcomRepo:
                     wife = individual
 
             if husband.gender != "M":
-                error = f"""ERROR: US21: FAMILY: {family.id}: 
+                error = f"""ERROR: US21: FAMILY: {family.id}:
                             {husband.name} is the wrong gender!"""
                 print(error)
                 error_families.append(husband.id)
 
             if wife.gender != "F":
-                error = f"""ERROR: US21: FAMILY: {family.id}: 
+                error = f"""ERROR: US21: FAMILY: {family.id}:
                             {wife.name} is the wrong gender!"""
                 print(error)
                 error_families.append(wife.id)
@@ -804,9 +818,10 @@ class GedcomRepo:
         for k1, v1 in indi_storage2.items():
             if int(v1) > 1:
                 error.append(k1)
-                print(f"Error: US23: The Individual {k1[0]} with birthday {k1[1]} is not unique and has been repeated {v1} times in the Gedcom file")
+                print(
+                    f"Error: US23: The Individual {k1[0]} with birthday {k1[1]} is not unique and has been repeated {v1} times in the Gedcom file")
         return error
-    
+
     # Author: Ibezim Ikenna
     def us27(self):
         """Include person's current age when listing individuals """
@@ -828,7 +843,7 @@ class GedcomRepo:
         set_deat = set()
         for person in self.indi_storage.values():
             if person.alive == False:
-                set_deat.add(person.id) 
+                set_deat.add(person.id)
 
         print(f'US29: List of all deceased individuals people: {set_deat}')
         return set_deat
@@ -856,7 +871,24 @@ class GedcomRepo:
 
         print(f'US30: List of all living married people: {set_marr}')
         return set_marr
-    
+
+    # Author: Lehmann Margaret
+    def us31(self):
+        """ List all living people over 30 who have never been married in a GEDCOM file """
+        set_single = set()
+        for indi in self.indi_storage.values():
+            if indi.alive and indi.age != 'NA' and indi.age >= 30:
+                indi_single = True
+                for fam in self.fam_storage.values():
+                    if indi.id == fam.wifeId or indi.id == fam.husbandId:
+                        indi_single = False
+                if indi_single:
+                    set_single.add(indi.id)
+        print(
+            f'US31: List of all living people over 30 who were never married: {set_single}')
+
+        return set_single
+
     # Author: Ibezim Ikenna
     def us33(self):
         """List orphans"""
@@ -876,19 +908,15 @@ class GedcomRepo:
                                     error.append((k, j.id))
                         else:
                             continue
-                        
-                            
+
                     except ValueError:
                         continue
         else:
             print(error)
-                        
-            
-                
-        
+
         pass
 
-      
+
 def main():
     """
     Testing
@@ -917,15 +945,16 @@ def main():
     test.us11()
     test.us12()
     test.us14()
+    test.us15()
     test.us17()
     test.us18()
     test.us21()
     test.us22()  # Calling the user story 22 function
     test.us23()
     test.us27()  # Calling the user story 27 function
-
     test.us29()
     test.us30()
+    test.us31()
     test.us33()
 
     # print('\n\n\n')
@@ -944,10 +973,7 @@ def main():
     # print(gen_storage)
     # print("\n\n\n")
 
-
     # print("test anything you want here!!!!!!\n\n\n")
     # print(gen_storage["individual"][1].birthday) # testing datetime
 if __name__ == "__main__":
     main()
-
-
