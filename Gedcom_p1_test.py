@@ -195,7 +195,7 @@ class UserStoryTest(unittest.TestCase):
 
         bounds: GedcomRepo = GedcomRepo("us17_us18.ged")
         bounds.ged_reader()
-        b_errors: List[str] = ['US18_F3', 'US18_F5', 'US18_F6']
+        b_errors: List[str] = ['US18_F3', 'US18_F5']
         self.assertEqual(bounds.us18(), b_errors)
 
     # Author: Shaffer Wayne
