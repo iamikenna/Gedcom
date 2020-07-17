@@ -4,6 +4,7 @@ User function to read files for my homework and display in a pretty table
 """
 
 import string
+from collections import Counter
 from typing import IO, Dict, Tuple, List
 from datetime import datetime  # Date calculation
 from dateutil.relativedelta import relativedelta  # Using this for us08
@@ -835,6 +836,34 @@ class GedcomRepo:
             print(self.pretty_table_indiv())
         return id_age
 
+    # Author: Shaffer Wayne
+    def us28(self):
+        """ List children from each family by age, oldest first. """
+
+        print("This is user story US28 - Wayne")
+
+        full_list = []
+
+        fams_with_children = [family for family in self.fam_storage.values() \
+            if len(family.children) > 0]
+
+        for family in fams_with_children:
+            children = [child for child in self.indi_storage.values() \
+                if child.id in family.children]
+
+            #Sort children, oldest first
+            sorted_children = sorted(children, key = lambda i: str(i.age), reverse = True)
+
+            print(f"Family: {family.id}")
+
+            # Print sorted list of children
+            for child in sorted_children:
+                print(f"{child.name} :- {child.age} yrs old.")
+            
+            full_list.append([(child.name, child.age) for child in sorted_children])
+
+        return full_list
+        
     # Author: McKenzie Christopher
     def us29(self):
         """List all deceased individuals in a GEDCOM file."""
@@ -889,6 +918,37 @@ class GedcomRepo:
 
         return set_single
 
+    # Author: Shaffer Wayne
+    def us32(self):
+        """ List multiple births from each family. """
+
+        print("This is user story US32 - Wayne")
+
+        multi_births = []
+
+        fams_with_children = [family for family in self.fam_storage.values() \
+            if len(family.children) > 0]
+
+        for family in fams_with_children:
+            bdates = []
+            children = [child for child in self.indi_storage.values() \
+                if child.id in family.children]
+            
+            for child in children:
+                if child.birthday == "NA" or child.birthday == "":
+                    error = f"ERROR: US32: FAMILY: {family.id}: {child.id} doesn't have a birthdate!"
+                    print(error)
+                else:
+                    bdates.append(child.birthday)
+                    
+            c = Counter(bdates)
+            for date in c:
+                if c[date] > 1:
+                    print(f"Multiple births found in family {family.id} on {date}")
+                    multi_births.append(str(date))
+
+        return multi_births
+
     # Author: Ibezim Ikenna
     def us33(self):
         """List orphans"""
@@ -915,8 +975,7 @@ class GedcomRepo:
             print(error)
 
         pass
-
-
+      
 def main():
     """
     Testing
@@ -952,11 +1011,13 @@ def main():
     test.us22()  # Calling the user story 22 function
     test.us23()
     test.us27()  # Calling the user story 27 function
+    test.us28()
     test.us29()
     test.us30()
     test.us31()
+    test.us32()
     test.us33()
-
+    
     # print('\n\n\n')
     # print("This is the Individuals data in a dictionary format\n\n\n")
     # print(self.indi_storage)
