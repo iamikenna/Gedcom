@@ -169,12 +169,13 @@ class UserStoryTest(unittest.TestCase):
         self.assertEqual(test.us17(), errors)
 
         """Bounds tested include:
-        1. Divorced parent/child
-        2. Dead parent
-        3. Dead child
-        4. Missing/incorrectly formmatted divorce date
-        5. Missing/incorrectly formatted marriage date
+        1. Divorced parents
+        2. Parent/Child divorce
+        3. Parent death
+        4. Child death
+        5. Death before parent/child marriage
         6. Multiple marriages
+        7. Invalid marriage, divorce, and death dates
         """
 
         bounds: GedcomRepo = GedcomRepo("us17.ged")
@@ -191,11 +192,11 @@ class UserStoryTest(unittest.TestCase):
         self.assertEqual(test.us18(), errors)
 
         """Bounds tested include:
-        1. Divorced siblings
-        2. Dead sibling
-        3. Incorrectly formatted divorce date
-        4. Missing/incorrectly formatted marriage date
-        5. Divorced parents
+        1. Sibling divorce
+        2. Sibling death
+        3. Multiple marriages
+        4. Death before sibling marriage
+        5. Invalid marriage, divorce, and death dates
         """
 
         bounds: GedcomRepo = GedcomRepo("us18.ged")
