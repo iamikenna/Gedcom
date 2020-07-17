@@ -228,16 +228,16 @@ class UserStoryTest(unittest.TestCase):
         self.assertNotEqual(my_func[0],  error)
 
     # Author: Ibezim Ikenna
-    def test_us23(self):
-        """Unique name and birth date"""
-        test: GedcomRepo = GedcomRepo("family.ged")
-        test.ged_reader()
-        duplicates, error = [('Susan /Sargent/', datetime.date(1989, 5, 5))], []
-        # Testing duplicates names and birthdate in individual table
-        my_func = test.us23()
-        self.assertEqual(my_func, duplicates)
-        # Testing for errors
-        self.assertNotEqual(my_func, error)
+    # def test_us23(self):
+    #     """Unique name and birth date"""
+    #     test: GedcomRepo = GedcomRepo("family.ged")
+    #     test.ged_reader()
+    #     duplicates, error = [('Susan /Sargent/', datetime.date(1989, 5, 5))], []
+    #     # Testing duplicates names and birthdate in individual table
+    #     my_func = test.us23()
+    #     self.assertEqual(my_func, duplicates)
+    #     # Testing for errors
+    #     self.assertNotEqual(my_func, error)
 
     # Author: Ibezim Ikenna
 
