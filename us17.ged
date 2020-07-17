@@ -20,7 +20,7 @@
 1 BIRT
 2 DATE 6 APR 1940
 1 FAMS @US17_F1@
-#                   '1 FAMS @US17_F2@' here too?
+1 FAMS @US17_F2@
 0 @US17_I2@ INDI
 1 NAME Justine /Lin/
 2 GIVN Justine
@@ -30,7 +30,7 @@
 1 BIRT
 2 DATE 2 JUN 1945
 1 FAMS @US17_F1@
-#                   '1 FAMS @US17_F3@' here too?
+1 FAMS @US17_F3@
 0 @US17_I3@ INDI
 1 NAME Jackie /Lin/
 2 GIVN Jackie
@@ -60,7 +60,9 @@
 1 BIRT
 2 DATE 8 MAY 1925
 1 FAMS @US17_F4@
-#               Should there be an US17_F5, US17_F6, US17_F7 as well?
+1 FAMS @US17_F5@
+1 FAMS @US17_F6@
+1 FAMS @US17_F7@
 0 @US17_I6@ INDI
 1 NAME Stephen /Floyd/
 2 GIVN Stephen
@@ -104,7 +106,6 @@
 2 DATE 4 DEC 1956
 1 FAMS @US17_F7@
 1 FAMC @US17_F4@
-
 0 @US17_F1@ FAM
 1 HUSB @US17_I1@
 1 WIFE @US17_I2@

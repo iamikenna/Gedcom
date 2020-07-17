@@ -126,7 +126,8 @@
 1 BIRT
 2 DATE 1 JUN 1935
 1 FAMS @US18_F5@
-#               Should I be including US18_F6, US18_F7 in Spouses?
+1 FAMS @US18_F6@
+1 FAMS @US18_F7@
 1 FAMC @US18_F4@
 0 @US18_F1@ FAM
 1 HUSB @US18_I1@
