@@ -762,16 +762,15 @@ class GedcomRepo:
 
                 #If statement does not print error if death occurs before marriage
                 if (type(deaths[fam.husbandId]) != str and deaths[fam.husbandId] < fam.married) or \
-                    (type(deaths[fam.wifeId]) != str and deaths[fam.wifeId] < fam.married):
+                (type(deaths[fam.wifeId]) != str and deaths[fam.wifeId] < fam.married):
                     continue
                 
                 #Checks if husband and wife are children of the same family
                 elif fam.husbandId in sibling and fam.wifeId in sibling:
                     if sibling[fam.husbandId] == sibling[fam.wifeId] and \
-                            sibling[fam.husbandId] != set() and \
-                            type(fam.married) != str:
-                        print(
-                            f"ERROR: FAMILY: US18: {fam.id}: Brother {fam.husbandId} married sister {fam.wifeId}.")
+                    sibling[fam.husbandId] != set() and \
+                    type(fam.married) != str:
+                        print( f"ERROR: FAMILY: US18: {fam.id}: Brother {fam.husbandId} married sister {fam.wifeId}.")
                         errors.append(fam.id)
 
         return errors
