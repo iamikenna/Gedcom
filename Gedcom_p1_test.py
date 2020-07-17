@@ -176,7 +176,8 @@ class UserStoryTest(unittest.TestCase):
 
         bounds: GedcomRepo = GedcomRepo("us17_us18.ged")
         bounds.ged_reader()
-        b_errors: List[str] = ['US17_F3', 'US17_F6']
+        #b_errors: List[str] = ['US17_F3', 'US17_F6']
+        b_errors: List[str] = ['US17_I8', 'US17_I9', 'US17_F3', 'US17_F6']
         self.assertEqual(bounds.us17(), b_errors)
 
     def test_us18(self):
@@ -288,8 +289,17 @@ class UserStoryTest(unittest.TestCase):
     # Author: Shaffer Wayne
     def test_us28(self):
         """ Tests if children are listed oldest to youngest from each family"""
+        test_files = ["us28_us32_family.ged", "familly.ged"]
 
-        pass
+        for filename in test_files:
+            test = GedcomRepo(filename)
+            test.ged_reader()
+
+            result = test.us28()
+        
+            for age_list in result:
+                print(age_list)
+                self.assertTrue(age_list == sorted(age_list, key = lambda i: str(i[1]), reverse = True))
 
     # Author: Christopher McKenzie
     def test_us29(self):
@@ -319,7 +329,8 @@ class UserStoryTest(unittest.TestCase):
                     'US21_I42', 'US17_I2', 'US18_I5', 'US12_I31', 'US21_I51',
                     'US12_I11', 'I9', 'US09_I2', 'US21_I41', 'US17_I4',
                     'US18_I4', 'US18_I3', 'US21_I52', 'US17_I1', 'US12_I32',
-                    'US09_I7'}
+                    'US09_I7', 'US28_I11', 'US28_I12', 'US28_I22', 'US28_I32',
+                    'US28_I31', 'US28_I21', 'US32_I41', 'US32_I42'}
         test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(test.us30(), set_marr)
@@ -337,24 +348,30 @@ class UserStoryTest(unittest.TestCase):
         b_set = {'I13', 'US30_I14'}
         self.assertEqual(bounds.us30(), b_set)
 
-<<<<<<< HEAD
-    def test_us32(self):
-        """ Tests if multiple births are listed. """
-=======
     # Author: Lehmann Margaret
     def test_us31(self):
         """ Tests if the function lists all living over 30 people who were never married. """
         set_single = {'US01_I17', 'US12_I23', 'US01_I11', 'I5',
                       'US12_I24', 'US12_I14', 'us23_I1', 'US12_I13', 'US15_I3',
-                      'US15_2_I3'}
+                      'US15_2_I3', 'US28_I14', 'US28_I15', 'US28_I35', 'US28_I13'}
 
         test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(test.us31(), set_single)
 
->>>>>>> def27d74430a6e1d637f90106d54df6f16ebc170
+    def test_us32(self):
+        """ Tests if multiple births are listed. """
+        #for sample family file
+        sample_test = GedcomRepo("us28_us32_family.ged")
+        sample_test.ged_reader()
+        expected_result = ["2016-06-06", "2018-04-04"]
+        self.assertTrue(sample_test.us32() == expected_result)
 
-        pass
+        #for full family file
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+        expected_result = ["1955-08-08", "2018-08-27", "2016-06-06", "2018-04-04"]
+        self.assertTrue(test.us32() == expected_result)
     
 if __name__ == "__main__":
     unittest.main(exit=False, verbosity=2)

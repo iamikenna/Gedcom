@@ -4,6 +4,7 @@ User function to read files for my homework and display in a pretty table
 """
 
 import string
+from collections import Counter
 from typing import IO, Dict, Tuple, List
 from datetime import datetime  # Date calculation
 from dateutil.relativedelta import relativedelta  # Using this for us08
@@ -860,7 +861,6 @@ class GedcomRepo:
                 print(f"{child.name} :- {child.age} yrs old.")
             
             full_list.append([(child.name, child.age) for child in sorted_children])
-            print(f"{full_list}")
 
         return full_list
         
@@ -922,21 +922,32 @@ class GedcomRepo:
     def us32(self):
         """ List multiple births from each family. """
 
-        print("This is user story US28 - Wayne")
+        print("This is user story US32 - Wayne")
 
-        full_list = []
+        multi_births = []
 
         fams_with_children = [family for family in self.fam_storage.values() \
             if len(family.children) > 0]
 
         for family in fams_with_children:
+            bdates = []
             children = [child for child in self.indi_storage.values() \
                 if child.id in family.children]
-        
-        for child in children:
             
+            for child in children:
+                if child.birthday == "NA" or child.birthday == "":
+                    error = f"ERROR: US32: FAMILY: {family.id}: {child.id} doesn't have a birthdate!"
+                    print(error)
+                else:
+                    bdates.append(child.birthday)
+                    
+            c = Counter(bdates)
+            for date in c:
+                if c[date] > 1:
+                    print(f"Multiple births found in family {family.id} on {date}")
+                    multi_births.append(str(date))
 
-        return full_list
+        return multi_births
 
     # Author: Ibezim Ikenna
     def us33(self):
@@ -964,12 +975,7 @@ class GedcomRepo:
             print(error)
 
         pass
-<<<<<<< HEAD
       
-=======
-
-
->>>>>>> def27d74430a6e1d637f90106d54df6f16ebc170
 def main():
     """
     Testing
@@ -985,43 +991,33 @@ def main():
     print("Our user stories begin here!!!!!")
     print("\n\n\n")
 
-    test.us01()
-    test.us02()
-    test.us03()
-    test.us04()
-    test.us05()
-    test.us06()
-    test.us07()
-    test.us08()
-    test.us09()
-    test.us10()
-    test.us11()
-    test.us12()
-    test.us14()
-<<<<<<< HEAD
-    # test.us17()
+    #test.us01()
+    #test.us02()
+    #test.us03()
+    #test.us04()
+    #test.us05()
+    #test.us06()
+    #test.us07()
+    #test.us08()
+    #test.us09()
+    #test.us10()
+    #test.us11()
+    #test.us12()
+    #test.us14()
+    #test.us15()
+    #test.us17()
+    #test.us18()
+    #test.us21()
+    #test.us22()  # Calling the user story 22 function
+    #test.us23()
+    #test.us27()  # Calling the user story 27 function
+    #test.us28()
+    #test.us29()
+    #test.us30()
+    #test.us31()
+    #test.us32()
+    #test.us33()
     
-    # test.us21()
-    # test.us22()  # Calling the user story 22 function
-    # test.us27()  # Calling the user story 27 function
-    test.us28()
-    # test.us29()
-    # test.us30()
-    test.us32()
-=======
-    test.us15()
-    test.us17()
-    test.us18()
-    test.us21()
->>>>>>> def27d74430a6e1d637f90106d54df6f16ebc170
-    test.us22()  # Calling the user story 22 function
-    test.us23()
-    test.us27()  # Calling the user story 27 function
-    test.us29()
-    test.us30()
-    test.us31()
-    test.us33()
-
     # print('\n\n\n')
     # print("This is the Individuals data in a dictionary format\n\n\n")
     # print(self.indi_storage)
