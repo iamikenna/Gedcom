@@ -183,6 +183,7 @@ class UserStoryTest(unittest.TestCase):
         b_errors: List[str] = ['US17_F3', 'US17_F5', 'US17_F6']
         self.assertEqual(bounds.us17(), b_errors)
 
+    # Author: McKenzie Christopher
     def test_us18(self):
         """Tests if siblings are married to each other."""
         test = GedcomRepo("family.ged")
