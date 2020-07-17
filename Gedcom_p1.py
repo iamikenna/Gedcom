@@ -694,7 +694,12 @@ class GedcomRepo:
         """Parents should not marry any of their children."""
 
         couple = defaultdict()
+        deaths = dict()
         errors: List[str] = []
+
+        for individual in self.indi_storage.values():
+            if individual.death != str:
+                deaths[individual.id] = (individual.death)
 
         for family in self.fam_storage.values():
             if family.husbandId not in couple.keys():
@@ -707,13 +712,29 @@ class GedcomRepo:
             couple[family.wifeId].union((family.children))
 
             if family.husbandId in couple[family.wifeId] and type(family.married) != str:
-                print(
-                    f"ERROR: FAMILY: US17: {family.id}: Mother {family.wifeId} married to son {family.husbandId}.")
-                errors.append(family.id)
+
+                    #If statement checks if death of spouse occurs before marriage
+                    if (type(deaths[family.husbandId]) != str and deaths[family.husbandId] < family.married) or \
+                        (type(deaths[family.wifeId]) != str and deaths[family.wifeId] < family.married):
+                        continue
+
+                    else:
+
+                        print(
+                        f"ERROR: FAMILY: US17: {family.id}: Mother {family.wifeId} married to son {family.husbandId}.")
+                    errors.append(family.id)
+
             elif family.wifeId in couple[family.husbandId] and type(family.married) != str:
-                print(
-                    f"ERROR: FAMILY: US17: {family.id}: Father {family.husbandId} married to daughter {family.wifeId}.")
-                errors.append(family.id)
+                    
+                    #If statement checks if death of spouse occurs before marriage
+                    if (type(deaths[family.husbandId]) != str and deaths[family.husbandId] < family.married) or \
+                        (type(deaths[family.wifeId]) != str and deaths[family.wifeId] < family.married):
+                        continue
+                    
+                    else:
+                        print(
+                            f"ERROR: FAMILY: US17: {family.id}: Father {family.husbandId} married to daughter {family.wifeId}.")
+                        errors.append(family.id)
 
         return errors
 
@@ -727,7 +748,7 @@ class GedcomRepo:
         errors: List[str] = []
 
         for indi in self.indi_storage.values():
-            # Figure out how to incorporate one without skipping other spouse
+
             if indi.id not in child.keys():
                 child[indi.id] = (indi.child)
                 spouse[indi.id] = (indi.spouse)
@@ -991,32 +1012,32 @@ def main():
     print("Our user stories begin here!!!!!")
     print("\n\n\n")
 
-    test.us01()
-    test.us02()
-    test.us03()
-    test.us04()
-    test.us05()
-    test.us06()
-    test.us07()
-    test.us08()
-    test.us09()
-    test.us10()
-    test.us11()
-    test.us12()
-    test.us14()
-    test.us15()
+    # test.us01()
+    # test.us02()
+    # test.us03()
+    # test.us04()
+    # test.us05()
+    # test.us06()
+    # test.us07()
+    # test.us08()
+    # test.us09()
+    # test.us10()
+    # test.us11()
+    # test.us12()
+    # test.us14()
+    # test.us15()
     test.us17()
     test.us18()
-    test.us21()
-    test.us22()  # Calling the user story 22 function
-    # test.us23()
-    test.us27()  # Calling the user story 27 function
-    test.us28()
-    test.us29()
-    test.us30()
-    test.us31()
-    test.us32()
-    # test.us33()
+    # test.us21()
+    # test.us22()  # Calling the user story 22 function
+    # # test.us23()
+    # test.us27()  # Calling the user story 27 function
+    # test.us28()
+    # test.us29()
+    # test.us30()
+    # test.us31()
+    # test.us32()
+    # # test.us33()
     
     # print('\n\n\n')
     # print("This is the Individuals data in a dictionary format\n\n\n")
