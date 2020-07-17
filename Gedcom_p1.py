@@ -701,7 +701,6 @@ class GedcomRepo:
         for individual in self.indi_storage.values():
             deaths[individual.id] = individual.death
 
-
         #Need to two for loops to track children for both mother and father in defaultdict
         for family in self.fam_storage.values():
             if family.husbandId not in couple.keys():
