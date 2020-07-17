@@ -862,7 +862,27 @@ class GedcomRepo:
 
         print(f'US30: List of all living married people: {set_marr}')
         return set_marr
-    
+
+    # Author: Shaffer Wayne
+    def us32(self):
+        """ List multiple births from each family. """
+
+        print("This is user story US28 - Wayne")
+
+        full_list = []
+
+        fams_with_children = [family for family in self.fam_storage.values() \
+            if len(family.children) > 0]
+
+        for family in fams_with_children:
+            children = [child for child in self.indi_storage.values() \
+                if child.id in family.children]
+        
+        for child in children:
+            
+
+        return
+
     # Author: Ibezim Ikenna
     def us33(self):
         """List orphans"""
@@ -893,11 +913,6 @@ class GedcomRepo:
                 
         
         pass
-
-    def us32(self):
-        """ List multiple births from each family. """
-
-        return
       
 def main():
     """
