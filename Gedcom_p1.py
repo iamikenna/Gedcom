@@ -757,8 +757,10 @@ class GedcomRepo:
             deaths[indi.id] = indi.death
 
         for fam in self.fam_storage.values():
-            #If statement checks if family has valid marriage date and if husband/wife in indi storage
+
+            #If statement checks if family has valid marriage date and if husband/wife ID in indi storage
             if type(fam.married) != str and fam.husbandId in sibling and fam.wifeId in sibling:
+
                 #If statement does not print error if death occurs before marriage
                 if (type(deaths[fam.husbandId]) != str and deaths[fam.husbandId] < fam.married) or \
                     (type(deaths[fam.wifeId]) != str and deaths[fam.wifeId] < fam.married):
@@ -1020,31 +1022,31 @@ def main():
     print("Our user stories begin here!!!!!")
     print("\n\n\n")
 
-    # test.us01()
-    # test.us02()
-    # test.us03()
-    # test.us04()
-    # test.us05()
-    # test.us06()
-    # test.us07()
-    # test.us08()
-    # test.us09()
-    # test.us10()
-    # test.us11()
-    # test.us12()
-    # test.us14()
-    # test.us15()
+    test.us01()
+    test.us02()
+    test.us03()
+    test.us04()
+    test.us05()
+    test.us06()
+    test.us07()
+    test.us08()
+    test.us09()
+    test.us10()
+    test.us11()
+    test.us12()
+    test.us14()
+    test.us15()
     test.us17()
     test.us18()
-    # test.us21()
-    # test.us22()  # Calling the user story 22 function
+    test.us21()
+    test.us22()  # Calling the user story 22 function
     # # test.us23()
-    # test.us27()  # Calling the user story 27 function
-    # test.us28()
-    # test.us29()
-    # test.us30()
-    # test.us31()
-    # test.us32()
+    test.us27()  # Calling the user story 27 function
+    test.us28()
+    test.us29()
+    test.us30()
+    test.us31()
+    test.us32()
     # # test.us33()
     
     # print('\n\n\n')

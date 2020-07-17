@@ -177,10 +177,9 @@ class UserStoryTest(unittest.TestCase):
         6. Multiple marriages
         """
 
-        bounds: GedcomRepo = GedcomRepo("us17_us18.ged")
+        bounds: GedcomRepo = GedcomRepo("us17.ged")
         bounds.ged_reader()
-        #b_errors: List[str] = ['US17_F3', 'US17_F6']
-        b_errors: List[str] = ['US17_I8', 'US17_I9', 'US17_F3', 'US17_F6']
+        b_errors: List[str] = ['US17_F3', 'US17_F5', 'US17_F6']
         self.assertEqual(bounds.us17(), b_errors)
 
     def test_us18(self):
@@ -199,9 +198,9 @@ class UserStoryTest(unittest.TestCase):
         5. Divorced parents
         """
 
-        bounds: GedcomRepo = GedcomRepo("us17_us18.ged")
+        bounds: GedcomRepo = GedcomRepo("us18.ged")
         bounds.ged_reader()
-        b_errors: List[str] = ['US18_F3', 'US18_F5']
+        b_errors: List[str] = ['US18_F3', 'US18_F5', 'US18_F6']
         self.assertEqual(bounds.us18(), b_errors)
 
     # Author: Shaffer Wayne
