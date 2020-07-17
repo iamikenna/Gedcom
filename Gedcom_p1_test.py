@@ -96,7 +96,10 @@ class UserStoryTest(unittest.TestCase):
         test = GedcomRepo("family.ged")
         test.ged_reader()
         marr_ex = sorted([('I6', 'F2'), ('I15', 'US02_F7'), ('I2', 'US02_F3'),
-                          ('I15', 'US02_F7'), ('I1', 'F2'), ('I15', 'US02_F7')])
+                          ('I15', 'US02_F7'), ('I1', 'F2'), ('I15', 'US02_F7'),
+                          ('US32_I45', 'US32_F4'), ('US32_I44', 'US32_F4'),
+                          ('US32_I46', 'US32_F4'), ('US32_I47', 'US32_F4'),
+                          ('US32_I43', 'US32_F4')])
         div_ex = sorted([('I2', 'US02_F3')])
         error = []
         my_func = test.us08()
@@ -116,7 +119,7 @@ class UserStoryTest(unittest.TestCase):
         """ Tests marriage at least 14 years old"""
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        self.assertEqual(len(test.us10()), 9)
+        self.assertEqual(len(test.us10()), 10)
 
     # Author: Ibezim Ikenna
     def test_us11(self):
@@ -134,7 +137,7 @@ class UserStoryTest(unittest.TestCase):
         """ Tests parents too old """
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        failed_families = ["F5", "F9", "F9", "US12_F1", "US12_F3"]
+        failed_families = ["F5", "F9", "F9", "US12_F1", "US12_F3", "US28_F1", "US28_F3"]
         self.assertEqual(test.us12(), failed_families)
 
     # Author: Ibezim Ikenna
@@ -280,7 +283,17 @@ class UserStoryTest(unittest.TestCase):
                          ('US15_2_I9', 24), ('US15_2_I10', 23),
                          ('US15_2_I11', 22), ('US15_2_I12', 21),
                          ('US15_2_I13', 20), ('US15_2_I14', 19),
-                         ('US15_2_I15', 18), ('US15_2_I16', 17)],  []
+                         ('US15_2_I15', 18), ('US15_2_I16', 17),
+                         ('US28_I11', 105), ('US28_I12', 80),
+                         ('US28_I13', 60), ('US28_I14', 57),
+                         ('US28_I15', 57), ('US28_I16', 23),
+                         ('US28_I17', 22), ('US28_I31', 65),
+                         ('US28_I32', 65), ('US28_I33', 'NA'),
+                         ('US28_I34', 'NA'), ('US28_I35', 40),
+                         ('US32_I41', 31), ('US32_I42', 34),
+                         ('US32_I43', 4), ('US32_I44', 4),
+                         ('US32_I45', 4), ('US32_I46', 2),
+                         ('US32_I47', 2)],  []
         my_func = test.us27()
 
         self.assertEqual(my_func,  id_age)
@@ -329,8 +342,8 @@ class UserStoryTest(unittest.TestCase):
                     'US21_I42', 'US17_I2', 'US18_I5', 'US12_I31', 'US21_I51',
                     'US12_I11', 'I9', 'US09_I2', 'US21_I41', 'US17_I4',
                     'US18_I4', 'US18_I3', 'US21_I52', 'US17_I1', 'US12_I32',
-                    'US09_I7', 'US28_I11', 'US28_I12', 'US28_I22', 'US28_I32',
-                    'US28_I31', 'US28_I21', 'US32_I41', 'US32_I42'}
+                    'US09_I7', 'US28_I11', 'US28_I12', 'US28_I32',
+                    'US28_I31', 'US32_I41', 'US32_I42'}
         test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(test.us30(), set_marr)
@@ -359,6 +372,7 @@ class UserStoryTest(unittest.TestCase):
         test.ged_reader()
         self.assertEqual(test.us31(), set_single)
 
+    # Author: Shaffer Wayne
     def test_us32(self):
         """ Tests if multiple births are listed. """
         #for sample family file
