@@ -739,7 +739,6 @@ class GedcomRepo:
         return errors
 
     # Author: McKenzie Christopher
-
     def us18(self):
         """Siblings should not marry one another."""
 
