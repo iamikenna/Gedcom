@@ -693,47 +693,48 @@ class GedcomRepo:
     def us17(self):
         """Parents should not marry any of their children."""
 
-        couple = defaultdict()
-        deaths = dict()
+        couple = defaultdict() #Tracks children for every individual
+        deaths = dict() #Death counter to check if death occurs before marriage
         errors: List[str] = []
 
+        #Stores death dates
         for individual in self.indi_storage.values():
-            if individual.death != str:
-                deaths[individual.id] = (individual.death)
+            deaths[individual.id] = individual.death
 
+
+        #Need to two for loops to track children for both mother and father in defaultdict
         for family in self.fam_storage.values():
             if family.husbandId not in couple.keys():
-                couple[family.husbandId] = (family.children)
-            couple[family.husbandId].union((family.children))
+                couple[family.husbandId] = family.children
+            couple[family.husbandId].union(family.children)
 
         for family in self.fam_storage.values():
             if family.wifeId not in couple.keys():
-                couple[family.wifeId] = (family.children)
-            couple[family.wifeId].union((family.children))
+                couple[family.wifeId] = family.children
+            couple[family.wifeId].union(family.children)
 
+            #Checks married couples with valid marriage dates.
+            #Uses two separate if statements to specify who is the parent and child
             if family.husbandId in couple[family.wifeId] and type(family.married) != str:
 
-                    #If statement checks if death of spouse occurs before marriage
+                    #If statement does not print error if death of spouse occurs before marriage
                     if (type(deaths[family.husbandId]) != str and deaths[family.husbandId] < family.married) or \
-                        (type(deaths[family.wifeId]) != str and deaths[family.wifeId] < family.married):
+                    (type(deaths[family.wifeId]) != str and deaths[family.wifeId] < family.married):
                         continue
 
                     else:
-
-                        print(
-                        f"ERROR: FAMILY: US17: {family.id}: Mother {family.wifeId} married to son {family.husbandId}.")
+                        print(f"ERROR: FAMILY: US17: {family.id}: Mother {family.wifeId} married son {family.husbandId}.")
                     errors.append(family.id)
 
             elif family.wifeId in couple[family.husbandId] and type(family.married) != str:
                     
-                    #If statement checks if death of spouse occurs before marriage
+                    #If statement does not print error if death of spouse occurs before marriage
                     if (type(deaths[family.husbandId]) != str and deaths[family.husbandId] < family.married) or \
-                        (type(deaths[family.wifeId]) != str and deaths[family.wifeId] < family.married):
+                    (type(deaths[family.wifeId]) != str and deaths[family.wifeId] < family.married):   
                         continue
                     
                     else:
-                        print(
-                            f"ERROR: FAMILY: US17: {family.id}: Father {family.husbandId} married to daughter {family.wifeId}.")
+                        print(f"ERROR: FAMILY: US17: {family.id}: Father {family.husbandId} married daughter {family.wifeId}.")
                         errors.append(family.id)
 
         return errors
@@ -743,27 +744,34 @@ class GedcomRepo:
     def us18(self):
         """Siblings should not marry one another."""
 
-        child = defaultdict()
-        spouse = defaultdict()
+        sibling = defaultdict() 
+        deaths = dict() #Death counter to check if death occurs before marriage
         errors: List[str] = []
 
+        #Stores both children and death dates
         for indi in self.indi_storage.values():
 
-            if indi.id not in child.keys():
-                child[indi.id] = (indi.child)
-                spouse[indi.id] = (indi.spouse)
-            child[indi.id].union(indi.child)
-            child[indi.id].union(indi.spouse)
+            if indi.id not in sibling.keys():
+                sibling[indi.id] = (indi.child)
+            sibling[indi.id].union(indi.child)
+            deaths[indi.id] = indi.death
 
         for fam in self.fam_storage.values():
-            if fam.husbandId in child and fam.wifeId in child:
-                if child[fam.husbandId] == child[fam.wifeId] and \
-                        spouse[fam.husbandId] == spouse[fam.wifeId] and \
-                        child[fam.husbandId] != set() and \
-                        type(fam.married) != str:
-                    print(
-                        f"ERROR: FAMILY: US18: {fam.id}: Brother {fam.husbandId} married sister {fam.wifeId}.")
-                    errors.append(fam.id)
+            #If statement checks if family has valid marriage date and if husband/wife in indi storage
+            if type(fam.married) != str and fam.husbandId in sibling and fam.wifeId in sibling:
+                #If statement does not print error if death occurs before marriage
+                if (type(deaths[fam.husbandId]) != str and deaths[fam.husbandId] < fam.married) or \
+                    (type(deaths[fam.wifeId]) != str and deaths[fam.wifeId] < fam.married):
+                    continue
+                
+                #Checks if husband and wife are children of the same family
+                elif fam.husbandId in sibling and fam.wifeId in sibling:
+                    if sibling[fam.husbandId] == sibling[fam.wifeId] and \
+                            sibling[fam.husbandId] != set() and \
+                            type(fam.married) != str:
+                        print(
+                            f"ERROR: FAMILY: US18: {fam.id}: Brother {fam.husbandId} married sister {fam.wifeId}.")
+                        errors.append(fam.id)
 
         return errors
 
