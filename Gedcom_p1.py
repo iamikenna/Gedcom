@@ -991,6 +991,9 @@ class GedcomRepo:
                 elif i.id == f.wifeId:
                     wife = f.wifeId
                     wife_alive = i.alive
+                else: 
+                    continue
+                
                 if father_alive == False and wife_alive == False:
                     children = f.children
                     for c in children:
@@ -1002,7 +1005,7 @@ class GedcomRepo:
                 if val < 18:
                     print(f"ANOMALITY: CHILD: {offset} is {val} years old and an orphan from the FAMILY: {f.id}")
                     error.append((offset, val))       
-            return error
+            return sorted(error)
          
 def main():
     """

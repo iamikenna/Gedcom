@@ -388,7 +388,6 @@ class UserStoryTest(unittest.TestCase):
         expected_result = ["1955-08-08", "2018-08-27", "2016-06-06", "2018-04-04"]
         self.assertTrue(test.us32() == expected_result)
         
-   
     #Author: Ibezim Ikenna
     def test_us33(self):
         """Testing List of orphans"""
@@ -399,7 +398,7 @@ class UserStoryTest(unittest.TestCase):
         my_func = test.us33()
         self.assertEqual(my_func, kids)
         # Testing for errors
-        self.assertNotEqual(my_func, error)
+        self.assertNotEqual(my_func, sorted(error))
     
 if __name__ == "__main__":
     unittest.main(exit=False, verbosity=2)
