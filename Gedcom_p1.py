@@ -982,32 +982,34 @@ class GedcomRepo:
         """List orphans"""
         print("This is user story 33 --Ikenna")
         error = []
-        # for j in self.fam_storage.values():
-        #     for k in j.children:
-        #         for i in self.indi_storage.values():
-        #             try:
-        #                 if int(i.age) < 18 and k == i.id:
-        #                     child = j
-        #                     if j.husbandId == i.id and i.alive == False:
-        #                         husband = j.husbandId
-        #                         if j.wifeId == i.id and i.alive == False:
-        #                             wife = j.wifeId
-        #                             print(k, j.id)
-        #                             error.append((k, j.id))
-        #                 else:
-        #                     continue
-
-        #             except ValueError:
-        #                 continue
-        # else:
-        #     print(error)
-      
+        child = dict()
+        for i in self.indi_storage.values():
+            for f in self.fam_storage.values(): 
+                if i.id == f.husbandId:
+                    father = f.husbandId
+                    father_alive = i.alive
+                elif i.id == f.wifeId:
+                    wife = f.wifeId
+                    wife_alive = i.alive
+                if father_alive == False and wife_alive == False:
+                    children = f.children
+                    for c in children:
+                        for j in self.indi_storage.values():
+                            if j.id == c:
+                                child[c] = j.age
+        else:
+            for offset, val in child.items():
+                if val < 18:
+                    print(f"ANOMALITY: CHILD: {offset} is {val} years old and an orphan from the FAMILY: {f.id}")
+                    error.append((offset, val))       
+            return error
+         
 def main():
     """
     Testing
     """
-    # path = input("Enter file name: ")
-    path = "family.ged"
+    path = input("Enter file name: ")
+    
     test = GedcomRepo(path)
     test.ged_reader()  # Calling the gedcom file reader
     print('\n\n\n')

@@ -387,6 +387,19 @@ class UserStoryTest(unittest.TestCase):
         test.ged_reader()
         expected_result = ["1955-08-08", "2018-08-27", "2016-06-06", "2018-04-04"]
         self.assertTrue(test.us32() == expected_result)
+        
+   
+    #Author: Ibezim Ikenna
+    def test_us33(self):
+        """Testing List of orphans"""
+        test: GedcomRepo = GedcomRepo("family.ged")
+        test.ged_reader()
+        kids, error = [('US33_I23', 1), ('US33_I24', 2)], []
+        # Testing duplicates names and birthdate in individual table
+        my_func = test.us33()
+        self.assertEqual(my_func, kids)
+        # Testing for errors
+        self.assertNotEqual(my_func, error)
     
 if __name__ == "__main__":
     unittest.main(exit=False, verbosity=2)
