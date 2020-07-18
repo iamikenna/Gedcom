@@ -835,21 +835,21 @@ class GedcomRepo:
         return l_i, l_f
 
     # Author: Ibezim Ikenna
-    # def us23(self):
-    #     """Unique name and birth date"""
-    #     print("This is user story 23 --Ikenna")
-    #     indi_storage1, error = [], []
-    #     indi_storage2 = defaultdict(int)
-    #     for i in self.indi_storage.values():
-    #         indi_storage1.append((i.name, i.birthday))
-    #     for j in indi_storage1:
-    #         indi_storage2[j] += 1
-    #     for k1, v1 in indi_storage2.items():
-    #         if int(v1) > 1:
-    #             error.append(k1)
-    #             print(
-    #                 f"Error: US23: The Individual {k1[0]} with birthday {k1[1]} is not unique and has been repeated {v1} times in the Gedcom file")
-    #     return error
+    def us23(self):
+        """Unique name and birth date"""
+        print("This is user story 23 --Ikenna")
+        indi_storage1, error = [], []
+        indi_storage2 = defaultdict(int)
+        for i in self.indi_storage.values():
+            indi_storage1.append((i.name, i.birthday))
+        for j in indi_storage1:
+            indi_storage2[j] += 1
+        for k1, v1 in indi_storage2.items():
+            if int(v1) > 1:
+                error.append(k1)
+                print(
+                    f"Error: US23: The Individual {k1[0]} with birthday {k1[1]} is not unique and has been repeated {v1} times in the Gedcom file")
+        return error
 
     # Author: Ibezim Ikenna
     def us27(self):
@@ -978,37 +978,36 @@ class GedcomRepo:
         return multi_births
 
     # Author: Ibezim Ikenna
-    # def us33(self):
-    #     """List orphans"""
-    #     print("This is user story 33 --Ikenna")
-    #     error = []
-    #     for j in self.fam_storage.values():
-    #         for k in j.children:
-    #             for i in self.indi_storage.values():
-    #                 try:
-    #                     if int(i.age) < 18 and k == i.id:
-    #                         child = j
-    #                         if j.husbandId == i.id and i.alive == False:
-    #                             husband = j.husbandId
-    #                             if j.wifeId == i.id and i.alive == False:
-    #                                 wife = j.wifeId
-    #                                 print(k, j.id)
-    #                                 error.append((k, j.id))
-    #                     else:
-    #                         continue
+    def us33(self):
+        """List orphans"""
+        print("This is user story 33 --Ikenna")
+        error = []
+        # for j in self.fam_storage.values():
+        #     for k in j.children:
+        #         for i in self.indi_storage.values():
+        #             try:
+        #                 if int(i.age) < 18 and k == i.id:
+        #                     child = j
+        #                     if j.husbandId == i.id and i.alive == False:
+        #                         husband = j.husbandId
+        #                         if j.wifeId == i.id and i.alive == False:
+        #                             wife = j.wifeId
+        #                             print(k, j.id)
+        #                             error.append((k, j.id))
+        #                 else:
+        #                     continue
 
-    #                 except ValueError:
-    #                     continue
-    #     else:
-    #         print(error)
-
-    #     pass
+        #             except ValueError:
+        #                 continue
+        # else:
+        #     print(error)
       
 def main():
     """
     Testing
     """
-    path = input("Enter file name: ")
+    # path = input("Enter file name: ")
+    path = "family.ged"
     test = GedcomRepo(path)
     test.ged_reader()  # Calling the gedcom file reader
     print('\n\n\n')
@@ -1036,15 +1035,15 @@ def main():
     test.us17()
     test.us18()
     test.us21()
-    test.us22()  # Calling the user story 22 function
-    # # test.us23()
-    test.us27()  # Calling the user story 27 function
+    test.us22() 
+    test.us23()
+    test.us27()  
     test.us28()
     test.us29()
     test.us30()
     test.us31()
     test.us32()
-    # # test.us33()
+    test.us33()
     
     # print('\n\n\n')
     # print("This is the Individuals data in a dictionary format\n\n\n")
