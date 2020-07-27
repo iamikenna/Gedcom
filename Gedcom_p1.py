@@ -1023,8 +1023,32 @@ class GedcomRepo:
                 if diff_days.days >= 0 and diff_days.days <= 30:
                     set_bday.add(person.id)
         
-        print(f'List of individuals with upcoming birthdays: {set_bday}')
+        print(f'US38: List of individuals with upcoming birthdays: {set_bday}')
         return set_bday
+
+
+    def us39(self):
+        """List all living couples in a GEDCOM file whose marriage
+        anniversaries occur in the next 30 days."""
+
+        present = datetime.now()
+        set_anni = set()
+
+        #FIND OUT HOW TO CHECK IF BOTH HUSBAND AND WIFE ARE ALIVE
+        for family in self.fam_storage.values():
+            if type(family.married) != str and type(family.divorced) == str: #If it is str, either NA or invalid date (also means not divorced)
+                for person in self.indi_storage.values():
+                    if person.alive == True:
+                        #Convert change birthday year to present's year to compare by days
+                        anni = datetime(present.year, (family.married).month, (family.married).day)
+                        diff_days = anni - present
+                        if diff_days.days >= 0 and diff_days.days <= 30:
+                            set_anni.add(family.id)
+                    elif person.alive == False and family.id in set_anni:
+                        set_anni.remove(family.id) #Removes from set if either husband or spouse is dead
+        
+        print(f'US39: List of individuals with upcoming anniversaries : {set_anni}')
+        return set_anni
 
 
          
@@ -1071,6 +1095,7 @@ def main():
     test.us32()
     test.us33()
     test.us38()
+    test.us39()
     
     # print('\n\n\n')
     # print("This is the Individuals data in a dictionary format\n\n\n")
