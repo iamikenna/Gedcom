@@ -1006,6 +1006,27 @@ class GedcomRepo:
                     print(f"ANOMALITY: CHILD: {offset} is {val} years old and an orphan from the FAMILY: {f.id}")
                     error.append((offset, val))       
             return sorted(error)
+
+    # Author: McKenzie Christopher
+    def us38(self):
+        """List all living people in a GEDCOM file whose birthdays
+        occur in the next 30 days."""
+
+        present = datetime.now()
+        set_bday = set()
+
+        for person in self.indi_storage.values():
+            if person.alive == True and type(person.birthday) != str:
+                #Convert change birthday year to present's year to compare by days
+                bday = datetime(present.year, (person.birthday).month, (person.birthday).day)
+                diff_days = bday - present
+                if diff_days.days >= 0 and diff_days.days <= 30:
+                    set_bday.add(person.id)
+        
+        print(f'List of individuals with upcoming birthdays: {set_bday}')
+        return set_bday
+
+
          
 def main():
     """
@@ -1049,6 +1070,7 @@ def main():
     test.us31()
     test.us32()
     test.us33()
+    test.us38()
     
     # print('\n\n\n')
     # print("This is the Individuals data in a dictionary format\n\n\n")
