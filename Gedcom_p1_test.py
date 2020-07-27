@@ -137,7 +137,8 @@ class UserStoryTest(unittest.TestCase):
         """ Tests parents too old """
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        failed_families = ["F5", "F9", "F9", "US12_F1", "US12_F3", "US28_F1", "US28_F3"]
+        failed_families = ["F5", "F9", "F9",
+                           "US12_F1", "US12_F3", "US28_F1", "US28_F3"]
         self.assertEqual(test.us12(), failed_families)
 
     # Author: Ibezim Ikenna
@@ -294,7 +295,9 @@ class UserStoryTest(unittest.TestCase):
                          ('US32_I41', 31), ('US32_I42', 34),
                          ('US32_I43', 4), ('US32_I44', 4),
                          ('US32_I45', 4), ('US32_I46', 2),
-                         ('US32_I47', 2)],  []
+                         ('US32_I47', 2), ('US35_I1', 0),
+                         ('US35_I2', 34), ('US35_I3', 33),
+                         ('US35_I4', 61), ('US35_I5', 60)],  []
         my_func = test.us27()
 
         self.assertEqual(my_func,  id_age)
@@ -310,17 +313,18 @@ class UserStoryTest(unittest.TestCase):
             test.ged_reader()
 
             result = test.us28()
-        
+
             for age_list in result:
                 print(age_list)
-                self.assertTrue(age_list == sorted(age_list, key = lambda i: str(i[1]), reverse = True))
+                self.assertTrue(age_list == sorted(
+                    age_list, key=lambda i: str(i[1]), reverse=True))
 
     # Author: Christopher McKenzie
     def test_us29(self):
         """Tests if function lists all dead individuals."""
 
         set_deat = {'US09_I3', 'I16', 'US09_I4', 'US09_I8',
-                    'US07_I0886', 'US07_I1', 'I12', 'US33_I21', 'US33_I22'}
+                    'US07_I0886', 'US07_I1', 'I12', 'US33_I21', 'US33_I22', 'US35_I4', 'US35_I3'}
         test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(test.us29(), set_deat)
@@ -344,7 +348,7 @@ class UserStoryTest(unittest.TestCase):
                     'US12_I11', 'I9', 'US09_I2', 'US21_I41', 'US17_I4',
                     'US18_I4', 'US18_I3', 'US21_I52', 'US17_I1', 'US12_I32',
                     'US09_I7', 'US28_I11', 'US28_I12', 'US28_I32',
-                    'US28_I31', 'US32_I41', 'US32_I42'}
+                    'US28_I31', 'US32_I41', 'US32_I42', 'US35_I2', 'US35_I5'}
         test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(test.us30(), set_marr)
@@ -376,19 +380,20 @@ class UserStoryTest(unittest.TestCase):
     # Author: Shaffer Wayne
     def test_us32(self):
         """ Tests if multiple births are listed. """
-        #for sample family file
+        # for sample family file
         sample_test = GedcomRepo("us28_us32_family.ged")
         sample_test.ged_reader()
         expected_result = ["2016-06-06", "2018-04-04"]
         self.assertTrue(sample_test.us32() == expected_result)
 
-        #for full family file
+        # for full family file
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        expected_result = ["1955-08-08", "2018-08-27", "2016-06-06", "2018-04-04"]
+        expected_result = ["1955-08-08",
+                           "2018-08-27", "2016-06-06", "2018-04-04"]
         self.assertTrue(test.us32() == expected_result)
-        
-    #Author: Ibezim Ikenna
+
+    # Author: Ibezim Ikenna
     def test_us33(self):
         """Testing List of orphans"""
         test: GedcomRepo = GedcomRepo("family.ged")
@@ -399,6 +404,27 @@ class UserStoryTest(unittest.TestCase):
         self.assertEqual(my_func, kids)
         # Testing for errors
         self.assertNotEqual(my_func, sorted(error))
-    
+
+    # Author: Lehmann Margaret
+    def test_us35(self):
+        """ Tests births in the last 30 days """
+        test = GedcomRepo("family.ged", datetime.datetime(
+            1989, 2, 20).date())  # static date time
+        test.ged_reader()
+
+        people = {'US21_I51', 'US21_I42', 'US21_I41', 'US32_I41'}
+        self.assertEqual(test.us35(), people)
+
+    # Author: Lehmann Margaret
+    def test_us36(self):
+        """ Tests deaths in the last 30 days """
+        test = GedcomRepo("family.ged", datetime.datetime(
+            2019, 4, 20).date())  # static datetime
+        test.ged_reader()
+
+        people = {'US33_I22', 'US33_I21', 'US07_I1'}
+        self.assertEqual(test.us36(), people)
+
+
 if __name__ == "__main__":
     unittest.main(exit=False, verbosity=2)

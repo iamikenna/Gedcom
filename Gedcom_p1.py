@@ -693,15 +693,15 @@ class GedcomRepo:
     def us17(self):
         """Parents should not marry any of their children."""
 
-        couple = defaultdict() #Tracks children for every individual
-        deaths = dict() #Death counter to check if death occurs before marriage
+        couple = defaultdict()  # Tracks children for every individual
+        deaths = dict()  # Death counter to check if death occurs before marriage
         errors: List[str] = []
 
-        #Stores death dates
+        # Stores death dates
         for individual in self.indi_storage.values():
             deaths[individual.id] = individual.death
 
-        #Need to two for loops to track children for both mother and father in defaultdict
+        # Need to two for loops to track children for both mother and father in defaultdict
         for family in self.fam_storage.values():
             if family.husbandId not in couple.keys():
                 couple[family.husbandId] = family.children
@@ -712,29 +712,31 @@ class GedcomRepo:
                 couple[family.wifeId] = family.children
             couple[family.wifeId].union(family.children)
 
-            #Checks married couples with valid marriage dates.
-            #Uses two separate if statements to specify who is the parent and child
+            # Checks married couples with valid marriage dates.
+            # Uses two separate if statements to specify who is the parent and child
             if family.husbandId in couple[family.wifeId] and type(family.married) != str:
 
-                    #If statement does not print error if death of spouse occurs before marriage
-                    if (type(deaths[family.husbandId]) != str and deaths[family.husbandId] < family.married) or \
-                    (type(deaths[family.wifeId]) != str and deaths[family.wifeId] < family.married):
-                        continue
+                # If statement does not print error if death of spouse occurs before marriage
+                if (type(deaths[family.husbandId]) != str and deaths[family.husbandId] < family.married) or \
+                        (type(deaths[family.wifeId]) != str and deaths[family.wifeId] < family.married):
+                    continue
 
-                    else:
-                        print(f"ERROR: FAMILY: US17: {family.id}: Mother {family.wifeId} married son {family.husbandId}.")
-                    errors.append(family.id)
+                else:
+                    print(
+                        f"ERROR: FAMILY: US17: {family.id}: Mother {family.wifeId} married son {family.husbandId}.")
+                errors.append(family.id)
 
             elif family.wifeId in couple[family.husbandId] and type(family.married) != str:
-                    
-                    #If statement does not print error if death of spouse occurs before marriage
-                    if (type(deaths[family.husbandId]) != str and deaths[family.husbandId] < family.married) or \
-                    (type(deaths[family.wifeId]) != str and deaths[family.wifeId] < family.married):   
-                        continue
-                    
-                    else:
-                        print(f"ERROR: FAMILY: US17: {family.id}: Father {family.husbandId} married daughter {family.wifeId}.")
-                        errors.append(family.id)
+
+                # If statement does not print error if death of spouse occurs before marriage
+                if (type(deaths[family.husbandId]) != str and deaths[family.husbandId] < family.married) or \
+                        (type(deaths[family.wifeId]) != str and deaths[family.wifeId] < family.married):
+                    continue
+
+                else:
+                    print(
+                        f"ERROR: FAMILY: US17: {family.id}: Father {family.husbandId} married daughter {family.wifeId}.")
+                    errors.append(family.id)
 
         return errors
 
@@ -742,11 +744,11 @@ class GedcomRepo:
     def us18(self):
         """Siblings should not marry one another."""
 
-        sibling = defaultdict() 
-        deaths = dict() #Death counter to check if death occurs before marriage
+        sibling = defaultdict()
+        deaths = dict()  # Death counter to check if death occurs before marriage
         errors: List[str] = []
 
-        #Stores both children and death dates
+        # Stores both children and death dates
         for indi in self.indi_storage.values():
 
             if indi.id not in sibling.keys():
@@ -756,20 +758,21 @@ class GedcomRepo:
 
         for fam in self.fam_storage.values():
 
-            #If statement checks if family has valid marriage date and if husband/wife ID in indi storage
+            # If statement checks if family has valid marriage date and if husband/wife ID in indi storage
             if type(fam.married) != str and fam.husbandId in sibling and fam.wifeId in sibling:
 
-                #If statement does not print error if death occurs before marriage
+                # If statement does not print error if death occurs before marriage
                 if (type(deaths[fam.husbandId]) != str and deaths[fam.husbandId] < fam.married) or \
-                (type(deaths[fam.wifeId]) != str and deaths[fam.wifeId] < fam.married):
+                        (type(deaths[fam.wifeId]) != str and deaths[fam.wifeId] < fam.married):
                     continue
-                
-                #Checks if husband and wife are children of the same family
+
+                # Checks if husband and wife are children of the same family
                 elif fam.husbandId in sibling and fam.wifeId in sibling:
                     if sibling[fam.husbandId] == sibling[fam.wifeId] and \
-                    sibling[fam.husbandId] != set() and \
-                    type(fam.married) != str:
-                        print( f"ERROR: FAMILY: US18: {fam.id}: Brother {fam.husbandId} married sister {fam.wifeId}.")
+                            sibling[fam.husbandId] != set() and \
+                            type(fam.married) != str:
+                        print(
+                            f"ERROR: FAMILY: US18: {fam.id}: Brother {fam.husbandId} married sister {fam.wifeId}.")
                         errors.append(fam.id)
 
         return errors
@@ -872,26 +875,28 @@ class GedcomRepo:
 
         full_list = []
 
-        fams_with_children = [family for family in self.fam_storage.values() \
-            if len(family.children) > 0]
+        fams_with_children = [family for family in self.fam_storage.values()
+                              if len(family.children) > 0]
 
         for family in fams_with_children:
-            children = [child for child in self.indi_storage.values() \
-                if child.id in family.children]
+            children = [child for child in self.indi_storage.values()
+                        if child.id in family.children]
 
-            #Sort children, oldest first
-            sorted_children = sorted(children, key = lambda i: str(i.age), reverse = True)
+            # Sort children, oldest first
+            sorted_children = sorted(
+                children, key=lambda i: str(i.age), reverse=True)
 
             print(f"Family: {family.id}")
 
             # Print sorted list of children
             for child in sorted_children:
                 print(f"{child.name} :- {child.age} yrs old.")
-            
-            full_list.append([(child.name, child.age) for child in sorted_children])
+
+            full_list.append([(child.name, child.age)
+                              for child in sorted_children])
 
         return full_list
-        
+
     # Author: McKenzie Christopher
     def us29(self):
         """List all deceased individuals in a GEDCOM file."""
@@ -954,25 +959,26 @@ class GedcomRepo:
 
         multi_births = []
 
-        fams_with_children = [family for family in self.fam_storage.values() \
-            if len(family.children) > 0]
+        fams_with_children = [family for family in self.fam_storage.values()
+                              if len(family.children) > 0]
 
         for family in fams_with_children:
             bdates = []
-            children = [child for child in self.indi_storage.values() \
-                if child.id in family.children]
-            
+            children = [child for child in self.indi_storage.values()
+                        if child.id in family.children]
+
             for child in children:
                 if child.birthday == "NA" or child.birthday == "":
                     error = f"ERROR: US32: FAMILY: {family.id}: {child.id} doesn't have a birthdate!"
                     print(error)
                 else:
                     bdates.append(child.birthday)
-                    
+
             c = Counter(bdates)
             for date in c:
                 if c[date] > 1:
-                    print(f"Multiple births found in family {family.id} on {date}")
+                    print(
+                        f"Multiple births found in family {family.id} on {date}")
                     multi_births.append(str(date))
 
         return multi_births
@@ -984,16 +990,16 @@ class GedcomRepo:
         error = []
         child = dict()
         for i in self.indi_storage.values():
-            for f in self.fam_storage.values(): 
+            for f in self.fam_storage.values():
                 if i.id == f.husbandId:
                     father = f.husbandId
                     father_alive = i.alive
                 elif i.id == f.wifeId:
                     wife = f.wifeId
                     wife_alive = i.alive
-                else: 
+                else:
                     continue
-                
+
                 if father_alive == False and wife_alive == False:
                     children = f.children
                     for c in children:
@@ -1003,9 +1009,30 @@ class GedcomRepo:
         else:
             for offset, val in child.items():
                 if val < 18:
-                    print(f"ANOMALITY: CHILD: {offset} is {val} years old and an orphan from the FAMILY: {f.id}")
-                    error.append((offset, val))       
+                    print(
+                        f"ANOMALITY: CHILD: {offset} is {val} years old and an orphan from the FAMILY: {f.id}")
+                    error.append((offset, val))
             return sorted(error)
+
+    # Author: Lehmann Margaret
+    def us35(self):
+        """ List all people in a GEDCOM file who were born in the last 30 days """
+        people = set()
+        for person in self.indi_storage.values():
+            if type(person.birthday) != str and person.birthday <= self.date and person.birthday > self.date - relativedelta(days=30):
+                people.add(person.id)
+        print(f'US35: List of people born in the last 30 days: {people}')
+        return people
+
+    # Author: Lehmann Margaret
+    def us36(self):
+        """ List all people in a GEDCOM file who died in the last 30 days """
+        people = set()
+        for person in self.indi_storage.values():
+            if type(person.death) != str and person.death <= self.date and person.death > self.date - relativedelta(days=30):
+                people.add(person.id)
+        print(f'US35: List of people who died in the last 30 days: {people}')
+        return people
 
     # Author: McKenzie Christopher
     def us38(self):
@@ -1017,15 +1044,15 @@ class GedcomRepo:
 
         for person in self.indi_storage.values():
             if person.alive == True and type(person.birthday) != str:
-                #Convert change birthday year to present's year to compare by days
-                bday = datetime(present.year, (person.birthday).month, (person.birthday).day)
+                # Convert change birthday year to present's year to compare by days
+                bday = datetime(
+                    present.year, (person.birthday).month, (person.birthday).day)
                 diff_days = bday - present
                 if diff_days.days >= 0 and diff_days.days <= 30:
                     set_bday.add(person.id)
-        
+
         print(f'US38: List of individuals with upcoming birthdays: {set_bday}')
         return set_bday
-
 
     def us39(self):
         """List all living couples in a GEDCOM file whose marriage
@@ -1034,30 +1061,33 @@ class GedcomRepo:
         present = datetime.now()
         set_anni = set()
 
-        #FIND OUT HOW TO CHECK IF BOTH HUSBAND AND WIFE ARE ALIVE
+        # FIND OUT HOW TO CHECK IF BOTH HUSBAND AND WIFE ARE ALIVE
         for family in self.fam_storage.values():
-            if type(family.married) != str and type(family.divorced) == str: #If it is str, either NA or invalid date (also means not divorced)
+            # If it is str, either NA or invalid date (also means not divorced)
+            if type(family.married) != str and type(family.divorced) == str:
                 for person in self.indi_storage.values():
                     if person.alive == True:
-                        #Convert change birthday year to present's year to compare by days
-                        anni = datetime(present.year, (family.married).month, (family.married).day)
+                        # Convert change birthday year to present's year to compare by days
+                        anni = datetime(
+                            present.year, (family.married).month, (family.married).day)
                         diff_days = anni - present
                         if diff_days.days >= 0 and diff_days.days <= 30:
                             set_anni.add(family.id)
                     elif person.alive == False and family.id in set_anni:
-                        set_anni.remove(family.id) #Removes from set if either husband or spouse is dead
-        
-        print(f'US39: List of individuals with upcoming anniversaries : {set_anni}')
+                        # Removes from set if either husband or spouse is dead
+                        set_anni.remove(family.id)
+
+        print(
+            f'US39: List of individuals with upcoming anniversaries : {set_anni}')
         return set_anni
 
 
-         
 def main():
     """
     Testing
     """
     path = input("Enter file name: ")
-    
+
     test = GedcomRepo(path)
     test.ged_reader()  # Calling the gedcom file reader
     print('\n\n\n')
@@ -1085,18 +1115,20 @@ def main():
     test.us17()
     test.us18()
     test.us21()
-    test.us22() 
+    test.us22()
     test.us23()
-    test.us27()  
+    test.us27()
     test.us28()
     test.us29()
     test.us30()
     test.us31()
     test.us32()
     test.us33()
+    test.us35()
+    test.us36()
     test.us38()
     test.us39()
-    
+
     # print('\n\n\n')
     # print("This is the Individuals data in a dictionary format\n\n\n")
     # print(self.indi_storage)
@@ -1112,6 +1144,7 @@ def main():
     # print("This is the general dictionary for both individuals and family\n\n\n")
     # print(gen_storage)
     # print("\n\n\n")
+
 
     # print("test anything you want here!!!!!!\n\n\n")
     # print(gen_storage["individual"][1].birthday) # testing datetime
