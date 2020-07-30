@@ -1043,7 +1043,8 @@ class GedcomRepo:
         set_bday = set()
 
         for person in self.indi_storage.values():
-            if person.alive == True and type(person.birthday) != str:
+            if person.alive == True and type(person.birthday) != str \
+                and (person.birthday).year < present.year: # Last 'and' statement avoids future birthdays
                 # Convert change birthday year to present's year to compare by days
                 bday = datetime(
                     present.year, (person.birthday).month, (person.birthday).day)
@@ -1064,15 +1065,19 @@ class GedcomRepo:
         # FIND OUT HOW TO CHECK IF BOTH HUSBAND AND WIFE ARE ALIVE
         for family in self.fam_storage.values():
             # If it is str, either NA or invalid date (also means not divorced)
-            if type(family.married) != str and type(family.divorced) == str:
+            # Last 'and' statement avoids future marriages
+            if type(family.married) != str and type(family.divorced) == str \
+                and (family.married).year < present.year:
                 for person in self.indi_storage.values():
                     if person.alive == True:
                         # Convert change birthday year to present's year to compare by days
+
                         anni = datetime(
                             present.year, (family.married).month, (family.married).day)
                         diff_days = anni - present
                         if diff_days.days >= 0 and diff_days.days <= 30:
                             set_anni.add(family.id)
+
                     elif person.alive == False and family.id in set_anni:
                         # Removes from set if either husband or spouse is dead
                         set_anni.remove(family.id)
