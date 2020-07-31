@@ -702,16 +702,13 @@ class GedcomRepo:
             for person in self.indi_storage.values():
                 if person.id == family.husbandId:
                     family_name = person.name.split(" ")[1].strip("/")
-                    #print(family_name)
-
+                    
             #make sure male children have same last name
             children = [individual for individual in self.indi_storage.values()
                         if individual.id in family.children]
-            #print("children:")
             for child in children:
                 if child.gender == "M":
                     last_name = child.name.split(" ")[1].strip("/") 
-                    #print(last_name)
                     if last_name != family_name:
                         error = f"""ERROR: US16: FAMILY: {family.id}: {family_name} family:
                             {child.name} has the wrong last name: {last_name}"""
@@ -888,7 +885,7 @@ class GedcomRepo:
     # Author: Shaffer Wayne
     def us25(self):
         """No more than one child in a family should have the same name and birthdate."""
-        error_families = []
+        fail_list = [] #list of kids that fail the story
 
         print("This is user story 25 -- Wayne")
 
@@ -896,11 +893,25 @@ class GedcomRepo:
                               if len(family.children) > 0]
 
         for family in fams_with_children:
-            children = [child for child in self.indi_storage.values()
-                        if child.id in family.children]
+            children = [person for person in self.indi_storage.values()
+                        if person.id in family.children]
             
+            for child in children[:]:
+                # compare this child to the rest of the children
+                for other_child in children[1:]:
+                    if child.birthday != "NA" and other_child.birthday != "NA":
+                        if child.name == other_child.name and \
+                                child.birthday == other_child.birthday:
+                            error = f"""ERROR: FAMILY: {family.id}:
+                                        Two or more children exist named {child.name}
+                                        with birthdate {child.birthday}
+                                    """
+                            print(error)
+                            fail_list.append(child.id)
 
-        return errors
+                children.remove(child)
+
+        return fail_list
 
     # Author: Ibezim Ikenna
     def us27(self):
@@ -1152,37 +1163,38 @@ def main():
     print("Our user stories begin here!!!!!")
     print("\n\n\n")
 
-    #test.us01()
-    #test.us02()
-    #test.us03()
-    #test.us04()
-    #test.us05()
-    #test.us06()
-    #test.us07()
-    #test.us08()
-    #test.us09()
-    #test.us10()
-    #test.us11()
-    #test.us12()
-    #test.us14()
-    #test.us15()
+    test.us01()
+    test.us02()
+    test.us03()
+    test.us04()
+    test.us05()
+    test.us06()
+    test.us07()
+    test.us08()
+    test.us09()
+    test.us10()
+    test.us11()
+    test.us12()
+    test.us14()
+    test.us15()
     test.us16()
-    #test.us17()
-    #test.us18()
-    #test.us21()
-    #test.us22()
-    #test.us23()
-    #test.us27()
-    #test.us28()
-    #test.us29()
-    #test.us30()
-    #test.us31()
-    #test.us32()
-    #test.us33()
-    #test.us35()
-    #test.us36()
-    #test.us38()
-    #test.us39()
+    test.us17()
+    test.us18()
+    test.us21()
+    test.us22()
+    test.us23()
+    test.us25()
+    test.us27()
+    test.us28()
+    test.us29()
+    test.us30()
+    test.us31()
+    test.us32()
+    test.us33()
+    test.us35()
+    test.us36()
+    test.us38()
+    test.us39()
 
     # print('\n\n\n')
     # print("This is the Individuals data in a dictionary format\n\n\n")

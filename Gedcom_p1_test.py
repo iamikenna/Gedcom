@@ -36,7 +36,8 @@ class UserStoryTest(unittest.TestCase):
         test.ged_reader()
 
         errors = ['I13', 'I14', 'US33_I21', 'US33_I22', 'US16_I11',
-                  'US16_I12', 'US16_I21', 'US16_I22']
+                  'US16_I12', 'US16_I21', 'US16_I22', 'US25_I11',
+                  'US25_I12', 'US25_I21', 'US25_I22']
         self.assertEqual(test.us02(), errors)
 
         """Tests the following boundaries:
@@ -120,7 +121,7 @@ class UserStoryTest(unittest.TestCase):
         """ Tests marriage at least 14 years old"""
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        self.assertEqual(len(test.us10()), 14)
+        self.assertEqual(len(test.us10()), 18)
 
     # Author: Ibezim Ikenna
     def test_us11(self):
@@ -249,12 +250,27 @@ class UserStoryTest(unittest.TestCase):
         """Unique name and birth date"""
         test: GedcomRepo = GedcomRepo("family.ged")
         test.ged_reader()
-        duplicates, error = [('Susan /Sargent/', datetime.date(1989, 5, 5))], []
+        duplicates, error = [('Susan /Sargent/', datetime.date(1989, 5, 5)),
+                             ('Monica /Sosa/', datetime.date(1994, 8, 8)),
+                             ('Jeff /Ripper/', datetime.date(1990, 6, 17))], []
         # Testing duplicates names and birthdate in individual table
         my_func = test.us23()
         self.assertEqual(my_func, duplicates)
         # Testing for errors
         self.assertNotEqual(my_func, error)
+
+    # Author: Shaffer Wayne
+    def test_us25(self):
+        """ No more than one child in a family with same naem/birthdate """
+        test = GedcomRepo("us16_us25_family.ged")
+        test.ged_reader()
+        expected = ['US25_I13', 'US25_I23']
+        self.assertEqual(test.us25(), expected)
+
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+        expected = ['US25_I13', 'US25_I23']
+        self.assertEqual(test.us25(), expected)
 
     # Author: Ibezim Ikenna
 
@@ -319,7 +335,13 @@ class UserStoryTest(unittest.TestCase):
                          ('US16_I17', 17), ('US16_I21', 47),
                          ('US16_I22', 38), ('US16_I23', 30),
                          ('US16_I24', 28), ('US16_I25', 23),
-                         ('US16_I26', 20), ('US16_I27', 17)],  []
+                         ('US16_I26', 20), ('US16_I27', 17),
+                         ('US25_I11', 49), ('US25_I12', 46),
+                         ('US25_I13', 26), ('US25_I14', 26),
+                         ('US25_I15', 23), ('US25_I16', 21),
+                         ('US25_I21', 41), ('US25_I22', 34),
+                         ('US25_I23', 30), ('US25_I24', 'NA'),
+                         ('US25_I25', 30)],  []
         my_func = test.us27()
 
         self.assertEqual(my_func,  id_age)
@@ -371,7 +393,8 @@ class UserStoryTest(unittest.TestCase):
                     'US18_I4', 'US18_I3', 'US21_I52', 'US17_I1', 'US12_I32',
                     'US09_I7', 'US28_I11', 'US28_I12', 'US28_I32',
                     'US28_I31', 'US32_I41', 'US32_I42', 'US35_I2', 'US35_I5',
-                    'US16_I21', 'US16_I11', 'US16_I12', 'US16_I22'}
+                    'US16_I21', 'US16_I11', 'US16_I12', 'US16_I22',
+                    'US25_I11', 'US25_I12', 'US25_I22', 'US25_I21'}
         test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(test.us30(), set_marr)
@@ -395,7 +418,7 @@ class UserStoryTest(unittest.TestCase):
         set_single = {'US01_I17', 'US12_I23', 'US01_I11', 'I5',
                       'US12_I24', 'US12_I14', 'us23_I1', 'US12_I13', 'US15_I3',
                       'US15_2_I3', 'US28_I14', 'US28_I15', 'US28_I35', 'US28_I13',
-                      'US16_I13', 'US16_I23'}
+                      'US16_I13', 'US16_I23', 'US25_I25', 'US25_I23'}
 
         test = GedcomRepo("family.ged")
         test.ged_reader()
@@ -413,9 +436,9 @@ class UserStoryTest(unittest.TestCase):
         # for full family file
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        expected_result = ["1955-08-08",
-                           "2018-08-27", "2016-06-06", "2018-04-04"]
-        self.assertTrue(test.us32() == expected_result)
+        expected_result = ["1955-08-08", "2018-08-27", "2016-06-06",
+                           "2018-04-04", "1994-08-08", "1990-06-17"]
+        self.assertEqual(test.us32(), expected_result)
 
     # Author: Ibezim Ikenna
     def test_us33(self):
@@ -457,7 +480,8 @@ class UserStoryTest(unittest.TestCase):
         test.ged_reader()
 
         a_set = {'I9', 'us14_I6', 'us14_I5', 'I15', 'us14_20', 'US18_I3',
-        'us14_I4', 'I13', 'US28_I14', 'us14_I9', 'I6', 'us14_I8'}
+        'us14_I4', 'I13', 'US28_I14', 'us14_I9', 'I6', 'us14_I8', 'US25_I14',
+        'US16_I24', 'US16_I14', 'US25_I13'}
         self.assertEqual(test.us38(), a_set)
 
         """Below tests the following boundaries:
@@ -471,7 +495,7 @@ class UserStoryTest(unittest.TestCase):
         bounds: GedcomRepo = GedcomRepo("us38_us39.ged")
         bounds.ged_reader()
         b_set = {'I10', 'I12', 'I16', 'I2', 'I9',
-        'I3', 'I11', 'I13', 'I8', 'I5'}
+        'I3', 'I11', 'I13', 'I8'}
         self.assertEqual(bounds.us38(), b_set)
 
     # Author: McKenzie Christopher
@@ -496,7 +520,7 @@ class UserStoryTest(unittest.TestCase):
 
         bounds: GedcomRepo = GedcomRepo("us38_us39.ged")
         bounds.ged_reader()
-        b_set = {'F6', 'F5', 'F4', 'F8'}
+        b_set = {'F6', 'F4', 'F8'}
         self.assertEqual(bounds.us39(), b_set)
 
 
