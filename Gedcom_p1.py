@@ -1091,8 +1091,9 @@ class GedcomRepo:
         set_bday = set()
 
         for person in self.indi_storage.values():
-            if person.alive == True and type(person.birthday) != str:
-                # Convert change birthday year to present's year to compare by days
+            if person.alive == True and type(person.birthday) != str \
+                and (person.birthday).year < present.year: # Last 'and' statement avoids future birthdays
+                # Convert birthday year to present year to compare by days
                 bday = datetime(
                     present.year, (person.birthday).month, (person.birthday).day)
                 diff_days = bday - present
@@ -1109,21 +1110,26 @@ class GedcomRepo:
         present = datetime.now()
         set_anni = set()
 
-        # FIND OUT HOW TO CHECK IF BOTH HUSBAND AND WIFE ARE ALIVE
         for family in self.fam_storage.values():
-            # If it is str, either NA or invalid date (also means not divorced)
-            if type(family.married) != str and type(family.divorced) == str:
-                for person in self.indi_storage.values():
-                    if person.alive == True:
-                        # Convert change birthday year to present's year to compare by days
-                        anni = datetime(
-                            present.year, (family.married).month, (family.married).day)
-                        diff_days = anni - present
-                        if diff_days.days >= 0 and diff_days.days <= 30:
-                            set_anni.add(family.id)
-                    elif person.alive == False and family.id in set_anni:
-                        # Removes from set if either husband or spouse is dead
-                        set_anni.remove(family.id)
+            # Includes it if either NA or invalid date (also means not divorced)
+            # Also includes families with future divorce dates (invalid divorce date)
+            if type(family.divorced) == str or (family.divorced) > present.date():
+                # Avoids invalid and future marriages
+                if type(family.married) != str and (family.married).year < present.year:
+                    for person in self.indi_storage.values():
+                        if person.alive == True:
+
+                            # Convert birthday year to present's year to compare by days
+                            anni = datetime(
+                                present.year, (family.married).month, (family.married).day)
+                            diff_days = anni - present
+                            if diff_days.days >= 0 and diff_days.days <= 30:
+                                set_anni.add(family.id)
+
+                        elif person.alive == False and family.id in set_anni:
+                            # Removes from set if either husband or spouse is dead
+                            set_anni.remove(family.id)
+        
 
         print(
             f'US39: List of individuals with upcoming anniversaries : {set_anni}')

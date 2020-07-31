@@ -448,6 +448,56 @@ class UserStoryTest(unittest.TestCase):
 
         people = {'US33_I22', 'US33_I21', 'US07_I1'}
         self.assertEqual(test.us36(), people)
+    
+    # Author: McKenzie Christopher
+    def test_us38(self):
+        """Tests upcoming birthdays"""
+        test = GedcomRepo("family.ged", datetime.datetime(
+            2020, 8, 1).date())  # static datetime
+        test.ged_reader()
+
+        a_set = {'I9', 'us14_I6', 'us14_I5', 'I15', 'us14_20', 'US18_I3',
+        'us14_I4', 'I13', 'US28_I14', 'us14_I9', 'I6', 'us14_I8'}
+        self.assertEqual(test.us38(), a_set)
+
+        """Below tests the following boundaries:
+        1. Dead individual
+        2. Birthday 1 day before static date
+        3. Birthday 31 days after static date
+        4. Invalid birthday
+        5. Invalid death date
+        6. Future birthday or within same year."""
+  
+        bounds: GedcomRepo = GedcomRepo("us38_us39.ged")
+        bounds.ged_reader()
+        b_set = {'I10', 'I12', 'I16', 'I2', 'I9',
+        'I3', 'I11', 'I13', 'I8', 'I5'}
+        self.assertEqual(bounds.us38(), b_set)
+
+    # Author: McKenzie Christopher
+    def test_us39(self):
+        """Tests upcoming wedding anniversaries"""
+        test = GedcomRepo("family.ged", datetime.datetime(
+            2020, 8, 1).date())  # static datetime
+        test.ged_reader()
+
+        a_set = {'US18_F3', 'US01_F4'}
+        self.assertEqual(test.us39(), a_set)
+        
+        """Below tests the following boundaries:
+        1. Dead spouse x
+        2. Marriage 1 day before static date x
+        3. Marriage 31 days after static date x
+        4. Invalid marriage date x
+        5. Invalid death date x
+        6. Invalid divorce date
+        7. Divorced x
+        8. Future marriage or within same year."""
+
+        bounds: GedcomRepo = GedcomRepo("us38_us39.ged")
+        bounds.ged_reader()
+        b_set = {'F6', 'F5', 'F4', 'F8'}
+        self.assertEqual(bounds.us39(), b_set)
 
 
 if __name__ == "__main__":
