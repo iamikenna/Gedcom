@@ -689,6 +689,37 @@ class GedcomRepo:
                 errors.append(error)
         return errors
 
+    # Author Shaffer Wayne
+    def us16(self):
+        """All males in a family must have the same last name."""
+
+        print("This is user story 16 -- Wayne")
+
+        wrong_names = []
+
+        for family in self.fam_storage.values():
+            #find the husband to find the family name
+            for person in self.indi_storage.values():
+                if person.id == family.husbandId:
+                    family_name = person.name.split(" ")[1].strip("/")
+                    #print(family_name)
+
+            #make sure male children have same last name
+            children = [individual for individual in self.indi_storage.values()
+                        if individual.id in family.children]
+            #print("children:")
+            for child in children:
+                if child.gender == "M":
+                    last_name = child.name.split(" ")[1].strip("/") 
+                    #print(last_name)
+                    if last_name != family_name:
+                        error = f"""ERROR: US16: FAMILY: {family.id}: {family_name} family:
+                            {child.name} has the wrong last name: {last_name}"""
+                        print(error)
+                        wrong_names.append(child.id)
+
+        return wrong_names
+
     # Author: McKenzie Christopher
     def us17(self):
         """Parents should not marry any of their children."""
@@ -853,6 +884,23 @@ class GedcomRepo:
                 print(
                     f"Error: US23: The Individual {k1[0]} with birthday {k1[1]} is not unique and has been repeated {v1} times in the Gedcom file")
         return error
+
+    # Author: Shaffer Wayne
+    def us25(self):
+        """No more than one child in a family should have the same name and birthdate."""
+        error_families = []
+
+        print("This is user story 25 -- Wayne")
+
+        fams_with_children = [family for family in self.fam_storage.values()
+                              if len(family.children) > 0]
+
+        for family in fams_with_children:
+            children = [child for child in self.indi_storage.values()
+                        if child.id in family.children]
+            
+
+        return errors
 
     # Author: Ibezim Ikenna
     def us27(self):
@@ -1098,36 +1146,37 @@ def main():
     print("Our user stories begin here!!!!!")
     print("\n\n\n")
 
-    test.us01()
-    test.us02()
-    test.us03()
-    test.us04()
-    test.us05()
-    test.us06()
-    test.us07()
-    test.us08()
-    test.us09()
-    test.us10()
-    test.us11()
-    test.us12()
-    test.us14()
-    test.us15()
-    test.us17()
-    test.us18()
-    test.us21()
-    test.us22()
-    test.us23()
-    test.us27()
-    test.us28()
-    test.us29()
-    test.us30()
-    test.us31()
-    test.us32()
-    test.us33()
-    test.us35()
-    test.us36()
-    test.us38()
-    test.us39()
+    #test.us01()
+    #test.us02()
+    #test.us03()
+    #test.us04()
+    #test.us05()
+    #test.us06()
+    #test.us07()
+    #test.us08()
+    #test.us09()
+    #test.us10()
+    #test.us11()
+    #test.us12()
+    #test.us14()
+    #test.us15()
+    test.us16()
+    #test.us17()
+    #test.us18()
+    #test.us21()
+    #test.us22()
+    #test.us23()
+    #test.us27()
+    #test.us28()
+    #test.us29()
+    #test.us30()
+    #test.us31()
+    #test.us32()
+    #test.us33()
+    #test.us35()
+    #test.us36()
+    #test.us38()
+    #test.us39()
 
     # print('\n\n\n')
     # print("This is the Individuals data in a dictionary format\n\n\n")

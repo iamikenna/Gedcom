@@ -35,7 +35,8 @@ class UserStoryTest(unittest.TestCase):
         test: GedcomRepo = GedcomRepo("family.ged")
         test.ged_reader()
 
-        errors = ['I13', 'I14', 'US33_I21', 'US33_I22']
+        errors = ['I13', 'I14', 'US33_I21', 'US33_I22', 'US16_I11',
+                  'US16_I12', 'US16_I21', 'US16_I22']
         self.assertEqual(test.us02(), errors)
 
         """Tests the following boundaries:
@@ -119,7 +120,7 @@ class UserStoryTest(unittest.TestCase):
         """ Tests marriage at least 14 years old"""
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        self.assertEqual(len(test.us10()), 10)
+        self.assertEqual(len(test.us10()), 14)
 
     # Author: Ibezim Ikenna
     def test_us11(self):
@@ -159,6 +160,20 @@ class UserStoryTest(unittest.TestCase):
         test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(len(test.us15()), 1)
+
+    # Author: Shaffer Wayne
+    def test_us16(self):
+        """Tests that all males in a family have the same last name."""
+        test = GedcomRepo("us16_family.ged")
+        test.ged_reader()
+        failed_IDs = ["US16_I16", "US16_I25", "US16_I26"]
+        self.assertEqual(test.us16(), failed_IDs)
+
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+        failed_IDs = ["I15", "I15", "us14_I9", "us14_I4", "us14_I5", "us14_20", 
+                      "us14_I6", "us14_I8", "US16_I16", "US16_I25", "US16_I26"]
+        self.assertEqual(test.us16(), failed_IDs)
 
     # Author: McKenzie Christopher
     def test_us17(self):
@@ -297,7 +312,14 @@ class UserStoryTest(unittest.TestCase):
                          ('US32_I45', 4), ('US32_I46', 2),
                          ('US32_I47', 2), ('US35_I1', 0),
                          ('US35_I2', 34), ('US35_I3', 33),
-                         ('US35_I4', 61), ('US35_I5', 60)],  []
+                         ('US35_I4', 61), ('US35_I5', 60),
+                         ('US16_I11', 45), ('US16_I12', 50),
+                         ('US16_I13', 30), ('US16_I14', 28),
+                         ('US16_I15', 23), ('US16_I16', 20),
+                         ('US16_I17', 17), ('US16_I21', 47),
+                         ('US16_I22', 38), ('US16_I23', 30),
+                         ('US16_I24', 28), ('US16_I25', 23),
+                         ('US16_I26', 20), ('US16_I27', 17)],  []
         my_func = test.us27()
 
         self.assertEqual(my_func,  id_age)
@@ -348,7 +370,8 @@ class UserStoryTest(unittest.TestCase):
                     'US12_I11', 'I9', 'US09_I2', 'US21_I41', 'US17_I4',
                     'US18_I4', 'US18_I3', 'US21_I52', 'US17_I1', 'US12_I32',
                     'US09_I7', 'US28_I11', 'US28_I12', 'US28_I32',
-                    'US28_I31', 'US32_I41', 'US32_I42', 'US35_I2', 'US35_I5'}
+                    'US28_I31', 'US32_I41', 'US32_I42', 'US35_I2', 'US35_I5',
+                    'US16_I21', 'US16_I11', 'US16_I12', 'US16_I22'}
         test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(test.us30(), set_marr)
@@ -371,7 +394,8 @@ class UserStoryTest(unittest.TestCase):
         """ Tests if the function lists all living over 30 people who were never married. """
         set_single = {'US01_I17', 'US12_I23', 'US01_I11', 'I5',
                       'US12_I24', 'US12_I14', 'us23_I1', 'US12_I13', 'US15_I3',
-                      'US15_2_I3', 'US28_I14', 'US28_I15', 'US28_I35', 'US28_I13'}
+                      'US15_2_I3', 'US28_I14', 'US28_I15', 'US28_I35', 'US28_I13',
+                      'US16_I13', 'US16_I23'}
 
         test = GedcomRepo("family.ged")
         test.ged_reader()
