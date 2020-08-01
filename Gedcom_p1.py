@@ -1142,7 +1142,7 @@ class GedcomRepo:
         
 
         print(
-            f'US39: List of individuals with upcoming anniversaries : {set_anni}')
+            f'US39: List of families with upcoming anniversaries : {set_anni}')
         return set_anni
 
 
