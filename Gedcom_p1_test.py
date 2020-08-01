@@ -35,7 +35,9 @@ class UserStoryTest(unittest.TestCase):
         test: GedcomRepo = GedcomRepo("family.ged")
         test.ged_reader()
 
-        errors = ['I13', 'I14', 'US33_I21', 'US33_I22']
+        errors = ['I13', 'I14', 'US33_I21', 'US33_I22', 'US16_I11',
+                  'US16_I12', 'US16_I21', 'US16_I22', 'US25_I11',
+                  'US25_I12', 'US25_I21', 'US25_I22']
         self.assertEqual(test.us02(), errors)
 
         """Tests the following boundaries:
@@ -119,7 +121,7 @@ class UserStoryTest(unittest.TestCase):
         """ Tests marriage at least 14 years old"""
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        self.assertEqual(len(test.us10()), 10)
+        self.assertEqual(len(test.us10()), 18)
 
     # Author: Ibezim Ikenna
     def test_us11(self):
@@ -137,7 +139,8 @@ class UserStoryTest(unittest.TestCase):
         """ Tests parents too old """
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        failed_families = ["F5", "F9", "F9", "US12_F1", "US12_F3", "US28_F1", "US28_F3"]
+        failed_families = ["F5", "F9", "F9",
+                           "US12_F1", "US12_F3", "US28_F1", "US28_F3"]
         self.assertEqual(test.us12(), failed_families)
 
     # Author: Ibezim Ikenna
@@ -158,6 +161,20 @@ class UserStoryTest(unittest.TestCase):
         test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(len(test.us15()), 1)
+
+    # Author: Shaffer Wayne
+    def test_us16(self):
+        """Tests that all males in a family have the same last name."""
+        test = GedcomRepo("us16_us25_family.ged")
+        test.ged_reader()
+        failed_IDs = ["US16_I16", "US16_I25", "US16_I26"]
+        self.assertEqual(test.us16(), failed_IDs)
+
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+        failed_IDs = ["I15", "I15", "us14_I9", "us14_I4", "us14_I5", "us14_20", 
+                      "us14_I6", "us14_I8", "US16_I16", "US16_I25", "US16_I26"]
+        self.assertEqual(test.us16(), failed_IDs)
 
     # Author: McKenzie Christopher
     def test_us17(self):
@@ -229,16 +246,31 @@ class UserStoryTest(unittest.TestCase):
         self.assertNotEqual(my_func[0],  error)
 
     # Author: Ibezim Ikenna
-    # def test_us23(self):
-    #     """Unique name and birth date"""
-    #     test: GedcomRepo = GedcomRepo("family.ged")
-    #     test.ged_reader()
-    #     duplicates, error = [('Susan /Sargent/', datetime.date(1989, 5, 5))], []
-    #     # Testing duplicates names and birthdate in individual table
-    #     my_func = test.us23()
-    #     self.assertEqual(my_func, duplicates)
-    #     # Testing for errors
-    #     self.assertNotEqual(my_func, error)
+    def test_us23(self):
+        """Unique name and birth date"""
+        test: GedcomRepo = GedcomRepo("family.ged")
+        test.ged_reader()
+        duplicates, error = [('Susan /Sargent/', datetime.date(1989, 5, 5)),
+                             ('Monica /Sosa/', datetime.date(1994, 8, 8)),
+                             ('Jeff /Ripper/', datetime.date(1990, 6, 17))], []
+        # Testing duplicates names and birthdate in individual table
+        my_func = test.us23()
+        self.assertEqual(my_func, duplicates)
+        # Testing for errors
+        self.assertNotEqual(my_func, error)
+
+    # Author: Shaffer Wayne
+    def test_us25(self):
+        """ No more than one child in a family with same naem/birthdate """
+        test = GedcomRepo("us16_us25_family.ged")
+        test.ged_reader()
+        expected = ['US25_I13', 'US25_I23']
+        self.assertEqual(test.us25(), expected)
+
+        test = GedcomRepo("family.ged")
+        test.ged_reader()
+        expected = ['US25_I13', 'US25_I23']
+        self.assertEqual(test.us25(), expected)
 
     # Author: Ibezim Ikenna
 
@@ -294,7 +326,22 @@ class UserStoryTest(unittest.TestCase):
                          ('US32_I41', 31), ('US32_I42', 34),
                          ('US32_I43', 4), ('US32_I44', 4),
                          ('US32_I45', 4), ('US32_I46', 2),
-                         ('US32_I47', 2)],  []
+                         ('US32_I47', 2), ('US35_I1', 0),
+                         ('US35_I2', 34), ('US35_I3', 33),
+                         ('US35_I4', 61), ('US35_I5', 60),
+                         ('US16_I11', 45), ('US16_I12', 50),
+                         ('US16_I13', 30), ('US16_I14', 28),
+                         ('US16_I15', 23), ('US16_I16', 20),
+                         ('US16_I17', 17), ('US16_I21', 47),
+                         ('US16_I22', 38), ('US16_I23', 30),
+                         ('US16_I24', 28), ('US16_I25', 23),
+                         ('US16_I26', 20), ('US16_I27', 17),
+                         ('US25_I11', 49), ('US25_I12', 46),
+                         ('US25_I13', 26), ('US25_I14', 26),
+                         ('US25_I15', 23), ('US25_I16', 21),
+                         ('US25_I21', 41), ('US25_I22', 34),
+                         ('US25_I23', 30), ('US25_I24', 'NA'),
+                         ('US25_I25', 30)],  []
         my_func = test.us27()
 
         self.assertEqual(my_func,  id_age)
@@ -310,17 +357,18 @@ class UserStoryTest(unittest.TestCase):
             test.ged_reader()
 
             result = test.us28()
-        
+
             for age_list in result:
                 print(age_list)
-                self.assertTrue(age_list == sorted(age_list, key = lambda i: str(i[1]), reverse = True))
+                self.assertTrue(age_list == sorted(
+                    age_list, key=lambda i: str(i[1]), reverse=True))
 
     # Author: Christopher McKenzie
     def test_us29(self):
         """Tests if function lists all dead individuals."""
 
         set_deat = {'US09_I3', 'I16', 'US09_I4', 'US09_I8',
-                    'US07_I0886', 'US07_I1', 'I12', 'US33_I21', 'US33_I22'}
+                    'US07_I0886', 'US07_I1', 'I12', 'US33_I21', 'US33_I22', 'US35_I4', 'US35_I3'}
         test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(test.us29(), set_deat)
@@ -344,7 +392,9 @@ class UserStoryTest(unittest.TestCase):
                     'US12_I11', 'I9', 'US09_I2', 'US21_I41', 'US17_I4',
                     'US18_I4', 'US18_I3', 'US21_I52', 'US17_I1', 'US12_I32',
                     'US09_I7', 'US28_I11', 'US28_I12', 'US28_I32',
-                    'US28_I31', 'US32_I41', 'US32_I42'}
+                    'US28_I31', 'US32_I41', 'US32_I42', 'US35_I2', 'US35_I5',
+                    'US16_I21', 'US16_I11', 'US16_I12', 'US16_I22',
+                    'US25_I11', 'US25_I12', 'US25_I22', 'US25_I21'}
         test = GedcomRepo("family.ged")
         test.ged_reader()
         self.assertEqual(test.us30(), set_marr)
@@ -367,7 +417,8 @@ class UserStoryTest(unittest.TestCase):
         """ Tests if the function lists all living over 30 people who were never married. """
         set_single = {'US01_I17', 'US12_I23', 'US01_I11', 'I5',
                       'US12_I24', 'US12_I14', 'us23_I1', 'US12_I13', 'US15_I3',
-                      'US15_2_I3', 'US28_I14', 'US28_I15', 'US28_I35', 'US28_I13'}
+                      'US15_2_I3', 'US28_I14', 'US28_I15', 'US28_I35', 'US28_I13',
+                      'US16_I13', 'US16_I23', 'US25_I25', 'US25_I23'}
 
         test = GedcomRepo("family.ged")
         test.ged_reader()
@@ -376,17 +427,104 @@ class UserStoryTest(unittest.TestCase):
     # Author: Shaffer Wayne
     def test_us32(self):
         """ Tests if multiple births are listed. """
-        #for sample family file
+        # for sample family file
         sample_test = GedcomRepo("us28_us32_family.ged")
         sample_test.ged_reader()
         expected_result = ["2016-06-06", "2018-04-04"]
         self.assertTrue(sample_test.us32() == expected_result)
 
-        #for full family file
+        # for full family file
         test = GedcomRepo("family.ged")
         test.ged_reader()
-        expected_result = ["1955-08-08", "2018-08-27", "2016-06-06", "2018-04-04"]
-        self.assertTrue(test.us32() == expected_result)
+        expected_result = ["1955-08-08", "2018-08-27", "2016-06-06",
+                           "2018-04-04", "1994-08-08", "1990-06-17"]
+        self.assertEqual(test.us32(), expected_result)
+
+    # Author: Ibezim Ikenna
+    def test_us33(self):
+        """Testing List of orphans"""
+        test: GedcomRepo = GedcomRepo("family.ged")
+        test.ged_reader()
+        kids, error = [('US33_I23', 1), ('US33_I24', 2)], []
+        # Testing duplicates names and birthdate in individual table
+        my_func = test.us33()
+        self.assertEqual(my_func, kids)
+        # Testing for errors
+        self.assertNotEqual(my_func, sorted(error))
+
+    # Author: Lehmann Margaret
+    def test_us35(self):
+        """ Tests births in the last 30 days """
+        test = GedcomRepo("family.ged", datetime.datetime(
+            1989, 2, 20).date())  # static date time
+        test.ged_reader()
+
+        people = {'US21_I51', 'US21_I42', 'US21_I41', 'US32_I41'}
+        self.assertEqual(test.us35(), people)
+
+    # Author: Lehmann Margaret
+    def test_us36(self):
+        """ Tests deaths in the last 30 days """
+        test = GedcomRepo("family.ged", datetime.datetime(
+            2019, 4, 20).date())  # static datetime
+        test.ged_reader()
+
+        people = {'US33_I22', 'US33_I21', 'US07_I1'}
+        self.assertEqual(test.us36(), people)
     
+    # Author: McKenzie Christopher
+    def test_us38(self):
+        """Tests upcoming birthdays"""
+        test = GedcomRepo("family.ged", datetime.datetime(
+            2020, 8, 1).date())  # static datetime
+        test.ged_reader()
+
+        a_set = {'I9', 'us14_I6', 'us14_I5', 'I15', 'us14_20', 'US18_I3',
+        'us14_I4', 'I13', 'US28_I14', 'us14_I9', 'I6', 'us14_I8', 'US25_I14',
+        'US16_I24', 'US16_I14', 'US25_I13'}
+        self.assertEqual(test.us38(), a_set)
+
+        """Below tests the following boundaries:
+        1. Dead individual
+        2. Birthday 1 day before static date
+        3. Birthday 31 days after static date
+        4. Invalid birthday
+        5. Invalid death date
+        6. Future birthday or within same year."""
+  
+        bounds= GedcomRepo("us38_us39.ged", datetime.datetime(
+            2020, 8, 1).date())
+        bounds.ged_reader()
+        b_set = {'I10', 'I12', 'I9', 'I2',
+        'I3', 'I11', 'I13', 'I8', 'I16'}
+        self.assertEqual(bounds.us38(), b_set)
+
+    # Author: McKenzie Christopher
+    def test_us39(self):
+        """Tests upcoming wedding anniversaries"""
+        test = GedcomRepo("family.ged", datetime.datetime(
+            2020, 8, 1).date())  # static datetime
+        test.ged_reader()
+
+        a_set = {'US18_F3', 'US01_F4'}
+        self.assertEqual(test.us39(), a_set)
+        
+        """Below tests the following boundaries:
+        1. Dead spouse x
+        2. Marriage 1 day before static date x
+        3. Marriage 31 days after static date x
+        4. Invalid marriage date x
+        5. Invalid death date x
+        6. Invalid divorce date
+        7. Divorced x
+        8. Future marriage or within same year."""
+
+        bounds = GedcomRepo("us38_us39.ged", datetime.datetime(
+            2020, 8, 1).date())
+        bounds.ged_reader()
+        b_set = {'F6', 'F4', 'F8'}
+        self.assertEqual(bounds.us39(), b_set)
+
+
 if __name__ == "__main__":
     unittest.main(exit=False, verbosity=2)
