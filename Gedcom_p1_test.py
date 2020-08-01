@@ -165,7 +165,7 @@ class UserStoryTest(unittest.TestCase):
     # Author: Shaffer Wayne
     def test_us16(self):
         """Tests that all males in a family have the same last name."""
-        test = GedcomRepo("us16_family.ged")
+        test = GedcomRepo("us16_us25_family.ged")
         test.ged_reader()
         failed_IDs = ["US16_I16", "US16_I25", "US16_I26"]
         self.assertEqual(test.us16(), failed_IDs)
@@ -492,10 +492,11 @@ class UserStoryTest(unittest.TestCase):
         5. Invalid death date
         6. Future birthday or within same year."""
   
-        bounds: GedcomRepo = GedcomRepo("us38_us39.ged")
+        bounds= GedcomRepo("us38_us39.ged", datetime.datetime(
+            2020, 8, 1).date())
         bounds.ged_reader()
-        b_set = {'I10', 'I12', 'I16', 'I2', 'I9',
-        'I3', 'I11', 'I13', 'I8'}
+        b_set = {'I10', 'I12', 'I9', 'I2'
+        'I3', 'I11', 'I13', 'I8', 'I16'}
         self.assertEqual(bounds.us38(), b_set)
 
     # Author: McKenzie Christopher
@@ -518,7 +519,8 @@ class UserStoryTest(unittest.TestCase):
         7. Divorced x
         8. Future marriage or within same year."""
 
-        bounds: GedcomRepo = GedcomRepo("us38_us39.ged")
+        bounds = GedcomRepo("us38_us39.ged", datetime.datetime(
+            2020, 8, 1).date())
         bounds.ged_reader()
         b_set = {'F6', 'F4', 'F8'}
         self.assertEqual(bounds.us39(), b_set)

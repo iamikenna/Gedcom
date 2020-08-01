@@ -1105,9 +1105,9 @@ class GedcomRepo:
                 and (person.birthday).year < present.year: # Last 'and' statement avoids future birthdays
                 # Convert birthday year to present year to compare by days
                 bday = datetime(
-                    present.year, (person.birthday).month, (person.birthday).day)
-                diff_days = bday - present
-                if diff_days.days >= 0 and diff_days.days <= 30:
+                    present.year, (person.birthday).month, (person.birthday).day).date()
+
+                if bday >= self.date and bday < self.date + relativedelta(days=30):
                     set_bday.add(person.id)
 
         print(f'US38: List of individuals with upcoming birthdays: {set_bday}')
@@ -1131,9 +1131,9 @@ class GedcomRepo:
 
                             # Convert birthday year to present's year to compare by days
                             anni = datetime(
-                                present.year, (family.married).month, (family.married).day)
-                            diff_days = anni - present
-                            if diff_days.days >= 0 and diff_days.days <= 30:
+                                present.year, (family.married).month, (family.married).day).date()
+
+                            if anni >= self.date and anni < self.date + relativedelta(days=30):
                                 set_anni.add(family.id)
 
                         elif person.alive == False and family.id in set_anni:
