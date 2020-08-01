@@ -1058,7 +1058,6 @@ class GedcomRepo:
                     wife_alive = i.alive
                 else:
                     continue
-
                 if father_alive == False and wife_alive == False:
                     children = f.children
                     for c in children:
